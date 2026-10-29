@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>프리스타일 리부트 드리블 큐 연습기</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+  :root {
+    --bg: #eef0f2; --panel: #ffffff; --ink: #1a1d22; --mute: #6a7079;
+    --line: #d5d9de; --court: #2f6fb0; --court-soft: #dbe7f4;
+    --ok: #1f8f5a; --bad: #cc3e3e; --cap: #f7f8fa;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1c1f24; --panel: #262a31; --ink: #eceae3; --mute: #9aa0a8;
+      --line: #3a3f47; --court: #5b9be0; --court-soft: #223348;
+      --ok: #4fc585; --bad: #ee6b6b; --cap: #30353d;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1c1f24; --panel: #262a31; --ink: #eceae3; --mute: #9aa0a8;
+    --line: #3a3f47; --court: #5b9be0; --court-soft: #223348;
+    --ok: #4fc585; --bad: #ee6b6b; --cap: #30353d;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; line-height: 1.55; font-size: 15px; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; }
+  h1 { font-size: 20px; font-weight: 900; margin: 0 0 4px; }
+  .sub { color: var(--mute); font-size: 13px; margin: 0 0 18px; }
+  .tabs { display: flex; gap: 6px; border-bottom: 2px solid var(--line); margin-bottom: 18px; overflow-x: auto; }
+  .tabs button { background: none; border: none; color: var(--mute); font: inherit; font-weight: 700; padding: 8px 12px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+  .tabs button.on { color: var(--court); border-bottom-color: var(--court); }
+  button:focus-visible { outline: 2px solid var(--court); outline-offset: 2px; }
+  section[hidden] { display: none; }
+
+  .task, .stage { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .task .t { font-size: 18px; font-weight: 900; min-height: 28px; }
+  .s { font-weight: 700; margin-top: 6px; min-height: 24px; }
+  .s.ok { color: var(--ok); } .s.bad { color: var(--bad); }
+  .h { color: var(--mute); font-size: 13px; }
+
+  .queues { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .q { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .q h3 { margin: 0 0 8px; font-size: 14px; font-weight: 900; }
+  .slots { display: flex; gap: 4px; }
+  .slot { flex: 1; text-align: center; padding: 10px 2px; border-radius: 8px; background: var(--cap); border: 1px solid var(--line); font-size: 12px; font-weight: 700; }
+  .slot.fs { background: var(--court-soft); color: var(--court); border-color: transparent; }
+  .slot.next { background: var(--court); color: #fff; border-color: var(--court); }
+  .nextl { margin-top: 8px; font-size: 13px; color: var(--mute); } .nextl b { color: var(--ink); }
+  .cool { height: 4px; background: var(--line); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+  .cool i { display: block; height: 100%; width: 0; background: var(--court); }
+  .cool i.run { width: 100%; transition: width .8s linear; }
+  .cool i.chain { background: var(--ok); width: 100%; transition: none; }
+  @media (max-width: 420px) { .slot { font-size: 11px; padding: 8px 1px; } }
+
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .btn { background: var(--panel); border: 1px solid var(--line); color: var(--ink); border-radius: 8px; padding: 8px 14px; font: inherit; font-weight: 700; cursor: pointer; }
+  .btn.primary { background: var(--court); border-color: var(--court); color: #fff; }
+  .btn.on { border-color: var(--court); color: var(--court); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .chip { background: var(--panel); border: 1px solid var(--line); color: var(--ink); border-radius: 999px; padding: 6px 13px; font: inherit; font-size: 13px; cursor: pointer; }
+  .chip.on { background: var(--court); border-color: var(--court); color: #fff; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .stat b { display: block; font-size: 22px; font-weight: 900; line-height: 1.1; }
+  .stat span { color: var(--mute); font-size: 12px; }
+  @media (max-width: 480px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .log { list-style: none; margin: 0 0 16px; padding: 0; font-size: 13px; }
+  .log li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .log li .t { font-weight: 700; } .log li.ok .t { color: var(--ok); } .log li.bad .t { color: var(--bad); }
+  .feed { font-size: 13px; color: var(--mute); min-height: 20px; margin-bottom: 12px; }
+
+  .stage .name { font-weight: 900; font-size: 17px; }
+  .stage .desc { color: var(--mute); font-size: 13px; margin-bottom: 14px; }
+  .keys { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 64px; margin-bottom: 10px; }
+  .step { display: flex; gap: 5px; align-items: center; }
+  .cap { min-width: 56px; height: 56px; padding: 0 12px; display: grid; place-items: center; background: var(--cap); border: 1px solid var(--line); border-bottom-width: 3px; border-radius: 9px; font-weight: 900; font-size: 22px; transition: background .06s, color .06s, transform .06s; }
+  .cap.on { background: var(--court); color: #fff; border-color: var(--court); transform: translateY(2px); border-bottom-width: 1px; }
+  .cap.hit { background: var(--ok); color: #fff; border-color: var(--ok); }
+  .cap.miss { background: var(--bad); color: #fff; border-color: var(--bad); }
+  .plus { color: var(--mute); font-weight: 700; } .then { color: var(--mute); font-size: 18px; }
+  .hold { font-size: 11px; color: var(--mute); margin-left: 2px; }
+  .count { font-size: 46px; font-weight: 900; line-height: 1; min-height: 54px; color: var(--court); }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; }
+  summary { cursor: pointer; font-weight: 700; }
+  .map { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 10px; }
+  .map button { width: 100%; display: flex; justify-content: space-between; }
+  .map button.wait { border-color: var(--court); color: var(--court); }
+
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 18px; font-size: 14px; }
+  th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--mute); font-weight: 700; font-size: 13px; }
+  .tbl { overflow-x: auto; }
+  h2 { font-size: 16px; margin: 22px 0 6px; }
+  .ref p { margin: 0 0 10px; }
+  .key { background: var(--court-soft); color: var(--court); padding: 1px 6px; border-radius: 5px; font-weight: 700; }
+  @media (prefers-reduced-motion: reduce) { .cool i.run, .cap { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>드리블 큐 연습기</h1>
+  <p class="sub">세트: 기본 › 백롤2 › 스핀무브 › 기본 › 기본 (좌·우 따로 돎). 키 입력을 읽기만 하고 게임에는 아무것도 보내지 않아요.</p>
+
+  <div class="tabs">
+    <button class="on" data-tab="follow">따라치기</button>
+    <button data-tab="train">큐 드릴</button>
+    <button data-tab="ref">큐 원리 · 커맨드</button>
+  </div>
+
+  <section id="tab-follow">
+    <div class="row" id="sideRow">
+      <button class="btn on" data-side="left">왼쪽 45도</button>
+      <button class="btn" data-side="right">오른쪽 45도</button>
+    </div>
+    <div class="chips" id="fchips"></div>
+    <div class="stage" id="fstage" tabindex="0">
+      <div class="name" id="fname"></div>
+      <div class="desc" id="fdesc"></div>
+      <div class="keys" id="fkeys"></div>
+      <div class="count" id="fcount"></div>
+      <div class="s" id="fstatus">재생을 누르면 3·2·1 뒤에 키가 순서대로 켜져요</div>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="playBtn">재생 (3회 반복)</button>
+      <button class="btn" id="tempoBtn">템포: 보통</button>
+      <button class="btn on" id="checkBtn">입력 체크: 켬</button>
+    </div>
+    <p class="h">게임 중에 보려면 폰·태블릿으로 이 페이지를 열어 키보드 옆에 두는 게 가장 깔끔해요. 모니터가 하나면 게임을 창모드로 바꾸고 이 창을 작게 띄운 뒤 PowerToys '항상 위'(Win+Ctrl+T)로 고정. 게임이 포커스를 가지면 입력 체크는 자동으로 안 되고 리듬 표시만 남아요. 타이밍 숫자는 공략 설명을 바탕으로 제가 잡은 값이라 실제 체감과 다르면 템포를 바꾸세요.</p>
+  </section>
+
+  <section id="tab-train" hidden>
+    <div class="task" id="taskBox" tabindex="0">
+      <div class="t" id="taskT">자유 모드</div>
+      <div class="s" id="taskS">이 상자를 클릭한 뒤 ← + A / → + A 로 큐를 돌려보세요</div>
+      <div class="h" id="taskH">W = 쿨타임 중 누르면 연드 · 드리블 없이 W → A = 백다운터닝 · A 꾹 = 리프팅</div>
+    </div>
+    <div class="queues">
+      <div class="q"><h3>왼쪽 (← + A)</h3><div class="slots" id="qL"></div><div class="nextl" id="nL"></div></div>
+      <div class="q"><h3>오른쪽 (→ + A)</h3><div class="slots" id="qR"></div><div class="nextl" id="nR"></div></div>
+    </div>
+    <div class="cool"><i id="coolBar"></i></div>
+    <div class="feed" id="feed"></div>
+    <div class="row">
+      <button class="btn primary" id="drillBtn">랜덤 드릴 시작</button>
+      <button class="btn" id="hideBtn">미리보기 가리기</button>
+      <button class="btn" id="peekBtn">잠깐 보기</button>
+      <button class="btn" id="resetQ">큐 처음으로</button>
+      <button class="btn" id="resetS">기록 지우기</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="sTry">0</b><span>과제</span></div>
+      <div class="stat"><b id="sRate">-</b><span>성공률</span></div>
+      <div class="stat"><b id="sExtra">-</b><span>평균 낭비 타수</span></div>
+      <div class="stat"><b id="sPeek">0</b><span>미리보기 본 횟수</span></div>
+    </div>
+    <ul class="log" id="log"></ul>
+  </section>
+
+  <section id="tab-ref" class="ref" hidden>
+    <h2>큐가 도는 방식</h2>
+    <p>드리블은 좌·우 각각 5칸짜리 순서로 나가요. <span class="key">← + A</span>를 누르면 왼쪽 큐의 다음 칸이 나가고 왼쪽만 한 칸 넘어가요. 오른쪽은 오른쪽대로 따로 돌아요.</p>
+    <p>이 세트에선 <b>기본 1개를 넘기면 백롤2</b>, 그 바로 다음이 <b>스핀무브</b>예요. 백롤2 치고 쿨타임에 <span class="key">W</span>를 누르면 스핀무브가 바로 이어져요(연드). 그 뒤엔 기본 2개를 넘겨야 다시 백롤2가 와요.</p>
+    <p>이걸 <b>장전</b>이라고 불러요. 공을 받으면 큐를 돌려서 치고 싶은 드리블을 다음 순서로 맞춰두는 거예요. 좌우 둘 다 백롤2로 맞춰두면 어느 쪽이든 단발 백롤2가 가능해서 양발 페인트가 살아요.</p>
+    <h2>이 세트에서 쓸 수 있는 연속기</h2>
+    <div class="tbl"><table>
+      <tr><th>이름</th><th>입력</th><th>조건</th></tr>
+      <tr><td>단발 백롤2</td><td>사이드 방향 + A</td><td>그쪽 큐 다음이 백롤2일 때</td></tr>
+      <tr><td>백롤2 → 스핀무브 연드</td><td>방향 + A → W → 같은 방향 + A</td><td>백롤2 다음이 스핀무브라 같은 쪽으로 이어짐</td></tr>
+      <tr><td>양발 페인트</td><td>A 꾹 → 방향키 살짝 → 반대 방향 + A</td><td>반대쪽 큐에 백롤2나 스핀무브가 장전돼 있어야 함</td></tr>
+      <tr><td>백다운터닝 페이크 3점</td><td>골대방향 + W → 제자리 A → 뒤 + A → D</td><td>큐와 무관. 수비가 돌파 대비해 물러서는 심리</td></tr>
+    </table></div>
+    <h2>왼쪽 45도에서 방향</h2>
+    <div class="tbl"><table>
+      <tr><th>키</th><th>어디로</th></tr>
+      <tr><td>←</td><td>사이드라인 쪽(바깥). 단발은 ↑+← 코너 쪽을 공략이 추천</td></tr>
+      <tr><td>→</td><td>안쪽(탑·페인트존)</td></tr>
+      <tr><td>↑</td><td>골대·베이스라인 쪽</td></tr>
+      <tr><td>↓</td><td>뒤로 빠짐</td></tr>
+    </table></div>
+    <p>오른쪽 45도는 좌우를 뒤집으면 돼요. 큐는 좌·우 세트가 같으니 어느 쪽에서든 "사이드 드리블"은 그쪽 큐의 다음 칸이에요.</p>
+    <h2>이 연습기가 가정한 것</h2>
+    <p>드리블 후 쿨타임 0.8초, 쿨타임 중 W로 연드, 백다운터닝과 리프팅은 큐를 넘기지 않음, 빈 칸은 기본으로 채워짐. 실제와 다르면 알려주세요.</p>
+    <details>
+      <summary>키 매핑 (게임 설정과 다르면 맞추세요)</summary>
+      <div class="map" id="map"></div>
+      <p class="h">버튼 누른 뒤 원하는 키를 누르면 바뀝니다. 한/영 무관하게 물리 키 위치로 인식해요.</p>
+    </details>
+  </section>
+</div>
+
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const SLOTS = ['기본', '백롤2', '스핀무브', '기본', '기본'];
+  const ACTIONS = [['up','↑','ArrowUp'],['down','↓','ArrowDown'],['left','←','ArrowLeft'],['right','→','ArrowRight'],['a','A','KeyA'],['s','S','KeyS'],['d','D','KeyD'],['w','W','KeyW']];
+  let map = {}; ACTIONS.forEach(([k,,c]) => map[k] = c);
+  const label = k => ACTIONS.find(x => x[0] === k)[1];
+  const sideKo = s => s === 'left' ? '왼쪽' : '오른쪽';
+  const now = () => performance.now();
+  let activeTab = 'follow';
+
+  let rec = { tries:0, ok:0, extra:[], peeks:0, log:[] };
+  try { rec = Object.assign(rec, JSON.parse(localStorage.getItem('fsr2-rec') || '{}')); } catch (e) {}
+  try { const m = JSON.parse(localStorage.getItem('fsr2-map') || 'null'); if (m) map = m; } catch (e) {}
+  const save = () => { try { localStorage.setItem('fsr2-rec', JSON.stringify(rec)); localStorage.setItem('fsr2-map', JSON.stringify(map)); } catch (e) {} };
+  const codeToAction = code => Object.keys(map).find(k => map[k] === code);
+  const held = new Set();
+
+  // ================= 따라치기 =================
+  const BASE = [
+    { name:'1. 단발 백롤2', desc:'큐 다음이 백롤2일 때. ← 와 A 를 같이', steps:[{ t:0, k:['left','a'] }] },
+    { name:'2. 양발 페인트', desc:'A 꾹 (0.4초) → ← 살짝 → A 놓고 → + A 로 반대쪽', steps:[{ t:0, k:['a'], hold:true }, { t:450, k:['left'] }, { t:800, k:['right','a'] }] },
+    { name:'3. 백롤2 → 스핀무브 연드', desc:'← + A → 쿨타임 중 W → 바로 ← + A', steps:[{ t:0, k:['left','a'] }, { t:350, k:['w'] }, { t:500, k:['left','a'] }] },
+    { name:'4. 터닝 페이크 3점', desc:'↑ 누르자마자 W → 제자리 A → ↓ + A 로 빠져서 → D', steps:[{ t:0, k:['up'] }, { t:60, k:['w'] }, { t:150, k:['a'] }, { t:650, k:['down','a'] }, { t:1150, k:['d'] }] },
+  ];
+  const flip = k => k === 'left' ? 'right' : k === 'right' ? 'left' : k;
+  const FOLLOW = {
+    left: BASE,
+    right: BASE.map(c => ({ name: c.name, desc: c.desc.replace(/[←→]/g, ch => ch === '←' ? '→' : '←'), steps: c.steps.map(s => ({ t:s.t, k:s.k.map(flip), hold:s.hold })) })),
+  };
+  const TEMPO = [{ n:'느리게', m:1.6 }, { n:'보통', m:1 }, { n:'빠르게', m:0.75 }];
+  let fSide = 'left', fIdx = 0, tempoIdx = 1, checkOn = true, playing = false, timers = [], openStep = null, loopHits = 0;
+  const fc = () => FOLLOW[fSide][fIdx];
+
+  function renderFollow() {
+    $('fchips').innerHTML = FOLLOW[fSide].map((c, i) => `<button class="chip${i === fIdx ? ' on' : ''}" data-i="${i}">${c.name}</button>`).join('');
+    $('fchips').querySelectorAll('.chip').forEach(b => b.onclick = () => { stopPlay(); fIdx = +b.dataset.i; renderFollow(); $('fstage').focus(); });
+    const c = fc();
+    $('fname').textContent = `${sideKo(fSide)} 45도 · ${c.name}`;
+    $('fdesc').textContent = c.desc;
+    $('fkeys').innerHTML = c.steps.map((s, i) =>
+      `<div class="step" data-i="${i}">` + s.k.map((k, j) => `${j ? '<span class="plus">+</span>' : ''}<div class="cap" data-i="${i}">${label(k)}</div>`).join('') + (s.hold ? '<span class="hold">꾹</span>' : '') + `</div>` + (i < c.steps.length - 1 ? '<span class="then">→</span>' : '')
+    ).join('');
+    $('fcount').textContent = '';
+  }
+  const caps = i => $('fkeys').querySelectorAll(`.cap[data-i="${i}"]`);
+  const clearCaps = () => $('fkeys').querySelectorAll('.cap').forEach(c => c.className = 'cap');
+  function stopPlay() { playing = false; timers.forEach(clearTimeout); timers = []; openStep = null; clearCaps(); $('fcount').textContent = ''; $('playBtn').textContent = '재생 (3회 반복)'; }
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+
+  function playLoop(loopNo) {
+    const c = fc(), m = TEMPO[tempoIdx].m;
+    clearCaps(); loopHits = 0;
+    ['3', '2', '1'].forEach((n, i) => later(() => { $('fcount').textContent = n; }, i * 500));
+    const t0 = 1500;
+    later(() => { $('fcount').textContent = '지금'; }, t0);
+    c.steps.forEach((s, i) => {
+      const at = t0 + s.t * m;
+      later(() => {
+        if (i > 0 && openStep && openStep.i === i - 1 && !openStep.hit) caps(i - 1).forEach(x => x.className = 'cap miss');
+        caps(i).forEach(x => x.className = 'cap on');
+        openStep = { i, from: now() - 150 * m, until: now() + 260 * m, hit:false };
+        $('fstatus').textContent = `${i + 1} / ${c.steps.length}`; $('fstatus').className = 's';
+      }, at);
+    });
+    const end = t0 + c.steps[c.steps.length - 1].t * m + 400;
+    later(() => {
+      if (openStep && !openStep.hit) caps(openStep.i).forEach(x => x.className = 'cap miss');
+      const last = c.steps.length - 1; caps(last).forEach(x => { if (x.className === 'cap on') x.className = checkOn ? 'cap miss' : 'cap'; });
+      openStep = null;
+      $('fcount').textContent = '';
+      $('fstatus').textContent = checkOn ? `${loopNo}회차 · ${loopHits} / ${c.steps.length} 타이밍 적중` : `${loopNo}회차 끝`;
+      $('fstatus').className = 's ' + (checkOn ? (loopHits === c.steps.length ? 'ok' : 'bad') : '');
+      if (loopNo < 3 && playing) later(() => playLoop(loopNo + 1), 900); else stopPlay();
+    }, end);
+  }
+  $('playBtn').onclick = () => { if (playing) { stopPlay(); return; } playing = true; $('playBtn').textContent = '멈추기'; playLoop(1); $('fstage').focus(); };
+  $('tempoBtn').onclick = () => { tempoIdx = (tempoIdx + 1) % TEMPO.length; $('tempoBtn').textContent = '템포: ' + TEMPO[tempoIdx].n; };
+  $('checkBtn').onclick = () => { checkOn = !checkOn; $('checkBtn').textContent = '입력 체크: ' + (checkOn ? '켬' : '끔'); $('checkBtn').classList.toggle('on', checkOn); };
+  $('sideRow').querySelectorAll('button').forEach(b => b.onclick = () => { stopPlay(); fSide = b.dataset.side; $('sideRow').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); renderFollow(); });
+  function followKey() {
+    if (!playing || !checkOn || !openStep || openStep.hit) return;
+    const t = now(); if (t < openStep.from || t > openStep.until) return;
+    const need = fc().steps[openStep.i].k;
+    if (need.every(k => held.has(k))) { openStep.hit = true; loopHits++; caps(openStep.i).forEach(x => x.className = 'cap hit'); }
+  }
+
+  // ================= 큐 드릴 =================
+  const q = { left: 0, right: 0 };
+  let coolUntil = 0, chainReady = false, chainUntil = 0, backdownUntil = 0, aDownAt = null, lifting = false;
+  let task = null, taskStart = 0, taps = 0, chainStage = 0, drill = false, hidden = false, revealTimer = null, taskTimer = null, drillTimer = null;
+  const dist = (from, to) => (to - from + SLOTS.length) % SLOTS.length;
+
+  function renderQueues(force) {
+    const show = force || !hidden;
+    [['left','qL','nL'],['right','qR','nR']].forEach(([s, qid, nid]) => {
+      $(qid).innerHTML = SLOTS.map((n, i) => `<div class="slot${n !== '기본' ? ' fs' : ''}${show && i === q[s] ? ' next' : ''}">${n}</div>`).join('');
+      $(nid).innerHTML = show ? `다음: <b>${SLOTS[q[s]]}</b>` : '다음: <b>?</b>';
+    });
+  }
+  const feed = m => { $('feed').textContent = m; };
+  function status(msg, cls) { const e = $('taskS'); e.textContent = msg; e.className = 's' + (cls ? ' ' + cls : ''); }
+  function coolBar(mode) {
+    const b = $('coolBar'); b.className = ''; b.style.width = '0';
+    if (mode === 'run') { void b.offsetWidth; b.className = 'run'; setTimeout(() => { if (b.className === 'run') { b.className = ''; b.style.width = '0'; } }, 820); }
+    if (mode === 'chain') b.className = 'chain';
+  }
+  function reveal(ms) { clearTimeout(revealTimer); renderQueues(true); revealTimer = setTimeout(() => renderQueues(), ms); }
+  function fire(side, t) {
+    if (coolUntil > t && !chainReady) { feed('쿨타임 중 · W로 연드하거나 기다리세요'); return; }
+    const chained = chainReady && t < chainUntil; chainReady = false; chainUntil = 0;
+    const name = SLOTS[q[side]]; q[side] = (q[side] + 1) % SLOTS.length; taps++;
+    coolUntil = t + 800; coolBar('run');
+    feed(`${sideKo(side)} ${name}${chained ? ' (연드)' : ''}${name === '기본' ? ' · 넘김' : ''}`);
+    renderQueues(); checkTask(side, name, chained);
+  }
+  function backdownTurn(t) { backdownUntil = 0; coolUntil = t + 800; coolBar('run'); feed('백다운터닝 돌파 (큐 안 넘김)'); }
+
+  const POOL = [
+    { kind:'single', side:'left', d:'백롤2' }, { kind:'single', side:'right', d:'백롤2' },
+    { kind:'single', side:'left', d:'스핀무브' }, { kind:'single', side:'right', d:'스핀무브' },
+    { kind:'chain', side:'left' }, { kind:'chain', side:'right' },
+    { kind:'load', left:'백롤2', right:'백롤2' }, { kind:'load', left:'백롤2', right:'스핀무브' }, { kind:'load', left:'스핀무브', right:'백롤2' },
+  ];
+  function minTaps(tk) {
+    if (tk.kind === 'single') return dist(q[tk.side], SLOTS.indexOf(tk.d)) + 1;
+    if (tk.kind === 'chain') return dist(q[tk.side], 1) + 2;
+    return dist(q.left, SLOTS.indexOf(tk.left)) + dist(q.right, SLOTS.indexOf(tk.right));
+  }
+  function taskText(tk) {
+    if (tk.kind === 'single') return `${sideKo(tk.side)}에서 ${tk.d} 치기`;
+    if (tk.kind === 'chain') return `${sideKo(tk.side)} 백롤2 → W → 스핀무브 (연드)`;
+    return `장전만: 왼쪽 다음 ${tk.left} · 오른쪽 다음 ${tk.right}`;
+  }
+  function newTask() {
+    clearTimeout(taskTimer);
+    let tk, n = 0;
+    do { tk = Object.assign({}, POOL[Math.floor(Math.random() * POOL.length)]); n++; } while (minTaps(tk) === 0 && n < 20);
+    tk.min = minTaps(tk); task = tk; taskStart = now(); taps = 0; chainStage = 0;
+    $('taskT').textContent = taskText(tk); status(`최소 ${tk.min}타`, '');
+    $('taskH').textContent = tk.kind === 'load' ? '치지 않고 큐만 맞추면 성공' : tk.kind === 'chain' ? '백롤2 친 뒤 쿨타임 중 W, 바로 같은 쪽 + A' : '기본을 넘겨서 장전한 뒤 쳐요';
+    taskTimer = setTimeout(() => { if (task === tk) fail('8초 안에 못 끝냈어요'); }, 8000);
+  }
+  function checkTask(side, name, chained) {
+    if (!task) return; const tk = task;
+    if (tk.kind === 'single') { if (side === tk.side && name === tk.d) success(); return; }
+    if (tk.kind === 'chain') {
+      if (chainStage === 0) { if (side === tk.side && name === '백롤2') { chainStage = 1; status('지금 W → 같은 쪽 + A', ''); } return; }
+      if (side === tk.side && name === '스핀무브' && chained) { success(); return; }
+      if (side === tk.side && name === '스핀무브') { fail('W 없이 쳤어요 · 연드가 아니에요'); return; }
+      fail('순서가 끊겼어요'); return;
+    }
+    if (tk.kind === 'load' && SLOTS[q.left] === tk.left && SLOTS[q.right] === tk.right) success();
+  }
+  function endTask(ok, note, extra) {
+    clearTimeout(taskTimer);
+    rec.tries++; if (ok) { rec.ok++; rec.extra.push(extra); }
+    rec.log.unshift({ ok, note }); rec.log = rec.log.slice(0, 8);
+    save(); renderStats(); task = null;
+    if (hidden) reveal(1500);
+    if (drill) { clearTimeout(drillTimer); drillTimer = setTimeout(newTask, 1000); } else $('taskT').textContent = '자유 모드';
+  }
+  function success() {
+    const ms = Math.round(now() - taskStart), extra = taps - task.min;
+    const note = `${taskText(task)} · ${taps}타${extra ? ` (낭비 ${extra})` : ' (최소)'} · ${ms}ms`;
+    status('성공 · ' + note, 'ok'); endTask(true, note, extra);
+  }
+  function fail(why) { status('실패 · ' + why, 'bad'); endTask(false, taskText(task) + ' · ' + why, 0); }
+  function renderStats() {
+    $('sTry').textContent = rec.tries;
+    $('sRate').textContent = rec.tries ? Math.round(rec.ok / rec.tries * 100) + '%' : '-';
+    $('sExtra').textContent = rec.extra.length ? (rec.extra.reduce((a, b) => a + b, 0) / rec.extra.length).toFixed(1) : '-';
+    $('sPeek').textContent = rec.peeks;
+    $('log').innerHTML = rec.log.map(e => `<li class="${e.ok ? 'ok' : 'bad'}"><span class="t">${e.ok ? '성공' : '실패'}</span><span>${e.note}</span></li>`).join('') || '<li><span class="t" style="color:var(--mute)">아직 기록이 없어요</span></li>';
+  }
+  function trainKey(act, t) {
+    if (act === 'a') {
+      const dir = held.has('left') ? 'left' : held.has('right') ? 'right' : null;
+      if (dir) { fire(dir, t); return; }
+      if (backdownUntil > t) { backdownTurn(t); return; }
+      aDownAt = t;
+      setTimeout(() => { if (held.has('a') && aDownAt === t && !held.has('left') && !held.has('right')) { lifting = true; feed('리프팅 · 방향키로 핸드페인트'); } }, 300);
+      return;
+    }
+    if (act === 'left' || act === 'right') {
+      if (held.has('a')) { if (lifting) { feed('핸드페인트 ' + label(act)); return; } if (aDownAt !== null && t - aDownAt < 120) { fire(act, t); aDownAt = null; } }
+      return;
+    }
+    if (act === 'w') {
+      if (coolUntil > t) { chainReady = true; chainUntil = t + 700; coolUntil = 0; coolBar('chain'); feed('연드 준비 · 바로 다음 드리블'); setTimeout(() => { if (chainReady && now() >= chainUntil) { chainReady = false; coolBar(); feed('연드 타이밍이 지났어요'); } }, 720); }
+      else { backdownUntil = t + 400; feed('백다운 · 바로 A면 터닝 돌파'); }
+      return;
+    }
+    if (act === 'd') feed('슛');
+  }
+  $('drillBtn').onclick = () => {
+    drill = !drill; $('drillBtn').textContent = drill ? '랜덤 드릴 멈추기' : '랜덤 드릴 시작';
+    if (drill) newTask(); else { clearTimeout(taskTimer); clearTimeout(drillTimer); task = null; $('taskT').textContent = '자유 모드'; status('큐를 자유롭게 돌려보세요', ''); }
+    $('taskBox').focus();
+  };
+  $('hideBtn').onclick = () => { hidden = !hidden; $('hideBtn').textContent = hidden ? '미리보기 보이기' : '미리보기 가리기'; $('hideBtn').classList.toggle('on', hidden); renderQueues(); $('taskBox').focus(); };
+  $('peekBtn').onclick = () => { if (hidden) { rec.peeks++; save(); renderStats(); reveal(1200); } $('taskBox').focus(); };
+  $('resetQ').onclick = () => { q.left = 0; q.right = 0; renderQueues(); feed('큐를 처음으로 돌렸어요'); $('taskBox').focus(); };
+  $('resetS').onclick = () => { rec = { tries:0, ok:0, extra:[], peeks:0, log:[] }; save(); renderStats(); };
+
+  // ================= 공통 키 처리 =================
+  let waiting = null;
+  window.addEventListener('keydown', e => {
+    if (waiting) { e.preventDefault(); map[waiting] = e.code; waiting = null; save(); renderMap(); return; }
+    const act = codeToAction(e.code); if (!act) return;
+    e.preventDefault(); if (e.repeat) return;
+    held.add(act);
+    if (activeTab === 'follow') followKey(); else if (activeTab === 'train') trainKey(act, now());
+  });
+  window.addEventListener('keyup', e => {
+    const act = codeToAction(e.code); if (!act) return;
+    held.delete(act); if (act === 'a') { lifting = false; aDownAt = null; }
+  });
+  function renderMap() {
+    $('map').innerHTML = ACTIONS.map(([k, l]) => `<button class="btn${waiting === k ? ' wait' : ''}" data-k="${k}"><span>${l}</span><span>${waiting === k ? '키를 누르세요' : map[k].replace('Key', '').replace('Arrow', '')}</span></button>`).join('');
+    $('map').querySelectorAll('button').forEach(b => b.onclick = () => { waiting = b.dataset.k; renderMap(); });
+  }
+  document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+    activeTab = b.dataset.tab; stopPlay();
+    document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+    ['follow', 'train', 'ref'].forEach(t => { $('tab-' + t).hidden = t !== activeTab; });
+  });
+
+  renderFollow(); renderQueues(); renderStats(); renderMap();
+})();
+</script>
+</body>
+</html>
