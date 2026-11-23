@@ -8,7 +8,9 @@
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
 
-  var G = { screen: 'setup', n: 8, names: ['', '', '', '', '', '', '', ''], pace: 1, sound: true, race: null, speedMul: 1, resultShown: false };
+  var MAXN = Art.MAX_LANES || 22;
+  var G = { screen: 'setup', n: 8, names: [], pace: 1, sound: true, race: null, speedMul: 1, resultShown: false };
+  for (var gi = 0; gi < MAXN; gi++) G.names.push('');
   var acc = 0, doneAt = 0, lastTs = 0, rankRows = [], rankT = 0, cardCtx = [], heroPick = null, podium = null;
 
   // ───────────── 저장 (이 브라우저에만) ─────────────
@@ -16,8 +18,8 @@
     try {
       var j = JSON.parse(localStorage.getItem(KEY) || '{}');
       if (j && typeof j === 'object') {
-        if (j.n >= 2 && j.n <= 8) G.n = j.n | 0;
-        if (Array.isArray(j.names)) for (var i = 0; i < 8; i++) G.names[i] = typeof j.names[i] === 'string' ? j.names[i].slice(0, 10) : '';
+        if (j.n >= 2 && j.n <= MAXN) G.n = j.n | 0;
+        if (Array.isArray(j.names)) for (var i = 0; i < MAXN; i++) G.names[i] = typeof j.names[i] === 'string' ? j.names[i].slice(0, 10) : '';
         if (j.pace === 1 || j.pace === 1.6 || j.pace === 2.6) G.pace = j.pace;
         if (j.sound === false) G.sound = false;
       }
@@ -56,17 +58,9 @@
 
   // ───────────── 1. 이름 넣기 ─────────────
   function buildSetup() {
-    var cnt = $('count'), k;
-    cnt.textContent = '';
-    for (k = 2; k <= 8; k++) (function (k) {
-      var b = el('button', 'seg', String(k));
-      b.type = 'button'; b.setAttribute('role', 'radio'); b.setAttribute('aria-label', k + '마리');
-      b.addEventListener('click', function () { G.n = k; applyCount(); saveState(); Sfx.play('click'); });
-      cnt.appendChild(b);
-    })(k);
     var box = $('names');
     box.textContent = '';
-    for (var i = 0; i < 8; i++) (function (i) {
+    for (var i = 0; i < MAXN; i++) (function (i) {
       var row = el('label', 'name-row');
       row.appendChild(chip(i));
       var inp = el('input');
@@ -81,16 +75,39 @@
         var all = box.querySelectorAll('input'), nx = all[i + 1];
         if (nx && i + 1 < G.n) nx.focus(); else $('btn-draw').focus();
       });
+      // 이름 여러 개를 한꺼번에 붙여 넣기 (줄바꿈 · 쉼표 · 탭으로 구분)
+      inp.addEventListener('paste', function (ev) {
+        var txt = (ev.clipboardData || window.clipboardData).getData('text') || '';
+        var parts = txt.split(/[\n\r,\t;]+/).map(function (x) { return x.trim(); }).filter(function (x) { return x; });
+        if (parts.length < 2) return;
+        ev.preventDefault();
+        for (var k = 0; k < parts.length && i + k < MAXN; k++) G.names[i + k] = parts[k].slice(0, 10);
+        G.n = Math.max(G.n, Math.min(MAXN, i + parts.length));
+        syncInputs(); applyCount(); saveState(); Sfx.play('item');
+      });
       row.appendChild(inp);
       box.appendChild(row);
     })(i);
     $('sel-pace').value = String(G.pace);
+    var rng = $('rng-count');
+    rng.max = String(MAXN);
+    rng.addEventListener('input', function () { setCount(parseInt(rng.value, 10)); });
+    $('btn-minus').addEventListener('click', function () { setCount(G.n - 1); Sfx.play('click'); });
+    $('btn-plus').addEventListener('click', function () { setCount(G.n + 1); Sfx.play('click'); });
     applyCount();
   }
+  function setCount(v) {
+    if (!(v >= 2)) v = 2;
+    if (v > MAXN) v = MAXN;
+    G.n = v; applyCount(); saveState();
+  }
   function applyCount() {
-    var segs = $('count').children, rows = $('names').children, i;
-    for (i = 0; i < segs.length; i++) segs[i].setAttribute('aria-checked', (i + 2) === G.n ? 'true' : 'false');
-    for (i = 0; i < rows.length; i++) rows[i].hidden = i >= G.n;
+    var rows = $('names').children;
+    for (var i = 0; i < rows.length; i++) rows[i].hidden = i >= G.n;
+    $('count-num').textContent = String(G.n);
+    $('rng-count').value = String(G.n);
+    $('btn-minus').disabled = G.n <= 2;
+    $('btn-plus').disabled = G.n >= MAXN;
   }
   function syncInputs() {
     var inputs = $('names').querySelectorAll('input');
@@ -143,6 +160,7 @@
   function buildLineup() {
     var race = G.race, box = $('cards');
     box.textContent = ''; cardCtx = [];
+    box.classList.toggle('many', race.racers.length > 8);
     race.racers.forEach(function (r, i) {
       var card = el('div', 'acard');
       card.style.setProperty('--lane', LC[i]); card.style.setProperty('--lane-text', LT[i]);
@@ -173,10 +191,11 @@
       if (cc.cv.width !== Math.round(W * d)) { cc.cv.width = Math.round(W * d); cc.cv.height = Math.round(H * d); }
       var c = cc.cv.getContext('2d');
       c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H);
-      var s = W / 132 * 1.0, sz = Art.SPEC[cc.id].size;   // 카드 그림 칸 크기에 맞춤
+      var s = W / 132 * 1.0;
       c.beginPath(); c.ellipse(W / 2, H - 9, 34 * s, 7 * s, 0, 0, 6.3); c.fillStyle = 'rgba(74,50,38,.13)'; c.fill();
       var wave = ((t + k * 0.9) % 5) < 0.9;
-      Art.drawAnimal(c, cc.id, { x: W / 2 - 4 * s, y: H - 10, s: s * 1.02 / Math.max(1, sz * 0.96), t: t + k * 0.5, phase: 0, pose: wave ? 'cheer' : 'idle', num: cc.lane, color: LC[cc.i] });
+      var fit = Math.min(s * 1.02, (H - 16) / Art.heightOf(cc.id));   // 키 큰 동물도 칸 안에 들어오게
+      Art.drawAnimal(c, cc.id, { x: W / 2 - 4 * fit, y: H - 10, s: fit, t: t + k * 0.5, phase: 0, pose: wave ? 'cheer' : 'idle', num: cc.lane, color: LC[cc.i] });
     }
     var wc = $('wx-icon'), wctx = wc.getContext('2d');
     wctx.setTransform(1, 0, 0, 1, 0, 0); wctx.clearRect(0, 0, 96, 96);
@@ -267,8 +286,12 @@
   function updateRank() {
     var race = G.race, ol = $('rank');
     if (!race || !rankRows.length) return;
-    var rowH = parseFloat(getComputedStyle(ol).getPropertyValue('--row')) || 34;
-    ol.style.height = (race.racers.length * rowH) + 'px';
+    var cnt = race.racers.length;
+    var rowH = cnt <= 8 ? 34 : (cnt <= 12 ? 30 : (cnt <= 16 ? 26 : 23));
+    if (window.innerWidth <= 980 && cnt <= 8) rowH = 30;
+    ol.style.setProperty('--row', rowH + 'px');
+    ol.classList.toggle('dense', cnt > 12);
+    ol.style.height = (cnt * rowH) + 'px';
     var f = Render.getFollow();
     race.order.forEach(function (r, idx) {
       var row = rankRows[r.i];
@@ -363,7 +386,8 @@
       var r = podium.rs[sl.k];
       if (!r) return;
       Art.drawPodium(c, sl.x, base, pw, sl.h, sl.k + 1, sl.col);
-      var a = Art.drawAnimal(c, r.a.id, { x: sl.x - 4, y: base - sl.h, s: sc * (sl.k === 0 ? 0.98 : 0.84), t: t + sl.k * 0.3, phase: 0, pose: sl.k === 0 ? 'cheer' : (((t + sl.k) % 3) < 1.2 ? 'cheer' : 'idle'), num: r.lane, color: LC[r.i] });
+      var ps = Math.min(sc * (sl.k === 0 ? 0.98 : 0.84), (base - sl.h - 30) / Art.heightOf(r.a.id));
+      var a = Art.drawAnimal(c, r.a.id, { x: sl.x - 4, y: base - sl.h, s: ps, t: t + sl.k * 0.3, phase: 0, pose: sl.k === 0 ? 'cheer' : (((t + sl.k) % 3) < 1.2 ? 'cheer' : 'idle'), num: r.lane, color: LC[r.i] });
       // 이름표
       c.font = '15px ' + FONT;
       var tw = c.measureText(r.name).width + 20, tx = sl.x - tw / 2, ty = Math.max(4, a.top - 28);
@@ -417,6 +441,7 @@
       if (small) tx.appendChild(el('small', null, small));
       d.appendChild(tx); box.appendChild(d);
     }
+    $('g-animals-title').textContent = '동물 ' + S.ANIMALS.length + '종과 스킬';
     var a = $('g-animals');
     S.ANIMALS.forEach(function (an) { item(a, iconURL('face', an.id, 46), an.name, an.skill.name, an.skill.desc, an.passive); });
     var it = $('g-items');
@@ -444,7 +469,7 @@
       syncInputs(); saveState(); Sfx.play('swap');
     });
     $('btn-clear').addEventListener('click', function () {
-      for (var i = 0; i < 8; i++) G.names[i] = '';
+      for (var i = 0; i < MAXN; i++) G.names[i] = '';
       syncInputs(); saveState(); Sfx.play('click');
       var first = $('names').querySelector('input'); if (first) first.focus();
     });

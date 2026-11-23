@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>동물 달리기 500m</title>
-<meta name="description" content="레인마다 이름을 적고 출발! 랜덤으로 뽑힌 동물들이 스킬과 아이템을 쓰며 500m를 달리는 경주 게임. 누가 이길지는 매번 달라져요.">
+<meta name="description" content="레인마다 이름을 적고 출발! 최대 22명, 랜덤으로 뽑힌 동물들이 스킬과 아이템을 쓰며 500m를 달리는 경주 게임. 누가 이길지는 매번 달라져요.">
 <meta name="theme-color" content="#5fb9ff">
 <meta property="og:title" content="동물 달리기 500m">
 <meta property="og:description" content="이름을 달고 뛰는 동물 달리기 경주. 누가 1등 할까요?">
@@ -29,10 +29,14 @@
     <div class="hero"><canvas id="hero" aria-hidden="true"></canvas></div>
     <div class="panel setup">
       <h2>누가 뛰나요?</h2>
-      <p class="hint">레인마다 이름을 적으면 동물이 그 이름표를 달고 뜁니다. 어떤 동물이 어느 레인에 나올지는 매판 랜덤이에요.</p>
+      <p class="hint">레인마다 이름을 적으면 동물이 그 이름표를 달고 뜁니다. 어떤 동물이 어느 레인에 나올지는 매판 랜덤이에요. 이름 여러 개를 줄바꿈이나 쉼표로 나눠 한꺼번에 붙여 넣어도 됩니다.</p>
       <div class="field">
-        <span class="field-label" id="count-label">참가 수</span>
-        <div class="count" id="count" role="radiogroup" aria-labelledby="count-label"></div>
+        <label class="field-label" for="rng-count">참가 수</label>
+        <button type="button" id="btn-minus" class="btn small step" aria-label="한 명 줄이기">−</button>
+        <output id="count-num" class="count-num" for="rng-count">8</output>
+        <button type="button" id="btn-plus" class="btn small step" aria-label="한 명 늘리기">+</button>
+        <input type="range" id="rng-count" min="2" max="22" step="1" value="8" aria-label="참가 수 (2명에서 22명)">
+        <span class="count-hint">2 ~ 22명</span>
       </div>
       <div class="names" id="names"></div>
       <div class="tools">
@@ -113,7 +117,7 @@
       <h2 id="guide-title">도감</h2>
       <button type="button" id="btn-guide-close" class="btn small">닫기</button>
     </div>
-    <h3>동물 14종과 스킬</h3>
+    <h3 id="g-animals-title">동물과 스킬</h3>
     <div class="g-grid" id="g-animals"></div>
     <h3>아이템 12종</h3>
     <div class="g-grid slim" id="g-items"></div>

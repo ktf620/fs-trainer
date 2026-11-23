@@ -58,66 +58,214 @@
   }
   function josa(s, withB, withoutB) { return s + (hasBatchim(s) ? withB : withoutB); }
 
-  // ───────────── 동물 14종 ─────────────
+  // ───────────── 동물 50종 ─────────────
   // speed : 기본 속력(m/s) · accel : 가속 · light : 가벼움(바람 영향) · agi : 날렵함(장애물 피하기)
   // wx : 날씨별 속력 보정 (storm 은 rain 값을 같이 씀)
+  // tr : 특성 — water 물웅덩이 좋아함 · ice 빙판 좋아함 · nofog 안개에 안 헤맴 · heavy 장애물을 밟고 지나감 · hurdler 허들 잘 넘음
+  //      glutton 간식 효과 오래감 · steady 날씨 영향 덜 받음 · quick 출발 빠름 · nimble 금방 일어남 · mud 진흙 좋아함 · reach 결승선에서 목이 먼저 닿음
   var ANIMALS = [
-    { id: 'rabbit', name: '토끼', speed: 7.621, accel: 8.0, light: 1.0, agi: 1.0,
+    { id: 'rabbit', name: '토끼', speed: 7.610, accel: 8.0, light: 1.0, agi: 1.0, tr: { hurdler: 1 },
       wx: { rain: -0.02, snow: 0.03, heat: -0.01 },
       skill: { name: '깡충깡충 대시', desc: '세 번 크게 뛰어 단숨에 앞으로 나가요.' },
       passive: '너무 앞서면 방심해서 낮잠을 자기도 해요.' },
-    { id: 'turtle', name: '거북이', speed: 7.400, accel: 5.5, light: 0.2, agi: 0.2,
+    { id: 'turtle', name: '거북이', speed: 7.371, accel: 5.5, light: 0.2, agi: 0.2, tr: { steady: 1, water: 1 },
       wx: { rain: 0.04, heat: 0.02, snow: -0.02 },
       skill: { name: '등껍질 스핀', desc: '껍질 속에 쏙 들어가 팽이처럼 돌진! 방해도 튕겨 내요.' },
       passive: '꾸준해서 날씨가 나빠도 덜 느려져요.' },
-    { id: 'cheetah', name: '치타', speed: 7.705, accel: 10.0, light: 0.6, agi: 0.8,
+    { id: 'cheetah', name: '치타', speed: 7.686, accel: 10.0, light: 0.6, agi: 0.8, tr: { quick: 1 },
       wx: { heat: 0.03, snow: -0.05, rain: -0.03 },
       skill: { name: '번개 스프린트', desc: '누구보다 빠른 폭발 질주. 하지만 곧 지쳐서 헥헥거려요.' },
       passive: '출발이 가장 빨라요.' },
-    { id: 'fox', name: '여우', speed: 7.577, accel: 7.0, light: 0.7, agi: 0.8,
+    { id: 'fox', name: '여우', speed: 7.535, accel: 7.0, light: 0.7, agi: 0.8, tr: { nofog: 1 },
       wx: { fog: 0.04, snow: 0.01 },
       skill: { name: '슬쩍하기', desc: '다른 동물이 들고 있는 아이템을 몰래 가져와요.' },
       passive: '안개 속에서도 길을 잘 찾아요.' },
-    { id: 'bear', name: '곰', speed: 7.636, accel: 6.0, light: 0.1, agi: 0.4,
+    { id: 'bear', name: '곰', speed: 7.671, accel: 6.0, light: 0.1, agi: 0.4, tr: {},
       wx: { snow: 0.04, heat: -0.05 },
       skill: { name: '쩌렁쩌렁 포효', desc: '가까이 있는 동물들이 깜짝 놀라 느려져요.' },
       passive: '무거워서 바람에 끄떡없어요.' },
-    { id: 'penguin', name: '펭귄', speed: 7.326, accel: 6.0, light: 0.6, agi: 0.5,
+    { id: 'penguin', name: '펭귄', speed: 7.289, accel: 6.0, light: 0.6, agi: 0.5, tr: { water: 1, ice: 1 },
       wx: { snow: 0.07, rain: 0.03, heat: -0.08 },
       skill: { name: '배치기 슬라이딩', desc: '배로 쭈욱 미끄러져요. 비나 눈이 오면 훨씬 멀리 가요.' },
       passive: '미끄러운 길이 오히려 좋아요.' },
-    { id: 'elephant', name: '코끼리', speed: 7.768, accel: 5.5, light: 0.0, agi: 0.2,
+    { id: 'elephant', name: '코끼리', speed: 7.773, accel: 5.5, light: 0.0, agi: 0.2, tr: { heavy: 1 },
       wx: { rain: 0.02, snow: -0.02 },
       skill: { name: '코 물대포', desc: '선두에게 물을 뿜어 느리게 만들어요.' },
       passive: '두더지와 허들쯤은 그냥 밟고 지나가요.' },
-    { id: 'kangaroo', name: '캥거루', speed: 7.609, accel: 7.0, light: 0.6, agi: 1.0,
+    { id: 'kangaroo', name: '캥거루', speed: 7.581, accel: 7.0, light: 0.6, agi: 1.0, tr: { hurdler: 1 },
       wx: { heat: 0.03, snow: -0.04 },
       skill: { name: '슈퍼 점프', desc: '하늘 높이 뛰어 장애물과 방해를 훌쩍 넘어가요.' },
       passive: '허들은 식은 죽 먹기예요.' },
-    { id: 'skunk', name: '스컹크', speed: 7.716, accel: 6.5, light: 0.8, agi: 0.6,
+    { id: 'skunk', name: '스컹크', speed: 7.720, accel: 6.5, light: 0.8, agi: 0.6, tr: {},
       wx: { fog: 0.02 },
       skill: { name: '뿡뿡 구름', desc: '뒤따라오는 동물들이 코를 막느라 느려져요.' },
       passive: '뒤에 아무도 없으면 방귀 로켓으로 추격해요.' },
-    { id: 'pig', name: '돼지', speed: 7.515, accel: 6.0, light: 0.2, agi: 0.4,
+    { id: 'pig', name: '돼지', speed: 7.479, accel: 6.0, light: 0.2, agi: 0.4, tr: { glutton: 1, mud: 1 },
       wx: { rain: 0.02, heat: -0.02 },
       skill: { name: '꿀꿀 돌진', desc: '데굴데굴 굴러 돌진! 스쳐 지나간 동물은 휘청거려요.' },
       passive: '간식을 먹으면 힘이 더 오래가요.' },
-    { id: 'dog', name: '강아지', speed: 7.793, accel: 7.5, light: 0.6, agi: 0.7,
+    { id: 'dog', name: '강아지', speed: 7.770, accel: 7.5, light: 0.6, agi: 0.7, tr: {},
       wx: { heat: -0.02, snow: 0.02 },
       skill: { name: '같이 가자!', desc: '바로 뒤에 있는 친구와 함께 빨라져요.' },
       passive: '의리파라서 친구를 도와줘요.' },
-    { id: 'cat', name: '고양이', speed: 7.664, accel: 8.0, light: 0.9, agi: 0.9,
+    { id: 'cat', name: '고양이', speed: 7.580, accel: 8.0, light: 0.9, agi: 0.9, tr: { nimble: 1, nofog: 1 },
       wx: { rain: -0.05, fog: 0.04 },
       skill: { name: '냥냥 펀치', desc: '앞선 동물을 톡! 쳐서 빙글 돌게 만들어요.' },
       passive: '넘어져도 금방 일어나요.' },
-    { id: 'panda', name: '판다', speed: 7.384, accel: 5.8, light: 0.2, agi: 0.4,
+    { id: 'panda', name: '판다', speed: 7.367, accel: 5.8, light: 0.2, agi: 0.4, tr: { glutton: 1 },
       wx: { snow: 0.03, heat: -0.05 },
       skill: { name: '대나무 간식 타임', desc: '잠깐 멈춰 대나무를 먹고 엄청난 힘으로 질주해요.' },
       passive: '간식을 먹으면 힘이 더 오래가요.' },
-    { id: 'duck', name: '오리', speed: 7.407, accel: 6.5, light: 1.0, agi: 0.6,
+    { id: 'duck', name: '오리', speed: 7.413, accel: 6.5, light: 1.0, agi: 0.6, tr: { water: 1 },
       wx: { rain: 0.08, snow: -0.02, heat: -0.01 },
       skill: { name: '파닥파닥 활공', desc: '낮게 날아서 웅덩이도 장애물도 휙 지나가요.' },
       passive: '비 오는 날을 제일 좋아해요.' }
+    ,
+    // ── 여기부터 새로 들어온 36종 ──
+    { id: 'lion', name: '사자', speed: 7.632, accel: 7.0, light: 0.3, agi: 0.6, tr: {},
+      wx: { heat: 0.02, rain: -0.02 },
+      skill: { name: '왕의 포효', desc: '앞서가는 동물들이 움찔하며 느려져요.' },
+      passive: '더운 날씨에 조금 더 힘이 나요.' },
+    { id: 'tiger', name: '호랑이', speed: 7.657, accel: 8.0, light: 0.4, agi: 0.8, tr: {},
+      wx: { fog: 0.02, heat: -0.01 },
+      skill: { name: '호랑이 덮치기', desc: '앞선 동물에게 훌쩍 뛰어올라 넘어뜨려요.' },
+      passive: '안개 낀 날 살금살금 잘 달려요.' },
+    { id: 'zebra', name: '얼룩말', speed: 7.603, accel: 7.5, light: 0.5, agi: 0.7, tr: {},
+      wx: { heat: 0.02, snow: -0.03 },
+      skill: { name: '줄무늬 착시', desc: '주변 동물들이 눈이 어질어질, 길을 헷갈려요.' },
+      passive: '착시를 쓰는 동안에는 방해가 안 통해요.' },
+    { id: 'giraffe', name: '기린', speed: 7.568, accel: 5.5, light: 0.5, agi: 0.4, tr: { reach: 1 },
+      wx: { heat: 0.02, snow: -0.03 },
+      skill: { name: '높은 나무 열매', desc: '아무도 못 닿는 높은 곳에서 좋은 아이템을 따 와요.' },
+      passive: '결승선에서는 긴 목이 먼저 닿아요.' },
+    { id: 'horse', name: '말', speed: 7.604, accel: 8.0, light: 0.4, agi: 0.8, tr: { hurdler: 1 },
+      wx: {},
+      skill: { name: '전력 질주', desc: '오랫동안 꾸준히 빠르게 달려요.' },
+      passive: '허들도 가볍게 넘어요.' },
+    { id: 'cow', name: '젖소', speed: 7.614, accel: 5.5, light: 0.1, agi: 0.3, tr: {},
+      wx: { rain: 0.01, heat: -0.02 },
+      skill: { name: '신선한 우유', desc: '느려지는 효과를 싹 씻어 내고 방패까지 둘러요.' },
+      passive: '묵직해서 바람에 잘 안 밀려요.' },
+    { id: 'sheep', name: '양', speed: 7.743, accel: 6.0, light: 0.7, agi: 0.5, tr: {},
+      wx: { snow: 0.03, heat: -0.05, rain: -0.02 },
+      skill: { name: '양 세기 자장가', desc: '가까운 동물 둘이 양을 세다 스르르 잠들어요.' },
+      passive: '털옷 덕분에 눈 오는 날이 좋아요.' },
+    { id: 'goat', name: '염소', speed: 7.611, accel: 7.0, light: 0.5, agi: 0.8, tr: { hurdler: 1 },
+      wx: { snow: 0.02 },
+      skill: { name: '오기 박치기', desc: '뒤처져 있을수록 더 세게 치고 나가요.' },
+      passive: '허들쯤은 훌쩍 넘어요.' },
+    { id: 'deer', name: '사슴', speed: 7.650, accel: 8.0, light: 0.6, agi: 0.9, tr: { hurdler: 1 },
+      wx: { fog: 0.02, snow: 0.02 },
+      skill: { name: '뿔 반사', desc: '다음 방해를 뿔로 받아쳐, 건 동물에게 되돌려줘요.' },
+      passive: '허들도 사뿐히 넘어요.' },
+    { id: 'koala', name: '코알라', speed: 7.534, accel: 6.0, light: 0.6, agi: 0.4, tr: { glutton: 1 },
+      wx: { rain: -0.02 },
+      skill: { name: '어부바', desc: '앞 동물 등에 찰싹 매달려 편하게 가요.' },
+      passive: '간식을 먹으면 힘이 더 오래가요.' },
+    { id: 'sloth', name: '나무늘보', speed: 7.669, accel: 5.0, light: 0.5, agi: 0.2, tr: { steady: 1 },
+      wx: { rain: 0.02 },
+      skill: { name: '느긋함 전염', desc: '다른 동물 모두가 덩달아 느릿느릿해져요.' },
+      passive: '느긋해서 날씨가 나빠도 덜 느려져요.' },
+    { id: 'monkey', name: '원숭이', speed: 7.697, accel: 8.0, light: 0.7, agi: 0.9, tr: {},
+      wx: { heat: 0.01, snow: -0.04 },
+      skill: { name: '바나나 세례', desc: '앞선 동물 둘의 레인에 바나나 껍질을 던져요.' },
+      passive: '날렵해서 두더지를 잘 피해요.' },
+    { id: 'gorilla', name: '고릴라', speed: 7.596, accel: 6.0, light: 0.05, agi: 0.4, tr: { heavy: 1 },
+      wx: { snow: -0.02, fog: 0.01 },
+      skill: { name: '쿵쿵 가슴 두드리기', desc: '땅이 울려서 가까운 동물들이 넘어져요.' },
+      passive: '두더지와 허들쯤은 그냥 밟고 지나가요.' },
+    { id: 'hippo', name: '하마', speed: 7.601, accel: 5.5, light: 0.0, agi: 0.2, tr: { heavy: 1, water: 1, mud: 1 },
+      wx: { rain: 0.05, heat: -0.03 },
+      skill: { name: '진흙탕 만들기', desc: '지나간 자리에 진흙탕을 남겨 뒤따르는 동물이 미끄러져요.' },
+      passive: '비 오는 날 물웅덩이가 반가워요.' },
+    { id: 'rhino', name: '코뿔소', speed: 7.521, accel: 5.0, light: 0.0, agi: 0.3, tr: { heavy: 1 },
+      wx: { heat: 0.02 },
+      skill: { name: '멈출 수 없는 돌진', desc: '달릴수록 점점 빨라지고 어떤 방해도 안 통해요.' },
+      passive: '두더지와 허들쯤은 그냥 밟고 지나가요.' },
+    { id: 'croc', name: '악어', speed: 7.628, accel: 6.0, light: 0.2, agi: 0.4, tr: { water: 1 },
+      wx: { rain: 0.06, snow: -0.06, heat: 0.02 },
+      skill: { name: '악어의 눈물', desc: '가짜 눈물에 속은 앞 동물이 달래 주려고 멈춰 서요.' },
+      passive: '비 오는 날 물웅덩이가 반가워요.' },
+    { id: 'frog', name: '개구리', speed: 7.571, accel: 8.0, light: 0.9, agi: 0.9, tr: { water: 1, hurdler: 1 },
+      wx: { rain: 0.08, heat: -0.05, snow: -0.05 },
+      skill: { name: '혓바닥 낼름', desc: '긴 혀로 앞 동물을 붙잡고 단숨에 따라붙어요.' },
+      passive: '비 오는 날을 제일 좋아해요.' },
+    { id: 'squirrel', name: '다람쥐', speed: 7.655, accel: 9.0, light: 0.9, agi: 1.0, tr: {},
+      wx: { snow: 0.01 },
+      skill: { name: '도토리 세례', desc: '앞선 동물들에게 도토리를 던져 주춤하게 해요.' },
+      passive: '아주 날렵해서 두더지를 잘 피해요.' },
+    { id: 'hamster', name: '햄스터', speed: 7.615, accel: 8.0, light: 0.9, agi: 0.6, tr: { glutton: 1 },
+      wx: { heat: -0.02 },
+      skill: { name: '쳇바퀴 질주', desc: '쳇바퀴를 타고 데굴데굴, 바닥 방해도 그냥 지나가요.' },
+      passive: '간식을 먹으면 힘이 더 오래가요.' },
+    { id: 'mouse', name: '생쥐', speed: 7.574, accel: 9.0, light: 1.0, agi: 0.9, tr: { nofog: 1 },
+      wx: { fog: 0.02 },
+      skill: { name: '쥐구멍 지름길', desc: '땅속으로 쏙 들어가 저 앞에서 튀어나와요.' },
+      passive: '안개 속에서도 길을 잘 찾아요.' },
+    { id: 'hedgehog', name: '고슴도치', speed: 7.526, accel: 6.5, light: 0.7, agi: 0.5, tr: {},
+      wx: {},
+      skill: { name: '가시 세우기', desc: '가시를 세운 동안 방해한 동물이 오히려 따끔!' },
+      passive: '가시를 세운 동안에는 방해가 안 통해요.' },
+    { id: 'raccoon', name: '너구리', speed: 7.597, accel: 7.0, light: 0.7, agi: 0.8, tr: { nofog: 1 },
+      wx: { fog: 0.03 },
+      skill: { name: '기운 가로채기', desc: '빨라진 동물의 기운을 슬쩍 가져와요.' },
+      passive: '안개 속에서도 길을 잘 찾아요.' },
+    { id: 'otter', name: '수달', speed: 7.406, accel: 7.0, light: 0.6, agi: 0.7, tr: { water: 1 },
+      wx: { rain: 0.07 },
+      skill: { name: '물살 타기', desc: '방패를 두르고 미끄러지듯 달려요. 젖은 길이면 더 빨라요.' },
+      passive: '비 오는 날 물웅덩이가 반가워요.' },
+    { id: 'beaver', name: '비버', speed: 7.647, accel: 6.0, light: 0.4, agi: 0.4, tr: { water: 1 },
+      wx: { rain: 0.05 },
+      skill: { name: '통나무 댐', desc: '지나간 자리에 통나무를 쌓아 뒤따르는 동물을 막아요.' },
+      passive: '비 오는 날 물웅덩이가 반가워요.' },
+    { id: 'wolf', name: '늑대', speed: 7.618, accel: 7.5, light: 0.5, agi: 0.8, tr: {},
+      wx: { snow: 0.05, heat: -0.03 },
+      skill: { name: '무리 사냥 하울링', desc: '주변에 동물이 많을수록 더 빨라져요.' },
+      passive: '눈 오는 날에 강해요.' },
+    { id: 'polar', name: '북극곰', speed: 7.597, accel: 6.0, light: 0.1, agi: 0.4, tr: { ice: 1 },
+      wx: { snow: 0.09, heat: -0.09 },
+      skill: { name: '얼음 숨결', desc: '앞 동물을 꽁꽁 얼려요. 눈 오는 날엔 더 오래 얼어요.' },
+      passive: '빙판길이 오히려 좋아요.' },
+    { id: 'seal', name: '물개', speed: 7.498, accel: 6.0, light: 0.5, agi: 0.5, tr: { water: 1, ice: 1 },
+      wx: { rain: 0.05, snow: 0.05, heat: -0.06 },
+      skill: { name: '비치볼 튕기기', desc: '공이 맨 앞 두 동물의 머리 위로 통통 튀어요.' },
+      passive: '젖은 길도 언 길도 좋아해요.' },
+    { id: 'owl', name: '부엉이', speed: 7.642, accel: 6.5, light: 0.9, agi: 0.6, tr: { nofog: 1 },
+      wx: { fog: 0.05 },
+      skill: { name: '밤이 왔다', desc: '갑자기 캄캄해져서 다른 동물들이 길을 더듬어요.' },
+      passive: '안개 속에서도 길을 잘 찾아요.' },
+    { id: 'chicken', name: '닭', speed: 7.723, accel: 7.5, light: 0.9, agi: 0.7, tr: {},
+      wx: { rain: -0.03 },
+      skill: { name: '달걀 폭탄', desc: '뒤따르는 동물 레인에 달걀을 낳아 미끄러지게 해요.' },
+      passive: '뒤에 아무도 없으면 파닥파닥 날갯짓으로 추격해요.' },
+    { id: 'parrot', name: '앵무새', speed: 7.623, accel: 7.0, light: 1.0, agi: 0.7, tr: {},
+      wx: { heat: 0.03, snow: -0.05 },
+      skill: { name: '따라 하기', desc: '방금 다른 동물이 쓴 스킬을 그대로 따라 해요.' },
+      passive: '아직 아무도 스킬을 안 썼으면 그냥 날아가요.' },
+    { id: 'flamingo', name: '플라밍고', speed: 7.509, accel: 6.5, light: 0.8, agi: 0.7, tr: { water: 1 },
+      wx: { rain: 0.03, heat: 0.02, snow: -0.05 },
+      skill: { name: '성큼성큼', desc: '긴 다리로 성큼성큼, 바닥 방해를 넘어가요.' },
+      passive: '비 오는 날 물웅덩이가 반가워요.' },
+    { id: 'ostrich', name: '타조', speed: 7.636, accel: 8.5, light: 0.5, agi: 0.7, tr: {},
+      wx: { heat: 0.04, snow: -0.05 },
+      skill: { name: '뒷발차기', desc: '바로 뒤 동물을 뻥 차서 뒤로 밀어내요.' },
+      passive: '더운 날씨에 강해요.' },
+    { id: 'camel', name: '낙타', speed: 7.538, accel: 5.5, light: 0.2, agi: 0.3, tr: {},
+      wx: { heat: 0.07, snow: -0.04, rain: -0.02 },
+      skill: { name: '혹 에너지', desc: '한동안 느려지는 방해가 안 통하고 꾸준히 빨라요.' },
+      passive: '폭염에도 끄떡없어요.' },
+    { id: 'alpaca', name: '알파카', speed: 7.766, accel: 6.5, light: 0.6, agi: 0.5, tr: {},
+      wx: { snow: 0.03, heat: -0.03 },
+      skill: { name: '퉤! 침 뱉기', desc: '앞 동물 얼굴에 침을 뱉어 앞이 안 보이게 해요.' },
+      passive: '털옷 덕분에 눈 오는 날이 좋아요.' },
+    { id: 'bat', name: '박쥐', speed: 7.651, accel: 7.5, light: 1.0, agi: 0.8, tr: { nofog: 1 },
+      wx: { fog: 0.05, heat: -0.02 },
+      skill: { name: '초음파', desc: '깜짝 놀란 동물들이 들고 있던 아이템을 떨어뜨려요.' },
+      passive: '안개 속에서도 길을 잘 찾아요.' },
+    { id: 'redpanda', name: '레서판다', speed: 7.557, accel: 7.0, light: 0.7, agi: 0.7, tr: {},
+      wx: { snow: 0.03, heat: -0.03 },
+      skill: { name: '만세 위협', desc: '두 팔 번쩍! 너무 귀여워서 가까운 동물들이 멈춰 서요.' },
+      passive: '눈 오는 날에 조금 더 힘이 나요.' }
   ];
   var ANIMAL_BY_ID = {};
   ANIMALS.forEach(function (a) { ANIMAL_BY_ID[a.id] = a; });
@@ -165,7 +313,8 @@
       racers: [], objects: [], ev: [],
       weather: null, wxChangeAt: null,
       over: false, finished: 0, leadX: 0,
-      nextEvent: rng.range(7, 10.5), lastEvent: null, eventCount: 0,
+      nextEvent: rng.range(7, 10.5), lastEvent: null, eventCount: 0, lastSkill: null,
+      cdMul: n <= 8 ? 1 : 1 + (n - 8) * 0.03,          // 스킬 쉬는 시간 배율
       order: []
     };
 
@@ -188,20 +337,21 @@
         cond: 1 + clamp(rng.gauss() * 0.012, -0.03, 0.03),
         form: form, noise: 0, draft: false,
         tune: (opts.tune && opts.tune[a.id]) || 0,
-        startDelay: rng.range(0.02, 0.28) * (a.id === 'cheetah' ? 0.3 : 1),
+        startDelay: rng.range(0.02, 0.28) * (a.tr.quick ? 0.3 : 1),
         fx: [],
         item: null, itemT: 0, itemWait: 0,
-        skillT: rng.range(6, 13), skillWait: 0,
+        skillT: rng.range(6, 13) * (n <= 8 ? 1 : 1 + (n - 8) * 0.03), skillWait: 0,
         finished: false, finT: null, place: 0, rank: i + 1,
         napped: false, napMarks: [150, 250, 350], bumped: null,
         stats: { skills: 0, items: 0, gave: 0, took: 0, helps: 0, top: 0, leadTime: 0, blocked: 0 }
       });
     }
 
-    // 아이템 상자 : 5줄, 레인마다 65% 확률
+    // 아이템 상자 : 5줄, 레인마다 65% 확률 (참가가 많으면 조금씩 줄임)
+    var boxP = n <= 8 ? 0.65 : Math.max(0.38, 0.65 - (n - 8) * 0.02);
     [70, 160, 250, 340, 430].forEach(function (bx) {
       for (var li = 0; li < n; li++) {
-        if (rng.chance(0.65)) race.objects.push({ type: 'box', lane: li + 1, x: bx + rng.range(-6, 6), taken: false, id: race.objects.length });
+        if (rng.chance(boxP)) race.objects.push({ type: 'box', lane: li + 1, x: bx + rng.range(-6, 6), taken: false, id: race.objects.length });
       }
     });
 
@@ -236,17 +386,34 @@
     function applyNeg(src, tgt, spec) {
       if (tgt.finished) return 'none';
       if (spec.fogMiss && foggy() && rng.chance(0.35)) { pop(tgt, '빗나감!', 'good'); return 'miss'; }
-      if (hasFlag(tgt, 'imm')) { pop(tgt, '튕겨 냄!', 'good'); tgt.stats.blocked++; return 'blocked'; }
+      if (hasFlag(tgt, 'imm')) {
+        pop(tgt, '튕겨 냄!', 'good'); tgt.stats.blocked++;
+        // 가시를 세운 동물을 건드리면 오히려 따끔
+        if (hasFlag(tgt, 'thorns') && src && src !== tgt && !src.finished && !spec.noReflect) {
+          if (applyNeg(tgt, src, { kind: 'stun', fx: 'sting', t: 0.8, noReflect: true }) === 'hit') pop(src, '앗, 따가워!', 'bad');
+        }
+        return 'blocked';
+      }
+      if (spec.kind === 'slow' && hasFlag(tgt, 'noslow')) { pop(tgt, '끄떡없음!', 'good'); tgt.stats.blocked++; return 'blocked'; }
       if (spec.ground && (hasFlag(tgt, 'air') || hasFlag(tgt, 'gnd'))) { pop(tgt, '휙~ 피함', 'good'); tgt.stats.blocked++; return 'dodged'; }
       for (var j = 0; j < tgt.fx.length; j++) {
         if (tgt.fx[j].kind === 'shield') {
+          var sh = tgt.fx[j];
           tgt.fx.splice(j, 1);
-          pop(tgt, '방패로 막음!', 'good'); sfx('block'); tgt.stats.blocked++;
+          sfx('block'); tgt.stats.blocked++;
+          if (sh.reflect && src && src !== tgt && !src.finished && !spec.noReflect) {
+            // 뿔 반사 : 같은 방해를 건 동물에게 되돌린다
+            pop(tgt, '뿔로 받아침!', 'good');
+            var back = { kind: spec.kind, fx: spec.fx, t: spec.t, m: spec.m, noReflect: true };
+            if (applyNeg(tgt, src, back) === 'hit') pop(src, '되돌아왔다!', 'bad');
+            return 'reflect';
+          }
+          pop(tgt, '방패로 막음!', 'good');
           return 'shield';
         }
       }
       var dur = spec.t;
-      if (tgt.a.id === 'cat' && spec.kind === 'stun') dur *= 0.6;   // 고양이는 금방 일어남
+      if (tgt.a.tr.nimble && spec.kind === 'stun') dur *= 0.6;   // 금방 일어나는 동물
       addFx(tgt, { kind: spec.kind, fx: spec.fx, t: dur, m: spec.m === undefined ? 0 : spec.m });
       if (spec.kind === 'stun') {
         // 멈추면 공중·돌진 같은 동작은 끝난다
@@ -315,7 +482,7 @@
       var w = race.weather, a = r.a;
       var key = w.id === 'storm' ? 'rain' : w.id;
       var m = w.base + (a.wx[key] || 0);
-      if (a.id === 'turtle' && m < 0) m *= 0.5;          // 꾸준함
+      if (a.tr.steady && m < 0) m *= 0.5;                // 꾸준함
       var out = 1 + m;
       if (w.id === 'wind' && w.gust) out += w.gust * (0.25 + 0.95 * a.light);
       return out;
@@ -358,7 +525,7 @@
           w.timer = rng.range(2.6, 4.6);
           r = randomActive();
           if (r) {
-            if (r.a.id === 'duck' || r.a.id === 'penguin' || r.a.id === 'turtle') {
+            if (r.a.tr.water) {
               addFx(r, { kind: 'boost', fx: 'splash', t: 1.3, m: 1.15 });
               pop(r, '첨벙첨벙 신나요!', 'good');
             } else if (rng.chance(0.55)) {
@@ -385,7 +552,7 @@
           w.timer = rng.range(2.8, 4.8);
           r = randomActive();
           if (r) {
-            if (r.a.id === 'penguin') {
+            if (r.a.tr.ice) {
               addFx(r, { kind: 'boost', fx: 'splash', t: 1.3, m: 1.15 });
               pop(r, '눈길이 최고야!', 'good');
             } else if (rng.chance(0.55)) {
@@ -404,7 +571,7 @@
           break;
         case 'fog':
           w.timer = rng.range(4.5, 7);
-          r = randomActive(function (q) { return q.a.id !== 'fox' && q.a.id !== 'cat'; });
+          r = randomActive(function (q) { return !q.a.tr.nofog; });
           if (r && rng.chance(0.7)) {
             res = applyNeg(null, r, { kind: 'slow', fx: 'lost', t: 1.6, m: 0.74, minor: true });
             if (res === 'hit') pop(r, '어디가 앞이지?', 'bad');
@@ -436,7 +603,7 @@
       switch (id) {
         case 'bees':
           banner('bees', '벌떼 출현!', '쫓기는 동물은 전력 질주, 쏘이면 따끔');
-          list = rng.shuffle(act.slice()).slice(0, Math.min(2, act.length));
+          list = rng.shuffle(act.slice()).slice(0, Math.min(act.length, Math.max(2, Math.round(act.length / 5))));
           list.forEach(function (q) {
             if (rng.chance(0.6)) {
               addFx(q, { kind: 'boost', fx: 'bees', t: 3.0, m: 1.25 });
@@ -464,7 +631,7 @@
           k = Math.max(1, Math.ceil(act.length / 2));
           list = rng.shuffle(act.slice()).slice(0, k);
           list.forEach(function (q) {
-            var d = (q.a.id === 'pig' || q.a.id === 'panda') ? 3.3 : 2.2;
+            var d = q.a.tr.glutton ? 3.3 : 2.2;
             addFx(q, { kind: 'boost', fx: 'snack', t: d, m: 1.28 });
             pop(q, '냠냠! 힘이 난다', 'good');
           });
@@ -473,7 +640,7 @@
           break;
         case 'crowd':
           banner('crowd', '관중석의 응원!', '뒤처진 동물들에게 응원이 쏟아져요');
-          list = ordered.slice(-Math.min(2, Math.max(1, ordered.length - 1)));
+          list = ordered.slice(-Math.min(Math.max(2, Math.round(ordered.length / 5)), Math.max(1, ordered.length - 1)));
           list.forEach(function (q) {
             addFx(q, { kind: 'boost', fx: 'cheer', t: 3.0, m: 1.38 });
             pop(q, '힘내라 힘!', 'good');
@@ -563,7 +730,7 @@
       }
       switch (id) {
         case 'carrot':
-          addFx(r, { kind: 'boost', fx: 'carrot', t: (r.a.id === 'pig' || r.a.id === 'panda') ? 3.7 : 2.5, m: 1.35 });
+          addFx(r, { kind: 'boost', fx: 'carrot', t: r.a.tr.glutton ? 3.7 : 2.5, m: 1.35 });
           pop(r, '에너지 당근!', 'item'); sfx('boost');
           done(josa(r.name, '이', '가') + ' 에너지 당근을 먹고 힘을 냅니다.');
           break;
@@ -699,18 +866,38 @@
     }
 
     // ───────────── 스킬 ─────────────
-    function tryUseSkill(r, dt) {
-      var id = r.a.id, tgt, list, res, used = false;
+    function tryUseSkill(r, dt) { return castSkill(r, dt, r.a.id, false); }
+
+    // id : 쓸 스킬의 주인 동물 (앵무새가 따라 할 때는 다른 동물의 id) · copied : 따라 하는 중인지
+    function castSkill(r, dt, id, copied) {
+      var tgt, list, res, used = false, names;
       function fin(msg) {
         used = true;
         r.stats.skills++;
-        r.skillT = rng.range(16, 23);
+        r.skillT = rng.range(16, 23) * race.cdMul;
         r.skillWait = 0;
-        race.ev.push({ k: 'skill', r: r.i, name: r.a.skill.name });
-        pop(r, r.a.skill.name + '!', 'skill');
+        var nm = ANIMAL_BY_ID[id].skill.name;
+        race.ev.push({ k: 'skill', r: r.i, name: nm, id: id });
+        pop(r, (copied ? '따라 하기 → ' : '') + nm + '!', 'skill');
         sfx('skill');
-        log('skill', r, msg);
+        log('skill', r, (copied ? '(따라 하기) ' : '') + msg);
+        if (!copied) race.lastSkill = id;
       }
+      function selfBoost(fx, m, t, extra) {
+        var e = { kind: 'boost', fx: fx, t: t, m: m };
+        if (extra) for (var k in extra) e[k] = extra[k];
+        addFx(r, e);
+      }
+      function othersWithin(d) { return race.racers.filter(function (o) { return o !== r && !o.finished && Math.abs(o.x - r.x) <= d; }); }
+      function aheadList(d) {
+        return race.racers.filter(function (o) { return o !== r && !o.finished && o.x > r.x && o.x - r.x <= d; })
+          .sort(function (p, q) { return p.x - q.x; });
+      }
+      function behindList(d) {
+        return race.racers.filter(function (o) { return o !== r && !o.finished && o.x <= r.x && r.x - o.x <= d; })
+          .sort(function (p, q) { return q.x - p.x; });
+      }
+      function nameList(arr) { return arr.map(function (o) { return o.name; }).join(', '); }
       switch (id) {
         case 'rabbit':
           if (boosted(r)) break;
@@ -864,6 +1051,384 @@
           addFx(r, { kind: 'boost', fx: 'fly', t: 3.0, m: 1.4, air: true });
           fin(josa(r.name, '이', '가') + ' 파닥파닥 활공! 트랙 위를 낮게 날아갑니다.');
           break;
+
+        // ───── 새 동물 36종 ─────
+        case 'lion':
+          list = aheadList(45);
+          if (!list.length) { r.skillWait += dt; if (r.skillWait < 4) break; }
+          names = [];
+          list.forEach(function (o) {
+            res = applyNeg(r, o, { kind: 'slow', fx: 'scared', t: 2.2, m: 0.7 });
+            if (res === 'hit') { names.push(o); pop(o, '움찔!', 'bad'); }
+          });
+          selfBoost('roar', 1.38, 2.4);
+          race.ev.push({ k: 'roar', r: r.i });
+          fin(josa(r.name, '이', '가') + ' 왕의 포효! ' + (names.length ? '앞서가던 ' + nameList(names) + ' 움찔합니다.' : '기세 좋게 속도를 올려요.'));
+          break;
+        case 'tiger':
+          tgt = aheadOf(r, 25);
+          if (tgt) {
+            selfBoost('jump', 2.1, 0.85, { air: true });
+            res = applyNeg(r, tgt, { kind: 'stun', fx: 'trip', t: 0.9, fogMiss: true });
+            if (res === 'hit') pop(tgt, '으악, 호랑이다!', 'bad');
+            fin(josa(r.name, '이', '가') + ' 훌쩍 덮칩니다! ' + (res === 'hit' ? josa(tgt.name, '이', '가') + ' 놀라 넘어졌어요.' : josa(tgt.name, '은', '는') + ' 용케 피했어요.'));
+          } else {
+            r.skillWait += dt;
+            if (r.skillWait > 3 && !boosted(r)) { selfBoost('dash', 1.45, 2.0); fin(josa(r.name, '이', '가') + ' 덮칠 상대가 없어 힘차게 내달립니다.'); }
+          }
+          break;
+        case 'zebra':
+          list = othersWithin(22);
+          if (!list.length) { r.skillWait += dt; if (r.skillWait < 5) break; }
+          names = [];
+          list.forEach(function (o) {
+            res = applyNeg(r, o, { kind: 'slow', fx: 'lost', t: 2.2, m: 0.72 });
+            if (res === 'hit') { names.push(o); pop(o, '어질어질~', 'bad'); }
+          });
+          selfBoost('illusion', 1.15, 2.5, { imm: true });
+          fin(josa(r.name, '이', '가') + ' 줄무늬 착시! ' + (names.length ? nameList(names) + ' 눈이 빙글빙글 돌아요.' : '줄무늬 사이로 방해를 흘려보내요.'));
+          break;
+        case 'giraffe':
+          if (r.item) break;
+          r.item = rng.pick(['rocket', 'mush', 'shield', 'mega', 'carrot']);
+          r.itemT = rng.range(0.4, 1.0); r.itemWait = 0;
+          selfBoost('dash', 1.2, 2.0);
+          fin(josa(r.name, '이', '가') + ' 높은 나무에서 ' + josa(ITEMS[r.item].name, '을', '를') + ' 따 왔어요.');
+          break;
+        case 'horse':
+          if (boosted(r)) break;
+          selfBoost('gallop', 1.28, 4.5);
+          fin(josa(r.name, '이', '가') + ' 전력 질주! 다그닥다그닥 오래도록 달립니다.');
+          break;
+        case 'cow':
+          if (!hasKind(r, 'slow')) { r.skillWait += dt; if (r.skillWait < 6) break; }
+          r.fx = r.fx.filter(function (e) { return e.kind !== 'slow'; });
+          addFx(r, { kind: 'shield', fx: 'shield', t: 9 });
+          selfBoost('milk', 1.35, 2.5);
+          fin(josa(r.name, '이', '가') + ' 신선한 우유 한 잔! 나쁜 기운을 씻고 방패를 둘렀어요.');
+          break;
+        case 'sheep':
+          list = othersWithin(25).sort(function (p, q) { return Math.abs(p.x - r.x) - Math.abs(q.x - r.x); }).slice(0, 2);
+          if (!list.length) {
+            r.skillWait += dt;
+            if (r.skillWait > 5 && !boosted(r)) { selfBoost('dash', 1.3, 2.0); fin(josa(r.name, '은', '는') + ' 재울 동물이 없어 폴짝폴짝 속도를 올려요.'); }
+            break;
+          }
+          names = [];
+          list.forEach(function (o) {
+            res = applyNeg(r, o, { kind: 'stun', fx: 'sleep', t: 1.3 });
+            if (res === 'hit') { names.push(o); pop(o, '양 한 마리… 쿨', 'bad'); }
+          });
+          selfBoost('dash', 1.35, 2.2);
+          sfx('lullaby');
+          fin(josa(r.name, '이', '가') + ' 양 세기 자장가를 불러요. ' + (names.length ? nameList(names) + ' 스르르 잠들었어요.' : '하지만 아무도 잠들지 않았어요.'));
+          break;
+        case 'goat':
+          if (boosted(r)) break;
+          selfBoost('ram', Math.min(1.8, 1.3 + 0.07 * (rankAmongActive(r) - 1)), 2.4, { gnd: true });
+          fin(josa(r.name, '이', '가') + ' 오기 박치기! ' + (rankAmongActive(r) > 3 ? '뒤처진 만큼 더 세게 치고 나갑니다!' : '머리를 숙이고 돌진합니다.'));
+          break;
+        case 'deer':
+          if (hasFlag(r, 'reflect')) break;
+          addFx(r, { kind: 'shield', fx: 'reflect', t: 6, reflect: true });
+          selfBoost('dash', 1.2, 2.0);
+          fin(josa(r.name, '이', '가') + ' 뿔을 번쩍 세웠어요. 다음 방해는 그대로 되돌아갑니다.');
+          break;
+        case 'koala':
+          tgt = aheadOf(r, 18);
+          if (tgt) {
+            addFx(r, { kind: 'buff', fx: 'cling', t: 2.5, m: 1, target: tgt, cancelOnStun: true,
+              onEnd: function () { if (!r.finished && !stunned(r)) { addFx(r, { kind: 'boost', fx: 'hop', t: 2.0, m: 1.75 }); pop(r, '폴짝! 고마워~', 'good'); } } });
+            applyNeg(r, tgt, { kind: 'slow', fx: 'carry', t: 2.5, m: 0.94, minor: true });
+            pop(tgt, '어? 등이 무겁네', 'bad');
+            fin(josa(r.name, '이', '가') + ' ' + tgt.name + ' 등에 찰싹! 어부바로 편하게 갑니다.');
+          } else {
+            r.skillWait += dt;
+            if (r.skillWait > 3 && !boosted(r)) { selfBoost('snack', 1.3, 2.5); fin(josa(r.name, '은', '는') + ' 업힐 등이 없어 유칼립투스 잎을 먹고 힘을 내요.'); }
+          }
+          break;
+        case 'sloth':
+          list = race.racers.filter(function (o) { return o !== r && !o.finished; });
+          names = [];
+          list.forEach(function (o) {
+            res = applyNeg(r, o, { kind: 'slow', fx: 'slowmo', t: 2.4, m: 0.55 });
+            if (res === 'hit') { names.push(o); pop(o, '느~릿~느~릿', 'bad'); }
+          });
+          selfBoost('dash', 1.15, 2.4);
+          race.ev.push({ k: 'slowmo', r: r.i });
+          fin(josa(r.name, '이', '가') + ' 느긋함을 퍼뜨립니다~ ' + (names.length ? '모두가 느릿느릿해졌어요.' : '하지만 아무도 넘어가지 않았어요.'));
+          break;
+        case 'monkey':
+          list = aheadList(50).slice(0, 2);
+          if (!list.length) { tgt = behindOf(r, 30); if (tgt) list = [tgt]; }
+          if (!list.length) {
+            r.skillWait += dt;
+            if (r.skillWait > 5 && !boosted(r)) { selfBoost('carrot', 1.3, 2.0); fin(josa(r.name, '은', '는') + ' 던질 곳이 없어 바나나를 냠냠 먹었어요.'); }
+            break;
+          }
+          list.forEach(function (o) {
+            race.objects.push({ type: 'banana', lane: o.lane, x: o.x + 4 + o.v * 0.55, src: r, done: false, id: race.objects.length });
+            proj('banana', r, o);
+          });
+          selfBoost('dash', 1.3, 2.0);
+          sfx('throw');
+          fin(josa(r.name, '이', '가') + ' 바나나 세례! ' + nameList(list) + ' 앞에 껍질이 떨어졌어요.');
+          break;
+        case 'gorilla':
+          list = othersWithin(26);
+          if (!list.length) { r.skillWait += dt; if (r.skillWait < 6) break; }
+          names = [];
+          list.forEach(function (o) {
+            res = applyNeg(r, o, { kind: 'stun', fx: 'trip', t: 0.75, ground: true });
+            if (res === 'hit') { names.push(o); pop(o, '쿵! 꽈당', 'bad'); }
+          });
+          selfBoost('roar', 1.3, 2.0);
+          race.ev.push({ k: 'roar', r: r.i });
+          sfx('crash');
+          fin(josa(r.name, '이', '가') + ' 쿵쿵 가슴을 두드립니다! ' + (names.length ? nameList(names) + ' 중심을 잃고 넘어졌어요.' : '땅이 울려요.'));
+          break;
+        case 'hippo':
+          if (!behindOf(r, 40)) {
+            r.skillWait += dt;
+            if (r.skillWait > 4 && !boosted(r)) { selfBoost('dash', 1.3, 2.0); fin(josa(r.name, '은', '는') + ' 뒤에 아무도 없어 그냥 힘차게 달려요.'); }
+            break;
+          }
+          tgt = { type: 'slick', mud: true, src: r, x: r.x - 2, x1: r.x + 10, done: {}, id: race.objects.length };
+          tgt.done[r.i] = true;
+          race.objects.push(tgt);
+          selfBoost('dash', 1.35, 2.4);
+          fin(josa(r.name, '이', '가') + ' 철퍼덕! 지나간 자리에 진흙탕을 만들었어요.');
+          break;
+        case 'rhino':
+          if (boosted(r)) break;
+          selfBoost('charge', 1.15, 2.8, { imm: true, ramp: [1.15, 1.6] });
+          fin(josa(r.name, '이', '가') + ' 돌진을 시작합니다! 점점 빨라져요. 아무도 못 막아요!');
+          break;
+        case 'croc':
+          tgt = aheadOf(r, 30);
+          if (tgt) {
+            res = applyNeg(r, tgt, { kind: 'stun', fx: 'pity', t: 1.2 });
+            if (res === 'hit') pop(tgt, '어머, 왜 울어?', 'bad');
+            selfBoost('dash', 1.35, 2.0);
+            race.ev.push({ k: 'tears', r: r.i });
+            fin(josa(r.name, '이', '가') + ' 악어의 눈물을 뚝뚝… ' + (res === 'hit' ? josa(tgt.name, '이', '가') + ' 달래 주려고 멈춰 섰어요.' : josa(tgt.name, '은', '는') + ' 속지 않았어요.'));
+          } else {
+            r.skillWait += dt;
+            if (r.skillWait > 3 && !boosted(r)) { selfBoost('dash', 1.4, 2.0); fin(josa(r.name, '이', '가') + ' 속일 상대가 없어 꼬리를 흔들며 속도를 올려요.'); }
+          }
+          break;
+        case 'frog':
+          tgt = aheadOf(r, 22);
+          if (tgt && tgt.x - r.x > 2.5) {
+            res = applyNeg(r, tgt, { kind: 'slow', fx: 'pulled', t: 1.2, m: 0.8, minor: true });
+            race.ev.push({ k: 'tongue', a: r.i, b: tgt.i });
+            if (res === 'hit') {
+              r.x = tgt.x - 1.0; r.prevX = r.x; r.hop = race.t;
+              fin(josa(r.name, '이', '가') + ' 혓바닥 낼름! ' + tgt.name + ' 바로 뒤까지 단숨에 따라붙었어요.');
+            } else fin(josa(r.name, '이', '가') + ' 혀를 뻗었지만 ' + josa(tgt.name, '이', '가') + ' 미끄러져 빠져나갔어요.');
+          } else {
+            r.skillWait += dt;
+            if (r.skillWait > 3 && !boosted(r)) { selfBoost('jump', 1.9, 1.0, { air: true }); fin(josa(r.name, '이', '가') + ' 폴짝! 크게 뛰어오릅니다.'); }
+          }
+          break;
+        case 'squirrel':
+          list = aheadList(50).slice(0, 3);
+          if (!list.length) list = behindList(30).slice(0, 2);
+          if (!list.length) {
+            r.skillWait += dt;
+            if (r.skillWait > 4 && !boosted(r)) { selfBoost('dash', 1.4, 1.8); fin(josa(r.name, '은', '는') + ' 도토리를 아껴 두고 쪼르르 달려요.'); }
+            break;
+          }
+          names = [];
+          list.forEach(function (o) {
+            proj('acorn', r, o);
+            res = applyNeg(r, o, { kind: 'slow', fx: 'bonk', t: 1.8, m: 0.72, fogMiss: true });
+            if (res === 'hit') { names.push(o); pop(o, '딱! 아야', 'bad'); }
+          });
+          selfBoost('dash', 1.35, 2.2);
+          sfx('throw');
+          fin(josa(r.name, '이', '가') + ' 도토리 세례! ' + (names.length ? nameList(names) + ' 머리를 감싸 쥐어요.' : '하지만 모두 빗나갔어요.'));
+          break;
+        case 'hamster':
+          if (boosted(r)) break;
+          selfBoost('wheel', 1.5, 2.2, { gnd: true });
+          fin(josa(r.name, '이', '가') + ' 쳇바퀴 질주! 데굴데굴 굴러갑니다.');
+          break;
+        case 'mouse':
+          if (boosted(r)) break;
+          selfBoost('burrow', 2.0, 1.0, { imm: true, air: true });
+          fin(josa(r.name, '이', '가') + ' 쥐구멍으로 쏙! 땅속 지름길로 갑니다.');
+          break;
+        case 'hedgehog':
+          if (hasFlag(r, 'thorns')) break;
+          selfBoost('thorns', 1.22, 4.0, { imm: true, thorns: true });
+          fin(josa(r.name, '이', '가') + ' 가시를 바짝 세웠어요. 건드리면 따끔합니다!');
+          break;
+        case 'raccoon':
+          list = race.racers.filter(function (o) {
+            if (o === r || o.finished || hasFlag(o, 'imm')) return false;
+            for (var k = 0; k < o.fx.length; k++) if (o.fx[k].kind === 'boost') return true;
+            return false;
+          }).sort(function (p, q) { return Math.abs(p.x - r.x) - Math.abs(q.x - r.x); });
+          if (list.length) {
+            tgt = list[0];
+            tgt.fx = tgt.fx.filter(function (e) { return e.kind !== 'boost'; });
+            r.stats.gave++; tgt.stats.took++;
+            pop(tgt, '어? 힘이 빠지네', 'bad');
+            proj('steal', tgt, r);
+            selfBoost('stolen', 1.5, 2.3);
+            fin(josa(r.name, '이', '가') + ' ' + tgt.name + '의 기운을 슬쩍 가로챘어요!');
+          } else {
+            r.skillWait += dt;
+            if (r.skillWait > 4 && !boosted(r)) {
+              r.fx = r.fx.filter(function (e) { return e.kind !== 'slow'; });
+              selfBoost('dash', 1.25, 2.0);
+              fin(josa(r.name, '은', '는') + ' 가로챌 기운이 없어 세수를 하고 정신을 차려요.');
+            }
+          }
+          break;
+        case 'otter':
+          if (boosted(r)) break;
+          addFx(r, { kind: 'shield', fx: 'shield', t: 5 });
+          selfBoost('surf', wet() ? 1.45 : 1.3, 2.2, wet() ? { gnd: true } : null);
+          fin(josa(r.name, '이', '가') + ' 물살 타기!' + (wet() ? ' 젖은 트랙 위를 미끄러지듯 달립니다.' : ' 방패를 두르고 매끄럽게 달려요.'));
+          break;
+        case 'beaver':
+          if (!behindOf(r, 45)) {
+            r.skillWait += dt;
+            if (r.skillWait > 4 && !boosted(r)) { selfBoost('dash', 1.3, 2.0); fin(josa(r.name, '은', '는') + ' 뒤에 아무도 없어 꼬리로 땅을 치며 달려요.'); }
+            break;
+          }
+          tgt = { type: 'hurdles', log: true, x: r.x - 1.5, done: {}, broken: {}, id: race.objects.length };
+          tgt.done[r.i] = true;
+          race.objects.push(tgt);
+          selfBoost('dash', 1.35, 2.4);
+          sfx('pop');
+          fin(josa(r.name, '이', '가') + ' 뚝딱뚝딱 통나무 댐을 쌓았어요. 뒤따르는 동물은 넘어가야 해요!');
+          break;
+        case 'wolf':
+          if (boosted(r)) break;
+          list = othersWithin(20);
+          selfBoost('howl', Math.min(1.6, 1.18 + 0.07 * list.length), 2.4);
+          race.ev.push({ k: 'howl', r: r.i });
+          fin(josa(r.name, '이', '가') + ' 아우우~ 하울링! ' + (list.length >= 3 ? '주변에 동물이 많아 아주 빨라졌어요!' : '기운을 내 달립니다.'));
+          break;
+        case 'polar':
+          tgt = aheadOf(r, 28);
+          if (tgt) {
+            proj('frost', r, tgt);
+            res = applyNeg(r, tgt, { kind: 'stun', fx: 'ice', t: race.weather.id === 'snow' ? 1.5 : 1.1, fogMiss: true });
+            if (res === 'hit') pop(tgt, '꽁꽁!', 'bad');
+            selfBoost('dash', 1.3, 2.0);
+            fin(josa(r.name, '이', '가') + ' 얼음 숨결을 후~ ' + (res === 'hit' ? josa(tgt.name, '이', '가') + ' 꽁꽁 얼었어요.' : josa(tgt.name, '은', '는') + (res === 'miss' ? ' 살짝 비켜났어요.' : ' 막아 냈어요.')));
+          } else {
+            r.skillWait += dt;
+            if (r.skillWait > 3 && !boosted(r)) { selfBoost('dash', 1.4, 2.0); fin(josa(r.name, '은', '는') + ' 얼릴 상대가 없어 성큼성큼 속도를 올려요.'); }
+          }
+          break;
+        case 'seal':
+          list = sortedActive().filter(function (o) { return o !== r; }).slice(0, 2);
+          if (!list.length) break;
+          race.ev.push({ k: 'ball', from: r.i, to: list.map(function (o) { return o.i; }) });
+          names = [];
+          list.forEach(function (o, k) {
+            res = applyNeg(r, o, { kind: 'stun', fx: 'bonk2', t: k === 0 ? 0.7 : 0.5 });
+            if (res === 'hit') { names.push(o); pop(o, '통! 아얏', 'bad'); }
+          });
+          selfBoost('dash', 1.2, 2.0);
+          fin(josa(r.name, '이', '가') + ' 비치볼을 통통! ' + (names.length ? nameList(names) + ' 머리에 맞았어요.' : '하지만 모두 피했어요.'));
+          break;
+        case 'owl':
+          list = othersWithin(40).filter(function (o) { return !o.a.tr.nofog; });
+          names = [];
+          list.forEach(function (o) {
+            res = applyNeg(r, o, { kind: 'slow', fx: 'lost', t: 2.4, m: 0.76 });
+            if (res === 'hit') { names.push(o); pop(o, '캄캄해!', 'bad'); }
+          });
+          selfBoost('dash', 1.3, 2.4);
+          race.ev.push({ k: 'night', r: r.i });
+          fin(josa(r.name, '이', '가') + ' "밤이 왔다!" ' + (names.length ? '갑자기 캄캄해져 ' + nameList(names) + ' 길을 더듬어요.' : '어둠 속을 유유히 달려요.'));
+          break;
+        case 'chicken':
+          list = behindList(40).slice(0, 2);
+          if (list.length) {
+            list.forEach(function (o) {
+              race.objects.push({ type: 'banana', egg: true, lane: o.lane, x: o.x + 5 + o.v * 0.5, src: r, done: false, id: race.objects.length });
+              proj('egg', r, o);
+            });
+            selfBoost('dash', 1.35, 2.2);
+            fin(josa(r.name, '이', '가') + ' 꼬꼬댁! ' + nameList(list) + ' 앞에 달걀을 낳았어요.');
+          } else {
+            r.skillWait += dt;
+            if (r.skillWait > 2.5 && !boosted(r)) { selfBoost('fly', 1.5, 2.0, { air: true }); fin(josa(r.name, '이', '가') + ' 파닥파닥 날갯짓으로 추격합니다!'); }
+          }
+          break;
+        case 'parrot':
+          if (race.lastSkill) return castSkill(r, dt, race.lastSkill, true);
+          r.skillWait += dt;
+          if (r.skillWait > 3 && !boosted(r)) { selfBoost('fly', 1.4, 2.2, { air: true }); fin(josa(r.name, '은', '는') + ' 따라 할 스킬이 없어 그냥 훨훨 날아가요.'); }
+          break;
+        case 'flamingo':
+          if (boosted(r)) break;
+          selfBoost('stride', 1.42, 3.0, { gnd: true });
+          fin(josa(r.name, '이', '가') + ' 긴 다리로 성큼성큼! 바닥 방해쯤은 넘어갑니다.');
+          break;
+        case 'ostrich':
+          tgt = behindOf(r, 10);
+          if (tgt) {
+            res = applyNeg(r, tgt, { kind: 'stun', fx: 'trip', t: 0.6 });
+            if (res === 'hit') { tgt.x = Math.max(0, tgt.x - 6); tgt.prevX = tgt.x; pop(tgt, '뻥! 으아아', 'bad'); }
+            race.ev.push({ k: 'kick', a: r.i, b: tgt.i });
+            selfBoost('dash', 1.4, 2.0);
+            sfx('trip');
+            fin(josa(r.name, '이', '가') + ' 뒷발차기 뻥! ' + (res === 'hit' ? josa(tgt.name, '이', '가') + ' 뒤로 데굴데굴 밀려났어요.' : josa(tgt.name, '은', '는') + ' 막아 냈어요.'));
+          } else {
+            r.skillWait += dt;
+            if (r.skillWait > 2.5 && !boosted(r)) { selfBoost('sprint', 1.55, 2.0); fin(josa(r.name, '은', '는') + ' 찰 상대가 없어 긴 다리로 내달립니다.'); }
+          }
+          break;
+        case 'camel':
+          if (hasFlag(r, 'noslow')) break;
+          r.fx = r.fx.filter(function (e) { return e.kind !== 'slow'; });
+          selfBoost('steady', 1.2, 6.0, { noslow: true });
+          fin(josa(r.name, '이', '가') + ' 혹에 모아 둔 에너지를 꺼냈어요. 한동안 느려지지 않아요.');
+          break;
+        case 'alpaca':
+          tgt = aheadOf(r, 30) || behindOf(r, 20);
+          if (!tgt) {
+            r.skillWait += dt;
+            if (r.skillWait > 4 && !boosted(r)) { selfBoost('dash', 1.3, 2.0); fin(josa(r.name, '은', '는') + ' 침 뱉을 상대가 없어 폴짝폴짝 달려요.'); }
+            break;
+          }
+          proj('spit', r, tgt);
+          res = applyNeg(r, tgt, { kind: 'slow', fx: 'pie', t: 2.3, m: 0.58, fogMiss: true });
+          if (res === 'hit') pop(tgt, '으악, 침이다!', 'bad');
+          selfBoost('dash', 1.35, 2.2);
+          fin(josa(r.name, '이', '가') + ' 퉤! ' + (res === 'hit' ? tgt.name + ' 얼굴에 명중했어요.' : josa(tgt.name, '은', '는') + (res === 'miss' ? ' 고개를 숙여 피했어요.' : ' 막아 냈어요.')));
+          break;
+        case 'bat':
+          list = race.racers.filter(function (o) { return o !== r && !o.finished && o.item && !hasFlag(o, 'imm'); });
+          if (!list.length) { r.skillWait += dt; if (r.skillWait < 4) break; }
+          list.forEach(function (o) {
+            o.item = null; r.stats.gave++; o.stats.took++;
+            pop(o, '앗, 아이템이!', 'bad');
+          });
+          selfBoost('dash', 1.4, 2.2);
+          race.ev.push({ k: 'sonar', r: r.i });
+          fin(josa(r.name, '이', '가') + ' 초음파를 삐이익! ' + (list.length ? nameList(list) + ' 놀라서 아이템을 떨어뜨렸어요.' : '소리를 타고 속도를 올려요.'));
+          break;
+        case 'redpanda':
+          list = othersWithin(18);
+          if (!list.length) { r.skillWait += dt; if (r.skillWait < 5) break; }
+          names = [];
+          list.forEach(function (o) {
+            res = applyNeg(r, o, { kind: 'stun', fx: 'charm', t: 0.9 });
+            if (res === 'hit') { names.push(o); pop(o, '귀, 귀여워…!', 'bad'); }
+          });
+          selfBoost('dash', 1.3, 2.2);
+          race.ev.push({ k: 'charm', r: r.i });
+          fin(josa(r.name, '이', '가') + ' 두 팔 번쩍 만세 위협! ' + (names.length ? nameList(names) + ' 귀여워서 그만 멈춰 섰어요.' : '아무도 없지만 귀여워요.'));
+          break;
       }
       return used;
     }
@@ -884,14 +1449,14 @@
             if (o.lane === r.lane && !o.done && r.prevX < o.x && r.x >= o.x) {
               o.done = true;
               res = applyNeg(o.src, r, { kind: 'stun', fx: 'spin', t: 1.3, ground: true });
-              if (res === 'hit') { o.gone = true; pop(r, '미끄덩~!', 'bad'); sfx('slip'); log('hit', r, josa(r.name, '이', '가') + ' 바나나 껍질을 밟고 빙그르르!'); }
+              if (res === 'hit') { o.gone = true; pop(r, '미끄덩~!', 'bad'); sfx('slip'); log('hit', r, josa(r.name, '이', '가') + (o.egg ? ' 달걀을 밟고 빙그르르!' : ' 바나나 껍질을 밟고 빙그르르!')); }
               else if (res === 'shield' || res === 'blocked') o.gone = true;
             }
             break;
           case 'mole':
             if (o.lane === r.lane && !o.done && r.prevX < o.x && r.x >= o.x) {
               o.done = true;
-              if (r.a.id === 'elephant') { o.squash = race.t; pop(r, '쿵! 밟고 지나감', 'good'); log('event', r, josa(r.name, '은', '는') + ' 두더지를 못 보고 그냥 밟고 지나갔어요.'); break; }
+              if (r.a.tr.heavy) { o.squash = race.t; pop(r, '쿵! 밟고 지나감', 'good'); log('event', r, josa(r.name, '은', '는') + ' 두더지를 못 보고 그냥 밟고 지나갔어요.'); break; }
               if (rng.chance(r.a.agi * 0.55)) { pop(r, '폴짝! 피함', 'good'); break; }
               res = applyNeg(null, r, { kind: 'stun', fx: 'trip', t: 1.1, ground: true });
               if (res === 'hit') { pop(r, '꽈당!', 'bad'); sfx('trip'); log('hit', r, josa(r.name, '이', '가') + ' 두더지에 걸려 넘어졌어요!'); }
@@ -901,26 +1466,26 @@
             if (!o.done[r.i] && r.prevX < o.x && r.x >= o.x) {
               o.done[r.i] = true;
               if (hasFlag(r, 'air')) { pop(r, '훨훨 넘어감', 'good'); break; }
-              if (r.a.id === 'elephant' || hasFlag(r, 'imm') || hasFlag(r, 'gnd')) { o.broken[r.lane] = race.t; pop(r, '와장창!', 'good'); sfx('crash'); break; }
-              var p = (r.a.id === 'kangaroo' || r.a.id === 'rabbit') ? 1 : 0.42 + 0.5 * r.a.agi;
+              if (r.a.tr.heavy || hasFlag(r, 'imm') || hasFlag(r, 'gnd')) { o.broken[r.lane] = race.t; pop(r, '와장창!', 'good'); sfx('crash'); break; }
+              var p = r.a.tr.hurdler ? 1 : 0.42 + 0.5 * r.a.agi;
               if (rng.chance(p)) { r.hop = race.t; pop(r, '폴짝!', 'good'); sfx('hop'); break; }
               o.broken[r.lane] = race.t;
               res = applyNeg(null, r, { kind: 'stun', fx: 'trip', t: 1.0, ground: true });
-              if (res === 'hit') { pop(r, '꽈당!', 'bad'); sfx('trip'); log('hit', r, josa(r.name, '이', '가') + ' 허들에 걸려 넘어졌어요!'); }
+              if (res === 'hit') { pop(r, '꽈당!', 'bad'); sfx('trip'); log('hit', r, josa(r.name, '이', '가') + (o.log ? ' 통나무에 걸려 넘어졌어요!' : ' 허들에 걸려 넘어졌어요!')); }
             }
             break;
           case 'slick':
             if (!o.done[r.i] && r.prevX < o.x && r.x >= o.x) {
               o.done[r.i] = true;
-              if (r.a.id === 'penguin') {
+              if (o.mud ? r.a.tr.mud : r.a.tr.ice) {
                 addFx(r, { kind: 'boost', fx: 'splash', t: 2.0, m: 1.4 });
-                pop(r, '야호! 미끄럼틀', 'good');
-                log('event', r, josa(r.name, '은', '는') + ' 미끌미끌 구간에서 오히려 신이 났어요!');
+                pop(r, o.mud ? '진흙이다, 야호!' : '야호! 미끄럼틀', 'good');
+                log('event', r, josa(r.name, '은', '는') + (o.mud ? ' 진흙탕에서 오히려 신이 났어요!' : ' 미끌미끌 구간에서 오히려 신이 났어요!'));
                 break;
               }
-              if (rng.chance(0.55)) {
-                res = applyNeg(null, r, { kind: 'stun', fx: 'spin', t: 1.1, ground: true });
-                if (res === 'hit') { pop(r, '미끄덩~!', 'bad'); sfx('slip'); log('hit', r, josa(r.name, '이', '가') + ' 미끌미끌 구간에서 빙그르르!'); }
+              if (rng.chance(o.mud ? 0.6 : 0.55)) {
+                res = applyNeg(o.src || null, r, { kind: 'stun', fx: 'spin', t: 1.1, ground: true });
+                if (res === 'hit') { pop(r, '미끄덩~!', 'bad'); sfx('slip'); log('hit', r, josa(r.name, '이', '가') + (o.mud ? ' 진흙탕에서 빙그르르!' : ' 미끌미끌 구간에서 빙그르르!')); }
               } else pop(r, '아슬아슬 통과', 'good');
             }
             break;
@@ -942,7 +1507,18 @@
     function move(r, dt) {
       var a = r.a;
       if (race.t < r.startDelay) { r.v = 0; return; }
-      var tau = 2.5, sig = a.id === 'turtle' ? 0.012 : 0.034;
+      // 어부바 : 매달린 동물과 같은 속도로 딱 붙어 간다
+      for (var q = 0; q < r.fx.length; q++) {
+        if (r.fx[q].fx !== 'cling') continue;
+        var tg = r.fx[q].target;
+        if (tg.finished || tg.x < r.x - 1.5) { r.fx[q].t = 0; break; }
+        var want = tg.x - 1.6;
+        if (want > r.x) r.x += Math.min(want - r.x, 17 * dt);
+        r.v = tg.v;
+        if (r.v > r.stats.top) r.stats.top = r.v;
+        return;
+      }
+      var tau = 2.5, sig = a.tr.steady ? 0.012 : 0.034;
       r.noise += (-r.noise / tau) * dt + sig * Math.sqrt(2 * dt / tau) * rng.gauss();
       var seg = Math.min(4, Math.floor(r.x / 100));
       var base = (a.speed + r.tune) * r.cond * r.form[seg] * (1 + r.noise);
@@ -954,7 +1530,10 @@
       for (var j = 0; j < r.fx.length; j++) {
         var e = r.fx[j];
         if (e.kind === 'stun') stun = true;
-        else if (e.kind === 'boost') b *= e.m;
+        else if (e.kind === 'boost') {
+          if (e.ramp) e.m = e.ramp[0] + (e.ramp[1] - e.ramp[0]) * (1 - Math.max(0, e.t) / e.dur);
+          b *= e.m;
+        }
         else if (e.kind === 'slow') s *= e.m;
       }
       if (b > 2.4) b = 2.4;
@@ -1025,9 +1604,10 @@
         rabbitNap(r);
         pigBumps(r);
         if (r.rank === 1) r.stats.leadTime += dt;
-        if (r.x >= LEN) {
+        var goal = LEN - (r.a.tr.reach ? 1.2 : 0);
+        if (r.x >= goal) {
           r.finished = true;
-          r.finT = race.t - (r.x - LEN) / Math.max(r.v, 0.5);
+          r.finT = race.t - (r.x - goal) / Math.max(r.v, 0.5);
           r.fx = []; r.item = null; r.bumped = null;
           (newly || (newly = [])).push(r);
         }

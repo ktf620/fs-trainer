@@ -85,7 +85,11 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
   background: #fff; cursor: pointer; box-shadow: 0 3px 0 var(--ink); touch-action: manipulation;
 }
 .seg[aria-checked="true"] { background: var(--sun); transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
-.names { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
+.step { width: 42px; padding-left: 0; padding-right: 0; font-size: 20px; }
+.count-num { font-family: var(--display); font-size: 26px; min-width: 40px; text-align: center; background: var(--sun); border: var(--line); border-radius: 12px; padding: 3px 8px; }
+#rng-count { flex: 1; min-width: 140px; max-width: 360px; accent-color: var(--red); height: 28px; }
+.count-hint { font-size: 13.5px; color: #9a8474; }
+.names { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: 10px 14px; }
 .name-row { display: flex; align-items: center; gap: 8px; }
 .name-row[hidden] { display: none; }
 .chip {
@@ -110,6 +114,18 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
 .wx b { font-family: var(--display); font-weight: 400; font-size: 19px; display: block; }
 .wx span { font-size: 13.5px; color: var(--ink-soft); }
 .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; max-width: 1320px; margin: 0 auto; }
+/* 참가가 많을 때 : 카드를 작게 */
+.cards.many { grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 10px; max-width: none; }
+.cards.many .acard { padding: 8px 8px 10px; border-radius: 16px; }
+.cards.many .acard::before { height: 40px; }
+.cards.many .acard-top { min-height: 24px; }
+.cards.many .acard-top .chip { width: 24px; height: 24px; font-size: 14px; }
+.cards.many .aname { font-size: 16px; }
+.cards.many .acard canvas { width: 88px; height: 88px; margin-top: 6px; }
+.cards.many .akind { font-size: 17px; }
+.cards.many .askill { font-size: 12px; margin-top: 3px; }
+.cards.many .askill b { font-size: 13px; padding: 1px 8px; }
+.cards.many .apassive { display: none; }
 .acard { background: var(--paper); border: var(--line); border-radius: 20px; box-shadow: var(--shadow); padding: 10px 12px 12px; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; overflow: hidden; }
 .acard::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 46px; background: var(--lane); border-bottom: var(--line); }
 .acard-top { position: relative; display: flex; align-items: center; gap: 8px; width: 100%; min-height: 28px; }
@@ -131,7 +147,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
 .stage-btns { position: absolute; right: 8px; bottom: 8px; display: flex; gap: 6px; }
 .side { display: flex; flex-direction: column; gap: 12px; min-height: 0; height: min(calc(100vh - 110px), 62vw, 880px); min-height: 380px; }
 .side-box { background: var(--paper); border: var(--line); border-radius: 18px; box-shadow: 0 4px 0 var(--ink); padding: 10px 10px 10px; }
-.side-box.grow { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.side-box.grow { flex: 1; min-height: 90px; display: flex; flex-direction: column; }
 .side h3 { font-size: 17px; margin: 0 2px 8px; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .side h3 small { font-family: var(--body); font-size: 11.5px; color: #9a8474; }
 .rank { list-style: none; margin: 0; padding: 0; position: relative; --row: 34px; }
@@ -144,6 +160,13 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
 }
 .rrow:hover { background: #fff6d8; }
 .rrow.follow { background: #fff0b0; box-shadow: 0 0 0 2px var(--sun); }
+.rank.dense .rrow { border-width: 1.5px; border-radius: 8px; gap: 4px; font-size: 12.5px; height: calc(var(--row) - 3px); }
+.rank.dense .rpos { font-size: 13px; width: 17px; }
+.rank.dense .chip { width: 18px; height: 18px; font-size: 11px; border-width: 1.5px; }
+.rank.dense img { width: 19px; height: 19px; }
+.rank.dense .rname { font-size: 13px; }
+.rank.dense .rname small { font-size: 10.5px; }
+.rank.dense .rstat { font-size: 11.5px; }
 .rrow.fin { background: #eefbe8; }
 .rrow.first { background: #fff0b0; }
 .rpos { font-family: var(--display); width: 20px; text-align: center; font-size: 16px; flex: none; }
@@ -199,13 +222,14 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
   .side-box.grow { max-height: 220px; }
   .rank { --row: 30px; }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cards.many { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 }
 @media (max-width: 560px) {
   #app { padding: 8px 10px 22px; }
   .panel { padding: 16px 14px 18px; border-radius: 18px; }
   .names { grid-template-columns: 1fr; }
-  .seg { width: 38px; height: 40px; }
-  .count { gap: 5px; }
+  .names { grid-template-columns: 1fr; }
+  .cards.many { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pace { margin-left: 0; width: 100%; }
   .btn.big { font-size: 21px; padding: 13px 22px; }
   .acard canvas { width: 108px; height: 108px; }
