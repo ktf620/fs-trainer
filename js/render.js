@@ -330,9 +330,18 @@
       var a = sxOf(o.x), b = sxOf(o.x1);
       if (b < -10 || a > W + 10) return;
       var g = c.createLinearGradient(a, 0, b, 0);
-      var sc0 = o.mud ? 'rgba(120,80,50,' : 'rgba(200,240,255,';
-      g.addColorStop(0, sc0 + '0)'); g.addColorStop(0.15, sc0 + (o.mud ? '.72)' : '.62)')); g.addColorStop(0.85, sc0 + (o.mud ? '.72)' : '.62)')); g.addColorStop(1, sc0 + '0)');
+      var sc0 = o.ink ? 'rgba(52,40,78,' : (o.mud ? 'rgba(120,80,50,' : 'rgba(200,240,255,');
+      var sa0 = o.ink ? '.7)' : (o.mud ? '.72)' : '.62)');
+      g.addColorStop(0, sc0 + '0)'); g.addColorStop(0.15, sc0 + sa0); g.addColorStop(0.85, sc0 + sa0); g.addColorStop(1, sc0 + '0)');
       c.fillStyle = g; c.fillRect(a, top, b - a, th);
+      if (o.ink) {     // 먹물 : 동글동글한 얼룩
+        c.fillStyle = 'rgba(30,22,48,.6)';
+        for (var q0 = 0; q0 < n * 2; q0++) {
+          ell(a + (b - a) * (0.12 + 0.76 * hash(q0 + o.id * 5)), top + (q0 + 0.5) * lh / 2, 5 + 7 * hash(q0 * 3 + o.id), 2.5 + 3 * hash(q0 * 7 + o.id));
+          c.fill();
+        }
+        return;
+      }
       c.strokeStyle = o.mud ? 'rgba(80,50,30,.55)' : 'rgba(255,255,255,.8)'; c.lineWidth = 2; c.lineCap = 'round';
       for (var q = 0; q < n * 2; q++) {
         var qx = a + (b - a) * (0.15 + 0.7 * hash(q + o.id * 3)), qy = top + (q + 0.5) * lh / 2;
@@ -467,7 +476,7 @@
       for (k = 0; k < r.fx.length; k++) if (r.fx[k].kind === 'boost') o.boost = true;
       if (has.scared) { o.eyes = 'wide'; o.mouth = 'o'; }
       else if (has.stink) { o.eyes = 'x'; o.mouth = 'wavy'; }
-      else if (has.pie) { o.eyes = 'closed'; o.mouth = 'o'; }
+      else if (has.pie || has.ink) { o.eyes = 'closed'; o.mouth = 'o'; }
       else if (has.tired || has.hot) { o.eyes = 'sad'; o.mouth = 'open'; }
       else if (has.wet || has.puddle) { o.eyes = 'closed'; o.mouth = 'wavy'; }
       else if (has.lost) { o.eyes = 'wide'; o.mouth = 'flat'; }
@@ -559,8 +568,8 @@
       for (k = 0; k < 2; k++) { var hxx = a.hx + (k ? 16 : -14) * s, hyy = a.top - 4 * s - Math.abs(Math.sin(clock * 6 + k)) * 6 * s, hs = 6 * s + 2;
         c.fillStyle = '#ff5a7a'; c.beginPath(); c.moveTo(hxx, hyy + hs * 0.6); c.bezierCurveTo(hxx - hs, hyy - hs * 0.2, hxx - hs * 0.5, hyy - hs, hxx, hyy - hs * 0.35); c.bezierCurveTo(hxx + hs * 0.5, hyy - hs, hxx + hs, hyy - hs * 0.2, hxx, hyy + hs * 0.6); c.fill(); c.lineWidth = 1.4; c.strokeStyle = OL; c.stroke(); }
     }
-    if (has.pie) {
-      c.fillStyle = '#fffaf0'; c.strokeStyle = '#e8d9c0'; c.lineWidth = 1.6;
+    if (has.pie || has.ink) {     // 얼굴에 묻은 크림 (먹물이면 검게)
+      c.fillStyle = has.pie ? '#fffaf0' : 'rgba(44,34,66,.88)'; c.strokeStyle = has.pie ? '#e8d9c0' : '#1c1530'; c.lineWidth = 1.6;
       c.beginPath();
       for (k = 0; k < 9; k++) { var an = k / 9 * TAU, rr = (15 + 5 * hash(k + i)) * s; if (k === 0) c.moveTo(a.hx + 6 * s + Math.cos(an) * rr, a.hy + Math.sin(an) * rr); else c.lineTo(a.hx + 6 * s + Math.cos(an) * rr, a.hy + Math.sin(an) * rr); }
       c.closePath(); c.fill(); c.stroke();

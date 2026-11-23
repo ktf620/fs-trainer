@@ -103,6 +103,121 @@
   };
   Art.SPEC = SPEC;
 
+  // ── 새 100종 (해양 · 파충류 · 새 · 공룡 · 포유류) : [바탕 동물, 바꿀 것] ──
+  var MORE = {
+    // 바다 동물
+    shark:     ['seal', { fur: '#7f93a8', fur2: '#e6edf4', belly: '#ffffff', fin: 1, whisker: false, nose: null, snout: { x: 17, y: 9, rx: 13, ry: 7.4, out: true, croc: true }, size: 1.05 }],
+    whale:     ['seal', { fur: '#5b8fd6', fur2: '#dcebff', belly: '#dcebff', snout: null, wideMouth: true, spout: 1, whisker: false, size: 1.15, brx: 18.5, bry: 19, feet: '#4a7bc0' }],
+    dolphin:   ['seal', { fur: '#8fb4d6', fur2: '#f1f7fc', belly: '#f1f7fc', fin: 1, whisker: false, nose: null, snout: { x: 19, y: 10, rx: 12, ry: 6, out: true }, feet: '#7a9fc2' }],
+    orca:      ['seal', { dark: true, sclera: true, fur: '#2f3440', fur2: '#ffffff', belly: '#ffffff', fin: 1, orca: 1, whisker: false, nose: null, size: 1.12, feet: '#2f3440' }],
+    octopus:   ['turtle', { fur: '#e58ab0', fur2: '#f7c3d8', shell: null, tail: 'tentacle', size: 0.95, hr: 1.08, leg: 8 }],
+    squid:     ['turtle', { fur: '#f7d9e3', fur2: '#ffffff', shell: null, tail: 'tentacle', fin: 1, size: 0.92, leg: 8 }],
+    crab:      ['frog', { fur: '#f0553a', fur2: '#ffd1c2', belly: '#ffd1c2', claw: 1, bigFeet: false, size: 0.88, brx: 17 }],
+    lobster:   ['frog', { fur: '#c9382e', fur2: '#f2a79a', belly: '#f2a79a', claw: 1, antenna: '#c9382e', tail: 'croc', bigFeet: false, size: 0.98 }],
+    shrimp:    ['frog', { fur: '#ff9d7a', fur2: '#ffe1d6', belly: '#ffe1d6', antenna: '#ff7a52', tail: 'monkey', bigFeet: false, eyesTop: false, wideMouth: false, size: 0.84 }],
+    jellyfish: ['turtle', { fur: '#d9a8f0', fur2: '#f1dcfb', shell: null, tail: 'tentacle', size: 0.86, hr: 1.1 }],
+    starfish:  ['turtle', { fur: '#ffa23a', fur2: '#ffd08a', shell: null, starBack: 1, tail: 'none', size: 0.86 }],
+    seahorse:  ['turtle', { fur: '#ffc23a', fur2: '#ffe59a', shell: null, nose: null, snout: { x: 22, y: 8, rx: 10, ry: 4.4, out: true }, tail: 'monkey', crest: '#ff9a2e', size: 0.9 }],
+    clownfish: ['seal', { fur: '#ff8a2e', fur2: '#ffffff', belly: '#ffffff', bands: 1, fin: 1, whisker: false, snout: null, wideMouth: true, size: 0.86, feet: '#ff8a2e' }],
+    puffer:    ['hedgehog', { fur: '#f2d27a', fur2: '#fff6d6', spikes: '#c9a23a', ear: 'none', snout: null, wideMouth: true, tail: 'flipper', feet: '#c9a23a', hrx: 1.1 }],
+    manta:     ['bat', { dark: false, sclera: false, fur: '#3f5f8f', fur2: '#eaf2fb', belly: '#eaf2fb', ear: 'none', wingCol: '#34507a', fang: false, tail: 'thinlong', tailCol: '#34507a', snout: null, wideMouth: true, size: 0.98, nose: null }],
+    walrus:    ['seal', { fur: '#a9785a', fur2: '#e2c4a8', belly: null, tusk: 12, size: 1.15, brx: 18.5, bry: 19, snout: { x: 14, y: 10, rx: 13, ry: 9, out: false }, feet: '#8a5f45' }],
+    narwhal:   ['seal', { fur: '#b9c7d6', fur2: '#eef3f8', belly: '#eef3f8', uni: '#fff4dc', whisker: false, nose: null, size: 1.02 }],
+    sealion:   ['seal', { fur: '#a8794f', fur2: '#e2c49a', belly: null, ear: 'round-s', inner: '#8a5f45', size: 1.02, feet: '#8a5f45' }],
+    manatee:   ['seal', { fur: '#9aa3ad', fur2: '#c7ced6', belly: null, nose: null, whisker: false, snout: { x: 15, y: 10, rx: 14, ry: 10, out: true, nostrilTop: true }, tail: 'paddle', size: 1.12, brx: 18.5, bry: 19, feet: '#7f8a96' }],
+    beluga:    ['seal', { fur: '#f4f8fc', fur2: '#ffffff', belly: null, snout: null, wideMouth: true, whisker: false, size: 1.04, hr: 1.06, feet: '#dfe8f2' }],
+    swordfish: ['seal', { fur: '#4f78b8', fur2: '#c9d6ea', belly: '#dfeaf8', fin: 1, whisker: false, nose: null, snout: { x: 26, y: 8, rx: 20, ry: 3.4, out: true }, feet: '#3f64a0' }],
+    angler:    ['seal', { dark: true, sclera: true, fur: '#5a4a5e', fur2: '#8a7890', belly: null, lure: 1, whisker: false, nose: null, snout: { x: 15, y: 10, rx: 14, ry: 8, out: true, croc: true }, size: 0.9, feet: '#463a4a' }],
+    seaturtle: ['turtle', { fur: '#7fcfa8', fur2: '#d6f2e2', shell: '#4f9f8a', shell2: '#2f7f6a', wing: true, size: 1.0 }],
+    // 파충류 · 양서류
+    snake:     ['croc', { fur: '#7ec850', fur2: '#f2e9a0', belly: '#f2e9a0', eyeBump: false, fork: 1, nose: null, snout: { x: 16, y: 9, rx: 11, ry: 7, out: true }, tail: 'thinlong', tailCol: '#7ec850', size: 0.95 }],
+    cobra:     ['croc', { fur: '#c9a66b', fur2: '#f2e2bd', belly: '#f2e2bd', hood: '#b08a4f', eyeBump: false, fork: 1, nose: null, snout: { x: 16, y: 9, rx: 11, ry: 7, out: true }, tail: 'thinlong', tailCol: '#c9a66b', size: 1.0 }],
+    lizard:    ['croc', { fur: '#58c79a', fur2: '#d9f5e6', belly: '#d9f5e6', eyeBump: false, nose: null, snout: { x: 16, y: 9, rx: 11.5, ry: 7, out: true }, tail: 'thinlong', tailCol: '#58c79a', size: 0.86, leg: 8 }],
+    chameleon: ['croc', { fur: '#8fd14f', fur2: '#e2f7b0', belly: '#e2f7b0', crestBack: '#6fb83a', nose: null, snout: { x: 16, y: 9, rx: 11, ry: 7, out: true }, tail: 'monkey', size: 0.88, leg: 8 }],
+    iguana:    ['croc', { fur: '#6fbf8a', fur2: '#d6f0dc', belly: '#d6f0dc', eyeBump: false, spikes: '#3f8f5a', nose: null, snout: { x: 16, y: 9, rx: 12, ry: 7.4, out: true }, size: 1.0 }],
+    gecko:     ['croc', { fur: '#ffd36b', fur2: '#fff3cf', belly: '#fff3cf', eyeBump: false, spots: '#e08a2e', nose: null, snout: { x: 15, y: 9, rx: 11, ry: 7, out: true }, tail: 'thick', tailK: 0.6, size: 0.84, leg: 8, eyeWide: 1 }],
+    komodo:    ['croc', { fur: '#7a7466', fur2: '#b9b2a0', belly: '#b9b2a0', eyeBump: false, fork: 1, nose: null, snout: { x: 18, y: 9, rx: 14, ry: 7.4, out: true }, size: 1.12, brx: 18, bry: 18.5, lw: 9 }],
+    tortoise:  ['turtle', { fur: '#c9b27a', fur2: '#efe2b8', shell: '#8a6a3f', shell2: '#5f4526', size: 1.08 }],
+    axolotl:   ['frog', { fur: '#ffb3c8', fur2: '#ffe1ea', belly: '#ffe1ea', eyesTop: false, gills: '#ff6f9a', tail: 'thick', tailK: 0.6, bigFeet: false, size: 0.88 }],
+    salamander: ['frog', { dark: true, sclera: true, fur: '#3b3442', fur2: '#ffd23f', belly: '#ffd23f', eyesTop: false, spots: '#ffd23f', tail: 'thick', tailK: 0.6, bigFeet: false, size: 0.86 }],
+    toad:      ['frog', { fur: '#a88a5a', fur2: '#e2d0a8', belly: '#e2d0a8', spots: '#7a6038' }],
+    // 새
+    eagle:     ['parrot', { fur: '#ffffff', bodyCol: '#7a4f2e', wingCol: '#6b4326', beak: '#ffc23a', feathers: ['#7a4f2e', '#5f3c20', '#7a4f2e'], crest: null, eyeRing: false, feet: '#ffc23a', size: 1.02 }],
+    falcon:    ['parrot', { fur: '#8a93a6', fur2: '#f1f4f9', belly: '#f1f4f9', wingCol: '#5f6878', beak: '#ffc23a', feathers: ['#5f6878', '#8a93a6', '#5f6878'], crest: null, eyeRing: false, feet: '#ffc23a' }],
+    crow:      ['chicken', { dark: true, sclera: true, fur: '#2f3138', wingCol: '#24262c', comb: null, beak: '#4a4d57', feet: '#4a4d57', feathers: ['#2f3138', '#24262c', '#2f3138'], size: 0.88 }],
+    swan:      ['flamingo', { fur: '#ffffff', limbCol: '#3b3442', feet: '#3b3442', wingCol: '#f1f4f9', beak: '#ff8a2e', beakType: 'duck', feathers: ['#ffffff', '#f1f4f9', '#ffffff'], leg: 8, legW: 5, neck: 17, neckW: 7, hr: 0.82, size: 1.02, brx: 16.5, bry: 16.5 }],
+    goose:     ['flamingo', { fur: '#f4f1ea', limbCol: '#ff9a2e', feet: '#ff9a2e', wingCol: '#d9d3c6', beak: '#ff9a2e', beakType: 'duck', feathers: ['#f4f1ea', '#d9d3c6', '#f4f1ea'], leg: 8, legW: 5, neck: 13, neckW: 7, hr: 0.84, size: 0.98, brx: 16, bry: 16.5 }],
+    peacock:   ['chicken', { fur: '#2f6fd6', wingCol: '#2a9d8f', comb: null, crest: '#2a9d8f', beak: '#f3e9d6', feet: '#8a8f9c', tail: 'fan', fanCol: '#2a9d8f', fanEye: '#3d5bd6', size: 0.98 }],
+    toucan:    ['parrot', { dark: true, sclera: true, fur: '#2f3138', fur2: '#ffffff', belly: '#ffffff', wingCol: '#24262c', beakType: 'toucan', beak: '#ff9a2e', feathers: ['#2f3138', '#ff5a4d', '#2f3138'], crest: null, feet: '#6aa9ff' }],
+    pelican:   ['duck', { fur: '#ffffff', tuft: false, beak: '#ffb02e', beakType: 'pouch', feet: '#ffb02e', wingCol: '#e6e6e6', size: 1.02, tail: 'feathers', feathers: ['#ffffff', '#eeeeee', '#ffffff'] }],
+    woodpecker: ['chicken', { dark: true, sclera: true, fur: '#2f3138', fur2: '#ffffff', belly: '#ffffff', comb: null, crest: '#ff4d5e', wingCol: '#24262c', beak: '#8a8f9c', beakType: 'long', beakLen: 13, feet: '#8a8f9c', feathers: ['#2f3138', '#ffffff', '#2f3138'], size: 0.86 }],
+    pigeon:    ['chicken', { fur: '#9aa3b5', bodyCol: '#8a78b8', comb: null, wingCol: '#7f8899', beak: '#f2b6a0', feet: '#ff7f9d', feathers: ['#7f8899', '#9aa3b5', '#7f8899'], size: 0.86 }],
+    seagull:   ['chicken', { comb: null, wingCol: '#aab4c2', beak: '#ffc23a', feet: '#ffb02e', feathers: ['#aab4c2', '#ffffff', '#3b3442'] }],
+    sparrow:   ['chicken', { fur: '#b9854f', fur2: '#f6e6cf', belly: '#f6e6cf', comb: null, wingCol: '#8a5f38', beak: '#5a3f2a', feet: '#c98a5a', feathers: ['#8a5f38', '#b9854f', '#8a5f38'], size: 0.8 }],
+    hummingbird: ['chicken', { fur: '#2fbf8a', fur2: '#f1fff8', belly: '#f1fff8', comb: null, wingCol: '#1f9a6f', beak: '#3b3442', beakType: 'long', beakLen: 20, feet: '#5a5f6a', feathers: ['#1f9a6f', '#2fbf8a', '#c2185b'], size: 0.76 }],
+    kiwi:      ['chicken', { fur: '#8a6a4a', comb: null, wing: false, beak: '#e8d2b0', beakType: 'long', beakLen: 20, feet: '#c9a27a', tail: 'none', size: 0.84, brx: 17, bry: 18 }],
+    turkey:    ['chicken', { fur: '#8a5a3a', wingCol: '#6b4326', beak: '#ffc23a', feet: '#c98a5a', tail: 'fan', fanCol: '#c9783a', fanEye: '#fff1dc', size: 1.0 }],
+    crane:     ['flamingo', { fur: '#ffffff', limbCol: '#5a5f6a', feet: '#5a5f6a', wingCol: '#3b3442', beak: '#ffc23a', beakType: 'long', beakLen: 18, dome: '#ff4d5e', feathers: ['#3b3442', '#ffffff', '#3b3442'], size: 1.02 }],
+    stork:     ['flamingo', { fur: '#ffffff', limbCol: '#ff6a4d', feet: '#ff6a4d', wingCol: '#3b3442', beak: '#ff6a4d', beakType: 'long', beakLen: 20, feathers: ['#3b3442', '#ffffff', '#3b3442'], neck: 12, size: 1.0 }],
+    puffin:    ['penguin', { beakType: 'toucan', beak: '#ff7a2e', feet: '#ff7a2e', size: 0.86 }],
+    robin:     ['chicken', { fur: '#8a6f55', fur2: '#ff8a3d', belly: '#ff8a3d', comb: null, wingCol: '#6b543f', beak: '#5a3f2a', feet: '#8a5f45', feathers: ['#6b543f', '#8a6f55', '#6b543f'], size: 0.8 }],
+    canary:    ['chicken', { fur: '#ffe14d', comb: null, wingCol: '#f5c518', beak: '#ffb07a', feet: '#ffb07a', feathers: ['#f5c518', '#ffe14d', '#f5c518'], size: 0.78 }],
+    cockatoo:  ['parrot', { fur: '#ffffff', wingCol: '#f1f1f1', crest: '#ffe14d', beak: '#5a5f6a', feathers: ['#ffffff', '#ffe14d', '#ffffff'], eyeRing: false, feet: '#8a8f9c' }],
+    vulture:   ['parrot', { fur: '#f2b6a8', bodyCol: '#4a4352', wingCol: '#3b3442', beak: '#e8d2b0', feathers: ['#3b3442', '#4a4352', '#3b3442'], crest: null, eyeRing: false, feet: '#c9c2b4', neck: 6, neckW: 7, hr: 0.86, size: 1.02 }],
+    dodo:      ['parrot', { fur: '#9aa9b8', wingCol: '#7f8f9f', beak: '#f2d98a', feathers: ['#ffffff', '#f1f1f1', '#ffffff'], crest: null, eyeRing: false, feet: '#ffc23a', size: 1.0, brx: 18, bry: 18.5 }],
+    // 공룡 · 옛 동물
+    trex:      ['croc', { fur: '#7fae5a', fur2: '#e2efb8', belly: '#e2efb8', eyeBump: false, armK: 0.55, snout: { x: 19, y: 10, rx: 15, ry: 8.4, out: true, croc: true }, size: 1.2, brx: 18.5, bry: 19, lw: 9.6, hr: 1.1 }],
+    triceratops: ['croc', { fur: '#4fb3a6', fur2: '#d6f2ec', belly: '#d6f2ec', eyeBump: false, mane: '#f2a35e', horn: 'tri', hornNose: 1, nose: null, snout: { x: 18, y: 10, rx: 12, ry: 8.4, out: true, nostril: true }, tail: 'thick', size: 1.15, brx: 18.5, bry: 19, lw: 9.4 }],
+    stego:     ['croc', { fur: '#6fbf8a', fur2: '#d9f2df', belly: '#d9f2df', eyeBump: false, spikes: '#ff9a3c', spikeBig: 1, nose: null, snout: { x: 17, y: 10, rx: 11.5, ry: 7.6, out: true }, size: 1.12, brx: 18.5, bry: 19, lw: 9.4, hr: 0.9 }],
+    brachio:   ['croc', { fur: '#6f9fd6', fur2: '#dcebff', belly: '#dcebff', eyeBump: false, dome: '#5f8fc6', nose: null, snout: { x: 16, y: 9, rx: 11, ry: 7.4, out: true }, neck: 20, neckW: 11, tail: 'thick', size: 1.12, brx: 18.5, bry: 19, lw: 9.4, hr: 0.82 }],
+    raptor:    ['croc', { fur: '#d98a4f', fur2: '#f6e2c4', belly: '#f6e2c4', eyeBump: false, crest: '#3d8bff', armK: 0.8, snout: { x: 18, y: 9, rx: 13, ry: 7, out: true, croc: true }, size: 0.98, tail: 'thick', tailK: 0.8 }],
+    ptero:     ['bat', { dark: false, sclera: false, fur: '#d9b27a', fur2: '#f6e6c4', belly: '#f6e6c4', ear: 'none', crestBack: '#c9783a', wingCol: '#b98a4f', fang: false, snout: null, nose: null, beak: '#e8d2a0', beakType: 'long', beakLen: 22, size: 1.0 }],
+    ankylo:    ['croc', { fur: '#a88a5a', fur2: '#e2d0a8', belly: '#e2d0a8', eyeBump: false, spikes: '#7a6038', nose: null, snout: { x: 17, y: 10, rx: 12, ry: 8, out: true, nostril: true }, tail: 'club', size: 1.1, brx: 19, bry: 18.5, lw: 9.4, hr: 0.92 }],
+    parasaur:  ['croc', { fur: '#9ccf5a', fur2: '#eaf6c4', belly: '#eaf6c4', eyeBump: false, crestBack: '#ff8a5a', nose: null, snout: { x: 18, y: 10, rx: 12.5, ry: 7.6, out: true }, tail: 'thick', size: 1.08 }],
+    spino:     ['croc', { fur: '#c9684f', fur2: '#f2d6c4', belly: '#f2d6c4', eyeBump: false, sail: '#e08a5a', size: 1.18, brx: 18.5, bry: 19, lw: 9.4 }],
+    diplodocus: ['croc', { fur: '#b9a0d6', fur2: '#ece2f7', belly: '#ece2f7', eyeBump: false, nose: null, snout: { x: 16, y: 9, rx: 11, ry: 7.4, out: true }, neck: 16, neckW: 10, tail: 'thinlong', tailCol: '#b9a0d6', size: 1.1, brx: 18.5, bry: 19, lw: 9.2, hr: 0.82 }],
+    pachy:     ['croc', { fur: '#e0a15a', fur2: '#f7e6c4', belly: '#f7e6c4', eyeBump: false, dome: '#c9783a', nose: null, snout: { x: 17, y: 10, rx: 11.5, ry: 7.6, out: true }, tail: 'thick', tailK: 0.8, size: 1.02 }],
+    dilopho:   ['croc', { fur: '#5fb38a', fur2: '#d6f2e2', belly: '#d6f2e2', eyeBump: false, crest: '#ff5a4d', hood: '#ffb02e', armK: 0.8, snout: { x: 18, y: 9, rx: 13, ry: 7, out: true, croc: true }, size: 1.0, tail: 'thick', tailK: 0.8 }],
+    compy:     ['croc', { fur: '#8fd16a', fur2: '#e6f7c4', belly: '#e6f7c4', eyeBump: false, armK: 0.8, nose: null, snout: { x: 17, y: 9, rx: 11, ry: 6.6, out: true }, size: 0.78, leg: 9, tail: 'thick', tailK: 0.7 }],
+    plesio:    ['seal', { fur: '#4f9fb8', fur2: '#d6eef5', belly: '#d6eef5', neck: 17, neckW: 9, whisker: false, nose: null, snout: { x: 16, y: 9, rx: 11, ry: 7, out: true }, hr: 0.82, size: 1.08, feet: '#3f8aa0' }],
+    mammoth:   ['elephant', { fur: '#9a6a45', fur2: '#b98a62', inner: '#c98a7a', maneTop: '#7a4f2e', size: 1.22 }],
+    sabertooth: ['tiger', { fur: '#e0b070', tstripes: null, tusk: 10, size: 1.08, tail: 'stub' }],
+    dimetrodon: ['croc', { fur: '#b98ad6', fur2: '#ecdcf7', belly: '#ecdcf7', eyeBump: false, sail: '#ff9a6a', snout: { x: 18, y: 10, rx: 13, ry: 7.6, out: true, croc: true }, size: 1.05 }],
+    archaeo:   ['parrot', { fur: '#3fa7d6', wingCol: '#2f8fbf', beak: '#e8d2a0', beakType: 'long', beakLen: 12, feathers: ['#ff5a4d', '#3fa7d6', '#ffd23f'], crest: '#ff5a4d', eyeRing: false, feet: '#8a8f9c', size: 0.88 }],
+    // 포유류
+    capybara:  ['bear', { fur: '#b98a5a', fur2: '#d6b088', inner: '#8a5f38', ear: 'round-s', tail: 'none', snout: { x: 16, y: 9, rx: 13, ry: 10, out: true }, size: 1.02 }],
+    fennec:    ['fox', { fur: '#f6dcae', fur2: '#fffaf0', inner: '#ffc2cf', ear: 'bat', earTip: null, tailTip: '#5a3524', sock: null, size: 0.86 }],
+    meerkat:   ['otter', { sclera: true, fur: '#d9b27a', fur2: '#f6e6c4', belly: '#f6e6c4', mask: '#5a3f2a', inner: '#5a3f2a', tail: 'thinlong', tailCol: '#d9b27a', whisker: false, size: 0.88 }],
+    badger:    ['skunk', { dark: false, sclera: true, fur: '#f4f4f4', stripe: false, badger: 1, bodyCol: '#6b6f7a', limbCol: '#3b3442', tail: 'stub', earCol: '#3b3442', size: 1.0 }],
+    ferret:    ['otter', { sclera: true, fur: '#f1e6d2', fur2: '#ffffff', belly: null, mask: '#6b4632', limbCol: '#5a3f2a', inner: '#f2b6a0', tail: 'thick', tailK: 0.6, size: 0.88 }],
+    chipmunk:  ['squirrel', { fur: '#c98a4f', stripes: '#5a3524', tail: 'bushy', tailTip: '#5a3524', size: 0.82 }],
+    leopard:   ['cheetah', { fur: '#f2c14e', spots: '#5a3524', size: 1.06 }],
+    panther:   ['cat', { dark: true, sclera: true, fur: '#2f3138', fur2: '#4a4d57', inner: '#6b5a6e', nose: '#6b5a6e', stripes: null, size: 1.06 }],
+    hyena:     ['dog', { fur: '#c9a66b', fur2: '#e8d6b0', spots: '#6b4f2e', maneTop: '#6b4f2e', tail: 'bushy', tailTip: '#3b2a20', brow: null, ear: 'round', size: 1.02 }],
+    lynx:      ['cat', { fur: '#d9b27a', fur2: '#fff6e6', stripes: '#8a6a3f', cheek: true, tail: 'stub', size: 1.02 }],
+    bison:     ['cow', { fur: '#6b4a32', fur2: '#8a6a4f', inner: '#5a3f2a', cowspots: null, hump: true, beard: '#4a3222', maneTop: '#4a3222', size: 1.18 }],
+    moose:     ['deer', { fur: '#7a5a3f', fur2: '#b99a78', dots: null, snout: { x: 18, y: 10, rx: 13.5, ry: 9.5, out: true }, beard: '#5a3f2a', size: 1.18, brx: 17.5, bry: 18.5, lw: 8.6 }],
+    reindeer:  ['deer', { fur: '#a8794f', fur2: '#f1e2c8', dots: null, nose: '#ff4d5e', size: 1.04 }],
+    llama:     ['alpaca', { fur: '#f6efe2', wool: '#c98a5a', bodyCol: '#c98a5a', neck: 12, size: 1.04 }],
+    donkey:    ['horse', { fur: '#9a9aa6', fur2: '#f1f1f1', inner: '#f2b6c8', ear: 'long', maneTop: '#5f5f6a', forelock: null, blaze: false, tailCol: '#5f5f6a', neck: 2, size: 1.0 }],
+    boar:      ['pig', { fur: '#7a5a45', fur2: '#b98a7a', inner: '#b98a7a', maneTop: '#4a3222', tusk: 6, size: 1.04 }],
+    anteater:  ['wolf', { fur: '#8a8f9c', fur2: '#c9ced6', cheek: false, ear: 'round-s', snout: { x: 24, y: 10, rx: 18, ry: 5, out: true }, tailTip: '#5f6470', size: 1.02 }],
+    armadillo: ['turtle', { fur: '#d9b89a', fur2: '#f2e0cf', shell: '#b98a6a', shell2: '#8a6248', ear: 'leaf', inner: '#f2b6a0', nose: '#5a3524', snout: { x: 17, y: 9, rx: 11, ry: 6.5, out: true }, tail: 'thinlong', tailCol: '#d9b89a', size: 0.9, leg: 8 }],
+    pangolin:  ['hedgehog', { fur: '#c9a27a', fur2: '#e8d2b0', spikes: '#8a6a4a', ear: 'none', snout: { x: 19, y: 9, rx: 13, ry: 6, out: true }, tail: 'thick', tailK: 0.7, size: 0.92 }],
+    platypus:  ['beaver', { fur: '#8a5f45', snout: null, teethBig: false, beak: '#5a5f6a', beakType: 'duck', size: 0.9 }],
+    wombat:    ['bear', { fur: '#9a7a5f', fur2: '#b99a80', inner: '#7a5a45', ear: 'round-s', tail: 'none', bigNose: '#4a3a32', snout: { x: 13, y: 10, rx: 10, ry: 7, out: false }, eyeWide: 3, size: 0.95, brx: 18 }],
+    quokka:    ['bear', { fur: '#b98a62', fur2: '#e2c4a0', inner: '#8a5f45', tail: 'thick', tailK: 0.5, size: 0.86, snout: { x: 14, y: 9, rx: 10, ry: 7.6, out: false } }],
+    lemur:     ['raccoon', { fur: '#b9bcc6', ear: 'round-s', inner: '#ffffff', size: 0.92 }],
+    orangutan: ['monkey', { fur: '#d9632e', fur2: '#b98a7a', inner: '#b98a7a', ear: 'none', hrx: 1.14, tail: 'none', size: 1.12, brx: 17.5, bry: 18.5, lw: 8.6 }],
+    chimp:     ['monkey', { fur: '#4a3f3a', fur2: '#e2bfa0', inner: '#e2bfa0', tail: 'none', size: 1.04 }]
+  };
+  Object.keys(MORE).forEach(function (id) {
+    var b = SPEC[MORE[id][0]], o = MORE[id][1], r = {}, k;
+    for (k in b) r[k] = b[k];
+    for (k in o) r[k] = o[k];
+    SPEC[id] = r;
+  });
+
   // ───────────── 자세 ─────────────
   function legAng(p, amp) {
     var th = (amp || 0.9) * Math.sin(p);
@@ -288,6 +403,23 @@
         c.beginPath(); c.moveTo(2, 4); c.quadraticCurveTo(-8, -2, -11, -12); c.quadraticCurveTo(-3, -8, 4, -6); c.closePath(); paint(c, sp.fur);
         break;
       case 'none': break;
+      case 'tentacle':
+        c.beginPath();
+        for (var ti = 0; ti < 4; ti++) { c.moveTo(1, ti * 3 - 5); c.bezierCurveTo(-9, -8 + ti * 8, -15, 9 + ti * 4, -25 + ti * 3, 4 + ti * 7); }
+        strokeBoth(c, 4.2, sp.fur);
+        break;
+      case 'club':
+        c.beginPath(); c.moveTo(3, -6); c.quadraticCurveTo(-16, -6, -30, 6); c.quadraticCurveTo(-14, 9, 3, 5); c.closePath(); paint(c, sp.fur);
+        ell(c, -34, 8, 8.5, 7.5); paint(c, shade(sp.fur, -0.25));
+        break;
+      case 'fan':
+        for (var fi = 0; fi < 7; fi++) {
+          c.save(); c.rotate(-1.45 + fi * 0.3);
+          ell(c, 0, -27, 6.6, 26); paint(c, fi % 2 ? shade(sp.fanCol, 0.18) : sp.fanCol);
+          ell(c, 0, -44, 3.4, 4.2); c.fillStyle = sp.fanEye || '#ffd23f'; c.fill();
+          c.restore();
+        }
+        break;
       case 'lion':
         curve(c, 0, 0, -20, 8, -27, -12, 4.2, sp.fur);
         ell(c, -28, -15, 5, 6.5, 0.3); paint(c, sp.tailTip);
@@ -582,11 +714,26 @@
       for (k = 0; k < 12; k++) { a = k / 12 * TAU; ell(c, Math.cos(a) * 27 - 2, Math.sin(a) * 25 + 1, 10.5, 10.5); paint(c, sp.mane); }
       ell(c, -2, 1, 29, 27); c.fillStyle = sp.mane; c.fill();
     }
+    if (sp.starBack) {
+      c.beginPath();
+      for (k = 0; k < 10; k++) { a = -PI / 2 + k * PI / 5; var sr2 = k % 2 ? 27 : 47; if (k === 0) c.moveTo(Math.cos(a) * sr2, Math.sin(a) * sr2 + 2); else c.lineTo(Math.cos(a) * sr2, Math.sin(a) * sr2 + 2); }
+      c.closePath(); paint(c, sp.fur);
+    }
+    if (sp.hood) { ell(c, -3, 4, 38, 31); paint(c, sp.hood); ell(c, -3, 7, 29, 23); c.fillStyle = shade(sp.hood, 0.25); c.fill(); }
+    if (sp.fin) { c.beginPath(); c.moveTo(-16, -17); c.quadraticCurveTo(-17, -40, -31, -45); c.quadraticCurveTo(-8, -41, 7, -22); c.closePath(); paint(c, shade(sp.fur, -0.12)); }
+    if (sp.crestBack) { c.beginPath(); c.moveTo(-4, -23); c.quadraticCurveTo(-24, -40, -46, -37); c.quadraticCurveTo(-31, -27, -21, -9); c.closePath(); paint(c, sp.crestBack); }
+    if (sp.gills) {
+      c.beginPath();
+      c.moveTo(-23, -8); c.lineTo(-38, -17); c.moveTo(-26, 1); c.lineTo(-42, 1); c.moveTo(-23, 10); c.lineTo(-38, 18);
+      c.moveTo(15, -21); c.lineTo(21, -35); c.moveTo(21, -16); c.lineTo(32, -27);
+      strokeBoth(c, 3.4, sp.gills);
+    }
     if (sp.spikes) {
       c.beginPath();
-      for (k = 0; k <= 13; k++) {
-        a = (-50 - k * 15.5) * PI / 180;
-        var rr = k % 2 ? 39 : 29;
+      var sStep = sp.spikeBig ? 28 : 15.5, sN = sp.spikeBig ? 7 : 13;
+      for (k = 0; k <= sN; k++) {
+        a = (-50 - k * sStep) * PI / 180;
+        var rr = k % 2 ? (sp.spikeBig ? 46 : 39) : 29;
         if (k === 0) c.moveTo(Math.cos(a) * rr - 2, Math.sin(a) * rr * 0.95); else c.lineTo(Math.cos(a) * rr - 2, Math.sin(a) * rr * 0.95);
       }
       c.lineTo(-2, 6); c.closePath(); paint(c, sp.spikes);
@@ -623,6 +770,25 @@
     if (sp.tuftHair) {
       c.beginPath(); c.moveTo(-4, -22); c.lineTo(-7, -32); c.moveTo(2, -24); c.lineTo(2, -35); c.moveTo(8, -23); c.lineTo(11, -33);
       c.lineWidth = 2; c.strokeStyle = OL; c.lineCap = 'round'; c.stroke();
+    }
+    if (sp.antenna) {
+      c.beginPath(); c.moveTo(0, -22); c.quadraticCurveTo(-2, -36, -10, -40); c.moveTo(10, -23); c.quadraticCurveTo(14, -37, 22, -39);
+      strokeBoth(c, 1.6, sp.antenna);
+      ell(c, -10, -40, 2.6, 2.6); paint(c, sp.antenna, 1.4); ell(c, 22, -39, 2.4, 2.4); paint(c, sp.antenna, 1.4);
+    }
+    if (sp.lure) { c.beginPath(); c.moveTo(6, -23); c.quadraticCurveTo(14, -46, 31, -35); strokeBoth(c, 1.8, sp.fur); ell(c, 32, -33, 4.6, 4.6); paint(c, '#fff6a8', 1.6); }
+    if (sp.uni) {
+      c.beginPath(); c.moveTo(9, -22); c.lineTo(36, -52); c.lineTo(18, -19); c.closePath(); paint(c, sp.uni);
+      c.beginPath(); c.moveTo(15, -25); c.lineTo(19, -24); c.moveTo(21, -33); c.lineTo(24.5, -31); c.moveTo(27, -41); c.lineTo(29.5, -39); c.lineWidth = 1.2; c.strokeStyle = 'rgba(74,50,38,.5)'; c.stroke();
+    }
+    if (sp.horn === 'tri') {
+      c.beginPath(); c.moveTo(13, -21); c.quadraticCurveTo(18, -36, 31, -41); c.quadraticCurveTo(24, -30, 20, -19); c.closePath(); paint(c, '#fff4dc');
+      c.beginPath(); c.moveTo(1, -21); c.quadraticCurveTo(5, -39, 19, -46); c.quadraticCurveTo(11, -33, 9, -20); c.closePath(); paint(c, '#fff4dc');
+    }
+    if (sp.dome) { ell(c, 3, -19, 15, 9.5); paint(c, sp.dome); }
+    if (sp.spout) {
+      c.fillStyle = '#8fd8ff'; c.strokeStyle = OL; c.lineWidth = 1.4;
+      [[-1, -31, 3.2, 5], [-9, -40, 3.6, 4.2], [7, -41, 3.6, 4.2]].forEach(function (q) { ell(c, q[0], q[1], q[2], q[3]); c.fill(); c.stroke(); });
     }
     if (sp.eyesTop) { ell(c, -3, -19, 10.5, 10.5); paint(c, sp.fur); ell(c, 15, -20.5, 9.5, 9.5); paint(c, sp.fur); }
     if (sp.eyeBump) { ell(c, 2, -17, 8.6, 8.6); paint(c, sp.fur); ell(c, 16, -18, 7.6, 7.6); paint(c, sp.fur); }
@@ -690,6 +856,16 @@
       c.fillStyle = '#fff'; c.fill();
     }
     if (sp.blaze) { ell(c, 9, -13, 3.4, 10); c.fillStyle = '#fff'; c.fill(); }   // 말 : 이마 흰 줄
+    if (sp.bands) {                                                // 흰동가리 : 흰 띠
+      c.fillStyle = '#fff'; c.fillRect(-15, -30, 9, 60);
+      c.fillStyle = OL; c.fillRect(-16.2, -30, 1.4, 60); c.fillRect(-6, -30, 1.4, 60);
+    }
+    if (sp.orca) {                                                 // 범고래 : 눈 뒤 흰 점 · 흰 턱
+      c.fillStyle = '#fff'; ell(c, -9, -11, 9, 4.6, -0.3); c.fill(); ell(c, 12, 23, 26, 15); c.fill();
+    }
+    if (sp.badger) {                                               // 오소리 : 눈을 지나는 검은 줄
+      c.fillStyle = '#3b3442'; ell(c, ex1, ey - 6, 6.4, 19, 0.16); c.fill(); ell(c, ex2 + 1, ey - 6, 5.4, 18, -0.12); c.fill();
+    }
     if (sp.spots) {                                                // 치타 점무늬
       c.fillStyle = sp.spots;
       [[-16, -12, 2.6], [-8, -18, 2.3], [-20, -1, 2.4], [-13, 8, 2.2], [1, -19, 2.1], [-21, 10, 2], [-5, -9, 1.8]].forEach(function (p) { ell(c, p[0], p[1], p[2], p[2] * 0.85); c.fill(); });
@@ -811,7 +987,16 @@
         c.moveTo(nx + 1, ny + 3.5); c.lineTo(nx + 9, ny + 2); c.moveTo(nx + 1, ny + 5.5); c.lineTo(nx + 9, ny + 7);
         c.lineWidth = 1.1; c.strokeStyle = 'rgba(74,50,38,.65)'; c.stroke();
       }
-      if (sp.horn === 'rhino') {
+      if (sp.tusk) {
+        var tk = sp.tusk, tx0 = sn.disc ? sn.x - 3 : nx - 3, ty0 = sn.disc ? sn.y + sn.ry - 3 : ny + 4.5;
+        c.beginPath(); c.moveTo(tx0 - 3, ty0); c.quadraticCurveTo(tx0 - 4.5, ty0 + tk * 0.6, tx0 - 1, ty0 + tk); c.quadraticCurveTo(tx0 + 1, ty0 + tk * 0.4, tx0 + 0.5, ty0); c.closePath(); paint(c, '#fffbee', 1.3);
+        c.beginPath(); c.moveTo(tx0 + 4, ty0); c.quadraticCurveTo(tx0 + 3, ty0 + tk * 0.6, tx0 + 6.5, ty0 + tk); c.quadraticCurveTo(tx0 + 8, ty0 + tk * 0.4, tx0 + 7.5, ty0); c.closePath(); paint(c, '#fffbee', 1.3);
+      }
+      if (sp.fork && (R.mouth === 'smile' || R.mouth === 'flat')) {
+        c.beginPath(); c.moveTo(nx + 3, ny + 4.5); c.lineTo(nx + 10, ny + 5.5); c.lineTo(nx + 14, ny + 3); c.moveTo(nx + 10, ny + 5.5); c.lineTo(nx + 14, ny + 8);
+        c.lineWidth = 1.6; c.strokeStyle = '#e0364a'; c.lineCap = 'round'; c.stroke();
+      }
+      if (sp.horn === 'rhino' || sp.hornNose) {
         var hx0 = sn.x + 3, hy0 = sn.y - sn.ry + 1.5;
         c.beginPath(); c.moveTo(hx0, hy0); c.quadraticCurveTo(hx0 + 4, hy0 - 15, hx0 + 10, hy0 - 17); c.quadraticCurveTo(hx0 + 11, hy0 - 6, hx0 + 9.5, hy0 + 2); c.closePath(); paint(c, '#fff4dc');
       }
@@ -836,12 +1021,23 @@
       } else if (bt === 'cone') {     // 닭
         c.beginPath(); c.moveTo(21, 2); c.lineTo(34, 6.5); c.lineTo(21, 11); c.closePath(); paint(c, sp.beak, 2);
         c.beginPath(); c.moveTo(22, 6.6); c.lineTo(32, 6.6); c.lineWidth = 1.1; c.strokeStyle = OL; c.stroke();
-        ell(c, 22.5, 15.5, 3.4, 5.2); paint(c, sp.comb || '#ff4d5e', 1.8);
+        if (sp.comb) { ell(c, 22.5, 15.5, 3.4, 5.2); paint(c, sp.comb, 1.8); }
       } else if (bt === 'owl') {      // 부엉이
         c.beginPath(); c.moveTo(6.5, 2.5); c.quadraticCurveTo(10.5, 0.5, 14.5, 2.5); c.quadraticCurveTo(13, 10, 10.5, 12.5); c.quadraticCurveTo(8, 10, 6.5, 2.5); c.closePath(); paint(c, sp.beak, 1.8);
       } else if (bt === 'hook') {     // 앵무새
         c.beginPath(); c.moveTo(18, 9); c.quadraticCurveTo(23, 17, 28.5, 12.5); c.quadraticCurveTo(24, 9.5, 18, 9); c.closePath(); paint(c, '#6b6f7a', 1.8);
         c.beginPath(); c.moveTo(17, -3); c.bezierCurveTo(30, -7, 39, 3, 30.5, 16); c.quadraticCurveTo(28, 9, 18, 9); c.closePath(); paint(c, sp.beak, 2);
+      } else if (bt === 'toucan') {   // 큰부리새 · 퍼핀
+        c.beginPath(); c.moveTo(17, -5); c.bezierCurveTo(34, -10, 46, 0, 41, 13); c.quadraticCurveTo(30, 13, 17, 10); c.closePath(); paint(c, sp.beak, 2);
+        c.save(); c.clip(); c.fillStyle = '#ffd23f'; c.fillRect(17, -10, 9, 26); c.fillStyle = '#ff5a4d'; c.fillRect(37, -10, 10, 26); c.restore();
+        c.beginPath(); c.moveTo(18, 4); c.quadraticCurveTo(30, 6, 41, 6); c.lineWidth = 1.2; c.strokeStyle = OL; c.stroke();
+      } else if (bt === 'pouch') {    // 펠리컨
+        c.beginPath(); c.moveTo(18, 6); c.quadraticCurveTo(26, 24, 42, 9); c.closePath(); paint(c, shade(sp.beak, 0.3), 2);
+        c.beginPath(); c.moveTo(18, 1); c.quadraticCurveTo(32, -1, 44, 6); c.quadraticCurveTo(32, 9, 18, 8); c.closePath(); paint(c, sp.beak, 2);
+      } else if (bt === 'long') {     // 길쭉한 부리
+        var bl = sp.beakLen || 16;
+        c.beginPath(); c.moveTo(19, 2); c.lineTo(21 + bl, 6.5); c.lineTo(19, 10); c.closePath(); paint(c, sp.beak, 2);
+        c.beginPath(); c.moveTo(20, 6.3); c.lineTo(19 + bl, 6.5); c.lineWidth = 1; c.strokeStyle = OL; c.stroke();
       } else if (bt === 'bent') {     // 플라밍고
         c.beginPath(); c.moveTo(16, 0); c.quadraticCurveTo(28, -3, 32, 6); c.quadraticCurveTo(33, 15, 24, 18); c.quadraticCurveTo(26, 10, 16, 9); c.closePath(); paint(c, sp.beak, 2);
         c.beginPath(); c.moveTo(29.6, 3.4); c.quadraticCurveTo(34, 14, 24, 18); c.quadraticCurveTo(27, 12, 26.6, 6.5); c.closePath(); paint(c, '#2b2018', 1.6);
@@ -911,7 +1107,7 @@
       c.restore();
     }
     function armDraw(a, col, dx) {
-      var al = sp.batWing ? 12 : (sp.wing ? 8 : 8.6);
+      var al = (sp.batWing ? 12 : (sp.wing ? 8 : 8.6)) * (sp.armK || 1);
       if (sp.wing && sp.wingCol) col = (col === farCol) ? shade(sp.wingCol, -0.14) : sp.wingCol;
       var ex = shX + dx + Math.sin(a[0]) * al, ey = shY + Math.cos(a[0]) * al;
       var hx = ex + Math.sin(a[1]) * al, hy = ey + Math.cos(a[1]) * al;
@@ -921,7 +1117,12 @@
         paint(c, col);
       } else {
         limb(c, [shX + dx, shY, ex, ey, hx, hy], lw * 0.86, col);
-        ell(c, hx, hy, lw * 0.56, lw * 0.56); paint(c, sp.sock ? (col === farCol ? farFoot : footCol) : col);
+        if (sp.claw) {   // 집게
+          var ca = Math.atan2(hy - ey, hx - ex);
+          c.save(); c.translate(hx, hy); c.rotate(ca);
+          ell(c, 5, -3.4, 7, 4, -0.35); paint(c, col); ell(c, 5, 3.4, 7, 4, 0.35); paint(c, col);
+          c.restore();
+        } else { ell(c, hx, hy, lw * 0.56, lw * 0.56); paint(c, sp.sock ? (col === farCol ? farFoot : footCol) : col); }
       }
       return [hx, hy];
     }
@@ -937,10 +1138,16 @@
       drawTail(c, sp, R, bodyCx - brx * 0.82, bodyCy + bry * 0.42);
       armDraw(R.armF, farCol, 3);
       if (sp.hump) { ell(c, bodyCx - 7, bodyCy - bry * 0.78, 10.5, 9.5); paint(c, sp.fur); }
+      if (sp.sail) {     // 등 돛
+        c.beginPath(); c.moveTo(bodyCx - 13, bodyCy + 8); c.quadraticCurveTo(bodyCx - 38, bodyCy - 12, bodyCx - 22, bodyCy - 38); c.quadraticCurveTo(bodyCx - 4, bodyCy - 40, bodyCx + 5, bodyCy - 16); c.closePath(); paint(c, sp.sail);
+        c.beginPath(); c.moveTo(bodyCx - 8, bodyCy - 8); c.lineTo(bodyCx - 22, bodyCy - 34); c.moveTo(bodyCx - 11, bodyCy - 2); c.lineTo(bodyCx - 30, bodyCy - 20); c.moveTo(bodyCx - 5, bodyCy - 12); c.lineTo(bodyCx - 10, bodyCy - 36);
+        c.lineWidth = 1.3; c.strokeStyle = 'rgba(74,50,38,.4)'; c.stroke();
+      }
       if (sp.spikes) {   // 고슴도치 등 가시
         c.beginPath();
-        for (var sk = 0; sk <= 11; sk++) {
-          var sa = (-100 - sk * 15) * PI / 180, sr = sk % 2 ? brx + 9 : brx + 1;
+        var bStep = sp.spikeBig ? 27 : 15, bN = sp.spikeBig ? 6 : 11;
+        for (var sk = 0; sk <= bN; sk++) {
+          var sa = (-100 - sk * bStep) * PI / 180, sr = sk % 2 ? brx + (sp.spikeBig ? 15 : 9) : brx + 1;
           if (sk === 0) c.moveTo(bodyCx - 3 + Math.cos(sa) * sr, bodyCy + Math.sin(sa) * sr * 1.08); else c.lineTo(bodyCx - 3 + Math.cos(sa) * sr, bodyCy + Math.sin(sa) * sr * 1.08);
         }
         c.lineTo(bodyCx, bodyCy); c.closePath(); paint(c, sp.spikes);
@@ -1016,7 +1223,7 @@
     return out;
   };
   function earTop(sp) {
-    if (sp.horn === 'antler' || sp.horn === 'goat') return 22;
+    if (sp.horn === 'antler' || sp.horn === 'goat' || sp.uni || sp.fin || sp.crestBack || sp.horn === 'tri' || sp.lure) return 22;
     if (sp.ossi) return 14;
     if (sp.mane || sp.comb || sp.crest || sp.tuftHair || sp.horn === 'cow') return 10;
     switch (sp.ear) {

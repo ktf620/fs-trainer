@@ -58,139 +58,139 @@
   }
   function josa(s, withB, withoutB) { return s + (hasBatchim(s) ? withB : withoutB); }
 
-  // ───────────── 동물 50종 ─────────────
+  // ───────────── 동물 150종 (앞의 50종은 스킬을 하나하나 따로 만들었고, 뒤의 100종은 표로 정의) ─────────────
   // speed : 기본 속력(m/s) · accel : 가속 · light : 가벼움(바람 영향) · agi : 날렵함(장애물 피하기)
   // wx : 날씨별 속력 보정 (storm 은 rain 값을 같이 씀)
   // tr : 특성 — water 물웅덩이 좋아함 · ice 빙판 좋아함 · nofog 안개에 안 헤맴 · heavy 장애물을 밟고 지나감 · hurdler 허들 잘 넘음
   //      glutton 간식 효과 오래감 · steady 날씨 영향 덜 받음 · quick 출발 빠름 · nimble 금방 일어남 · mud 진흙 좋아함 · reach 결승선에서 목이 먼저 닿음
   var ANIMALS = [
-    { id: 'rabbit', name: '토끼', speed: 7.610, accel: 8.0, light: 1.0, agi: 1.0, tr: { hurdler: 1 },
+    { id: 'rabbit', name: '토끼', speed: 7.607, accel: 8.0, light: 1.0, agi: 1.0, tr: { hurdler: 1 },
       wx: { rain: -0.02, snow: 0.03, heat: -0.01 },
       skill: { name: '깡충깡충 대시', desc: '세 번 크게 뛰어 단숨에 앞으로 나가요.' },
       passive: '너무 앞서면 방심해서 낮잠을 자기도 해요.' },
-    { id: 'turtle', name: '거북이', speed: 7.371, accel: 5.5, light: 0.2, agi: 0.2, tr: { steady: 1, water: 1 },
+    { id: 'turtle', name: '거북이', speed: 7.444, accel: 5.5, light: 0.2, agi: 0.2, tr: { steady: 1, water: 1 },
       wx: { rain: 0.04, heat: 0.02, snow: -0.02 },
       skill: { name: '등껍질 스핀', desc: '껍질 속에 쏙 들어가 팽이처럼 돌진! 방해도 튕겨 내요.' },
       passive: '꾸준해서 날씨가 나빠도 덜 느려져요.' },
-    { id: 'cheetah', name: '치타', speed: 7.686, accel: 10.0, light: 0.6, agi: 0.8, tr: { quick: 1 },
+    { id: 'cheetah', name: '치타', speed: 7.687, accel: 10.0, light: 0.6, agi: 0.8, tr: { quick: 1 },
       wx: { heat: 0.03, snow: -0.05, rain: -0.03 },
       skill: { name: '번개 스프린트', desc: '누구보다 빠른 폭발 질주. 하지만 곧 지쳐서 헥헥거려요.' },
       passive: '출발이 가장 빨라요.' },
-    { id: 'fox', name: '여우', speed: 7.535, accel: 7.0, light: 0.7, agi: 0.8, tr: { nofog: 1 },
+    { id: 'fox', name: '여우', speed: 7.589, accel: 7.0, light: 0.7, agi: 0.8, tr: { nofog: 1 },
       wx: { fog: 0.04, snow: 0.01 },
       skill: { name: '슬쩍하기', desc: '다른 동물이 들고 있는 아이템을 몰래 가져와요.' },
       passive: '안개 속에서도 길을 잘 찾아요.' },
-    { id: 'bear', name: '곰', speed: 7.671, accel: 6.0, light: 0.1, agi: 0.4, tr: {},
+    { id: 'bear', name: '곰', speed: 7.687, accel: 6.0, light: 0.1, agi: 0.4, tr: {},
       wx: { snow: 0.04, heat: -0.05 },
       skill: { name: '쩌렁쩌렁 포효', desc: '가까이 있는 동물들이 깜짝 놀라 느려져요.' },
       passive: '무거워서 바람에 끄떡없어요.' },
-    { id: 'penguin', name: '펭귄', speed: 7.289, accel: 6.0, light: 0.6, agi: 0.5, tr: { water: 1, ice: 1 },
+    { id: 'penguin', name: '펭귄', speed: 7.408, accel: 6.0, light: 0.6, agi: 0.5, tr: { water: 1, ice: 1 },
       wx: { snow: 0.07, rain: 0.03, heat: -0.08 },
       skill: { name: '배치기 슬라이딩', desc: '배로 쭈욱 미끄러져요. 비나 눈이 오면 훨씬 멀리 가요.' },
       passive: '미끄러운 길이 오히려 좋아요.' },
-    { id: 'elephant', name: '코끼리', speed: 7.773, accel: 5.5, light: 0.0, agi: 0.2, tr: { heavy: 1 },
+    { id: 'elephant', name: '코끼리', speed: 7.797, accel: 5.5, light: 0.0, agi: 0.2, tr: { heavy: 1 },
       wx: { rain: 0.02, snow: -0.02 },
       skill: { name: '코 물대포', desc: '선두에게 물을 뿜어 느리게 만들어요.' },
       passive: '두더지와 허들쯤은 그냥 밟고 지나가요.' },
-    { id: 'kangaroo', name: '캥거루', speed: 7.581, accel: 7.0, light: 0.6, agi: 1.0, tr: { hurdler: 1 },
+    { id: 'kangaroo', name: '캥거루', speed: 7.611, accel: 7.0, light: 0.6, agi: 1.0, tr: { hurdler: 1 },
       wx: { heat: 0.03, snow: -0.04 },
       skill: { name: '슈퍼 점프', desc: '하늘 높이 뛰어 장애물과 방해를 훌쩍 넘어가요.' },
       passive: '허들은 식은 죽 먹기예요.' },
-    { id: 'skunk', name: '스컹크', speed: 7.720, accel: 6.5, light: 0.8, agi: 0.6, tr: {},
+    { id: 'skunk', name: '스컹크', speed: 7.72, accel: 6.5, light: 0.8, agi: 0.6, tr: {},
       wx: { fog: 0.02 },
       skill: { name: '뿡뿡 구름', desc: '뒤따라오는 동물들이 코를 막느라 느려져요.' },
       passive: '뒤에 아무도 없으면 방귀 로켓으로 추격해요.' },
-    { id: 'pig', name: '돼지', speed: 7.479, accel: 6.0, light: 0.2, agi: 0.4, tr: { glutton: 1, mud: 1 },
+    { id: 'pig', name: '돼지', speed: 7.52, accel: 6.0, light: 0.2, agi: 0.4, tr: { glutton: 1, mud: 1 },
       wx: { rain: 0.02, heat: -0.02 },
       skill: { name: '꿀꿀 돌진', desc: '데굴데굴 굴러 돌진! 스쳐 지나간 동물은 휘청거려요.' },
       passive: '간식을 먹으면 힘이 더 오래가요.' },
-    { id: 'dog', name: '강아지', speed: 7.770, accel: 7.5, light: 0.6, agi: 0.7, tr: {},
+    { id: 'dog', name: '강아지', speed: 7.735, accel: 7.5, light: 0.6, agi: 0.7, tr: {},
       wx: { heat: -0.02, snow: 0.02 },
       skill: { name: '같이 가자!', desc: '바로 뒤에 있는 친구와 함께 빨라져요.' },
       passive: '의리파라서 친구를 도와줘요.' },
-    { id: 'cat', name: '고양이', speed: 7.580, accel: 8.0, light: 0.9, agi: 0.9, tr: { nimble: 1, nofog: 1 },
+    { id: 'cat', name: '고양이', speed: 7.588, accel: 8.0, light: 0.9, agi: 0.9, tr: { nimble: 1, nofog: 1 },
       wx: { rain: -0.05, fog: 0.04 },
       skill: { name: '냥냥 펀치', desc: '앞선 동물을 톡! 쳐서 빙글 돌게 만들어요.' },
       passive: '넘어져도 금방 일어나요.' },
-    { id: 'panda', name: '판다', speed: 7.367, accel: 5.8, light: 0.2, agi: 0.4, tr: { glutton: 1 },
+    { id: 'panda', name: '판다', speed: 7.503, accel: 5.8, light: 0.2, agi: 0.4, tr: { glutton: 1 },
       wx: { snow: 0.03, heat: -0.05 },
       skill: { name: '대나무 간식 타임', desc: '잠깐 멈춰 대나무를 먹고 엄청난 힘으로 질주해요.' },
       passive: '간식을 먹으면 힘이 더 오래가요.' },
-    { id: 'duck', name: '오리', speed: 7.413, accel: 6.5, light: 1.0, agi: 0.6, tr: { water: 1 },
+    { id: 'duck', name: '오리', speed: 7.473, accel: 6.5, light: 1.0, agi: 0.6, tr: { water: 1 },
       wx: { rain: 0.08, snow: -0.02, heat: -0.01 },
       skill: { name: '파닥파닥 활공', desc: '낮게 날아서 웅덩이도 장애물도 휙 지나가요.' },
       passive: '비 오는 날을 제일 좋아해요.' }
     ,
     // ── 여기부터 새로 들어온 36종 ──
-    { id: 'lion', name: '사자', speed: 7.632, accel: 7.0, light: 0.3, agi: 0.6, tr: {},
+    { id: 'lion', name: '사자', speed: 7.688, accel: 7.0, light: 0.3, agi: 0.6, tr: {},
       wx: { heat: 0.02, rain: -0.02 },
       skill: { name: '왕의 포효', desc: '앞서가는 동물들이 움찔하며 느려져요.' },
       passive: '더운 날씨에 조금 더 힘이 나요.' },
-    { id: 'tiger', name: '호랑이', speed: 7.657, accel: 8.0, light: 0.4, agi: 0.8, tr: {},
+    { id: 'tiger', name: '호랑이', speed: 7.69, accel: 8.0, light: 0.4, agi: 0.8, tr: {},
       wx: { fog: 0.02, heat: -0.01 },
       skill: { name: '호랑이 덮치기', desc: '앞선 동물에게 훌쩍 뛰어올라 넘어뜨려요.' },
       passive: '안개 낀 날 살금살금 잘 달려요.' },
-    { id: 'zebra', name: '얼룩말', speed: 7.603, accel: 7.5, light: 0.5, agi: 0.7, tr: {},
+    { id: 'zebra', name: '얼룩말', speed: 7.607, accel: 7.5, light: 0.5, agi: 0.7, tr: {},
       wx: { heat: 0.02, snow: -0.03 },
       skill: { name: '줄무늬 착시', desc: '주변 동물들이 눈이 어질어질, 길을 헷갈려요.' },
       passive: '착시를 쓰는 동안에는 방해가 안 통해요.' },
-    { id: 'giraffe', name: '기린', speed: 7.568, accel: 5.5, light: 0.5, agi: 0.4, tr: { reach: 1 },
+    { id: 'giraffe', name: '기린', speed: 7.598, accel: 5.5, light: 0.5, agi: 0.4, tr: { reach: 1 },
       wx: { heat: 0.02, snow: -0.03 },
       skill: { name: '높은 나무 열매', desc: '아무도 못 닿는 높은 곳에서 좋은 아이템을 따 와요.' },
       passive: '결승선에서는 긴 목이 먼저 닿아요.' },
-    { id: 'horse', name: '말', speed: 7.604, accel: 8.0, light: 0.4, agi: 0.8, tr: { hurdler: 1 },
+    { id: 'horse', name: '말', speed: 7.567, accel: 8.0, light: 0.4, agi: 0.8, tr: { hurdler: 1 },
       wx: {},
       skill: { name: '전력 질주', desc: '오랫동안 꾸준히 빠르게 달려요.' },
       passive: '허들도 가볍게 넘어요.' },
-    { id: 'cow', name: '젖소', speed: 7.614, accel: 5.5, light: 0.1, agi: 0.3, tr: {},
+    { id: 'cow', name: '젖소', speed: 7.643, accel: 5.5, light: 0.1, agi: 0.3, tr: {},
       wx: { rain: 0.01, heat: -0.02 },
       skill: { name: '신선한 우유', desc: '느려지는 효과를 싹 씻어 내고 방패까지 둘러요.' },
       passive: '묵직해서 바람에 잘 안 밀려요.' },
-    { id: 'sheep', name: '양', speed: 7.743, accel: 6.0, light: 0.7, agi: 0.5, tr: {},
+    { id: 'sheep', name: '양', speed: 7.807, accel: 6.0, light: 0.7, agi: 0.5, tr: {},
       wx: { snow: 0.03, heat: -0.05, rain: -0.02 },
       skill: { name: '양 세기 자장가', desc: '가까운 동물 둘이 양을 세다 스르르 잠들어요.' },
       passive: '털옷 덕분에 눈 오는 날이 좋아요.' },
-    { id: 'goat', name: '염소', speed: 7.611, accel: 7.0, light: 0.5, agi: 0.8, tr: { hurdler: 1 },
+    { id: 'goat', name: '염소', speed: 7.521, accel: 7.0, light: 0.5, agi: 0.8, tr: { hurdler: 1 },
       wx: { snow: 0.02 },
       skill: { name: '오기 박치기', desc: '뒤처져 있을수록 더 세게 치고 나가요.' },
       passive: '허들쯤은 훌쩍 넘어요.' },
-    { id: 'deer', name: '사슴', speed: 7.650, accel: 8.0, light: 0.6, agi: 0.9, tr: { hurdler: 1 },
+    { id: 'deer', name: '사슴', speed: 7.63, accel: 8.0, light: 0.6, agi: 0.9, tr: { hurdler: 1 },
       wx: { fog: 0.02, snow: 0.02 },
       skill: { name: '뿔 반사', desc: '다음 방해를 뿔로 받아쳐, 건 동물에게 되돌려줘요.' },
       passive: '허들도 사뿐히 넘어요.' },
-    { id: 'koala', name: '코알라', speed: 7.534, accel: 6.0, light: 0.6, agi: 0.4, tr: { glutton: 1 },
+    { id: 'koala', name: '코알라', speed: 7.686, accel: 6.0, light: 0.6, agi: 0.4, tr: { glutton: 1 },
       wx: { rain: -0.02 },
       skill: { name: '어부바', desc: '앞 동물 등에 찰싹 매달려 편하게 가요.' },
       passive: '간식을 먹으면 힘이 더 오래가요.' },
-    { id: 'sloth', name: '나무늘보', speed: 7.669, accel: 5.0, light: 0.5, agi: 0.2, tr: { steady: 1 },
+    { id: 'sloth', name: '나무늘보', speed: 7.713, accel: 5.0, light: 0.5, agi: 0.2, tr: { steady: 1 },
       wx: { rain: 0.02 },
       skill: { name: '느긋함 전염', desc: '다른 동물 모두가 덩달아 느릿느릿해져요.' },
       passive: '느긋해서 날씨가 나빠도 덜 느려져요.' },
-    { id: 'monkey', name: '원숭이', speed: 7.697, accel: 8.0, light: 0.7, agi: 0.9, tr: {},
+    { id: 'monkey', name: '원숭이', speed: 7.742, accel: 8.0, light: 0.7, agi: 0.9, tr: {},
       wx: { heat: 0.01, snow: -0.04 },
       skill: { name: '바나나 세례', desc: '앞선 동물 둘의 레인에 바나나 껍질을 던져요.' },
       passive: '날렵해서 두더지를 잘 피해요.' },
-    { id: 'gorilla', name: '고릴라', speed: 7.596, accel: 6.0, light: 0.05, agi: 0.4, tr: { heavy: 1 },
+    { id: 'gorilla', name: '고릴라', speed: 7.609, accel: 6.0, light: 0.05, agi: 0.4, tr: { heavy: 1 },
       wx: { snow: -0.02, fog: 0.01 },
       skill: { name: '쿵쿵 가슴 두드리기', desc: '땅이 울려서 가까운 동물들이 넘어져요.' },
       passive: '두더지와 허들쯤은 그냥 밟고 지나가요.' },
-    { id: 'hippo', name: '하마', speed: 7.601, accel: 5.5, light: 0.0, agi: 0.2, tr: { heavy: 1, water: 1, mud: 1 },
+    { id: 'hippo', name: '하마', speed: 7.652, accel: 5.5, light: 0.0, agi: 0.2, tr: { heavy: 1, water: 1, mud: 1 },
       wx: { rain: 0.05, heat: -0.03 },
       skill: { name: '진흙탕 만들기', desc: '지나간 자리에 진흙탕을 남겨 뒤따르는 동물이 미끄러져요.' },
       passive: '비 오는 날 물웅덩이가 반가워요.' },
-    { id: 'rhino', name: '코뿔소', speed: 7.521, accel: 5.0, light: 0.0, agi: 0.3, tr: { heavy: 1 },
+    { id: 'rhino', name: '코뿔소', speed: 7.54, accel: 5.0, light: 0.0, agi: 0.3, tr: { heavy: 1 },
       wx: { heat: 0.02 },
       skill: { name: '멈출 수 없는 돌진', desc: '달릴수록 점점 빨라지고 어떤 방해도 안 통해요.' },
       passive: '두더지와 허들쯤은 그냥 밟고 지나가요.' },
-    { id: 'croc', name: '악어', speed: 7.628, accel: 6.0, light: 0.2, agi: 0.4, tr: { water: 1 },
+    { id: 'croc', name: '악어', speed: 7.705, accel: 6.0, light: 0.2, agi: 0.4, tr: { water: 1 },
       wx: { rain: 0.06, snow: -0.06, heat: 0.02 },
       skill: { name: '악어의 눈물', desc: '가짜 눈물에 속은 앞 동물이 달래 주려고 멈춰 서요.' },
       passive: '비 오는 날 물웅덩이가 반가워요.' },
-    { id: 'frog', name: '개구리', speed: 7.571, accel: 8.0, light: 0.9, agi: 0.9, tr: { water: 1, hurdler: 1 },
+    { id: 'frog', name: '개구리', speed: 7.62, accel: 8.0, light: 0.9, agi: 0.9, tr: { water: 1, hurdler: 1 },
       wx: { rain: 0.08, heat: -0.05, snow: -0.05 },
       skill: { name: '혓바닥 낼름', desc: '긴 혀로 앞 동물을 붙잡고 단숨에 따라붙어요.' },
       passive: '비 오는 날을 제일 좋아해요.' },
-    { id: 'squirrel', name: '다람쥐', speed: 7.655, accel: 9.0, light: 0.9, agi: 1.0, tr: {},
+    { id: 'squirrel', name: '다람쥐', speed: 7.672, accel: 9.0, light: 0.9, agi: 1.0, tr: {},
       wx: { snow: 0.01 },
       skill: { name: '도토리 세례', desc: '앞선 동물들에게 도토리를 던져 주춤하게 해요.' },
       passive: '아주 날렵해서 두더지를 잘 피해요.' },
@@ -198,75 +198,242 @@
       wx: { heat: -0.02 },
       skill: { name: '쳇바퀴 질주', desc: '쳇바퀴를 타고 데굴데굴, 바닥 방해도 그냥 지나가요.' },
       passive: '간식을 먹으면 힘이 더 오래가요.' },
-    { id: 'mouse', name: '생쥐', speed: 7.574, accel: 9.0, light: 1.0, agi: 0.9, tr: { nofog: 1 },
+    { id: 'mouse', name: '생쥐', speed: 7.588, accel: 9.0, light: 1.0, agi: 0.9, tr: { nofog: 1 },
       wx: { fog: 0.02 },
       skill: { name: '쥐구멍 지름길', desc: '땅속으로 쏙 들어가 저 앞에서 튀어나와요.' },
       passive: '안개 속에서도 길을 잘 찾아요.' },
-    { id: 'hedgehog', name: '고슴도치', speed: 7.526, accel: 6.5, light: 0.7, agi: 0.5, tr: {},
+    { id: 'hedgehog', name: '고슴도치', speed: 7.56, accel: 6.5, light: 0.7, agi: 0.5, tr: {},
       wx: {},
       skill: { name: '가시 세우기', desc: '가시를 세운 동안 방해한 동물이 오히려 따끔!' },
       passive: '가시를 세운 동안에는 방해가 안 통해요.' },
-    { id: 'raccoon', name: '너구리', speed: 7.597, accel: 7.0, light: 0.7, agi: 0.8, tr: { nofog: 1 },
+    { id: 'raccoon', name: '너구리', speed: 7.626, accel: 7.0, light: 0.7, agi: 0.8, tr: { nofog: 1 },
       wx: { fog: 0.03 },
       skill: { name: '기운 가로채기', desc: '빨라진 동물의 기운을 슬쩍 가져와요.' },
       passive: '안개 속에서도 길을 잘 찾아요.' },
-    { id: 'otter', name: '수달', speed: 7.406, accel: 7.0, light: 0.6, agi: 0.7, tr: { water: 1 },
+    { id: 'otter', name: '수달', speed: 7.44, accel: 7.0, light: 0.6, agi: 0.7, tr: { water: 1 },
       wx: { rain: 0.07 },
       skill: { name: '물살 타기', desc: '방패를 두르고 미끄러지듯 달려요. 젖은 길이면 더 빨라요.' },
       passive: '비 오는 날 물웅덩이가 반가워요.' },
-    { id: 'beaver', name: '비버', speed: 7.647, accel: 6.0, light: 0.4, agi: 0.4, tr: { water: 1 },
+    { id: 'beaver', name: '비버', speed: 7.705, accel: 6.0, light: 0.4, agi: 0.4, tr: { water: 1 },
       wx: { rain: 0.05 },
       skill: { name: '통나무 댐', desc: '지나간 자리에 통나무를 쌓아 뒤따르는 동물을 막아요.' },
       passive: '비 오는 날 물웅덩이가 반가워요.' },
-    { id: 'wolf', name: '늑대', speed: 7.618, accel: 7.5, light: 0.5, agi: 0.8, tr: {},
+    { id: 'wolf', name: '늑대', speed: 7.601, accel: 7.5, light: 0.5, agi: 0.8, tr: {},
       wx: { snow: 0.05, heat: -0.03 },
       skill: { name: '무리 사냥 하울링', desc: '주변에 동물이 많을수록 더 빨라져요.' },
       passive: '눈 오는 날에 강해요.' },
-    { id: 'polar', name: '북극곰', speed: 7.597, accel: 6.0, light: 0.1, agi: 0.4, tr: { ice: 1 },
+    { id: 'polar', name: '북극곰', speed: 7.64, accel: 6.0, light: 0.1, agi: 0.4, tr: { ice: 1 },
       wx: { snow: 0.09, heat: -0.09 },
       skill: { name: '얼음 숨결', desc: '앞 동물을 꽁꽁 얼려요. 눈 오는 날엔 더 오래 얼어요.' },
       passive: '빙판길이 오히려 좋아요.' },
-    { id: 'seal', name: '물개', speed: 7.498, accel: 6.0, light: 0.5, agi: 0.5, tr: { water: 1, ice: 1 },
+    { id: 'seal', name: '물개', speed: 7.572, accel: 6.0, light: 0.5, agi: 0.5, tr: { water: 1, ice: 1 },
       wx: { rain: 0.05, snow: 0.05, heat: -0.06 },
       skill: { name: '비치볼 튕기기', desc: '공이 맨 앞 두 동물의 머리 위로 통통 튀어요.' },
       passive: '젖은 길도 언 길도 좋아해요.' },
-    { id: 'owl', name: '부엉이', speed: 7.642, accel: 6.5, light: 0.9, agi: 0.6, tr: { nofog: 1 },
+    { id: 'owl', name: '부엉이', speed: 7.651, accel: 6.5, light: 0.9, agi: 0.6, tr: { nofog: 1 },
       wx: { fog: 0.05 },
       skill: { name: '밤이 왔다', desc: '갑자기 캄캄해져서 다른 동물들이 길을 더듬어요.' },
       passive: '안개 속에서도 길을 잘 찾아요.' },
-    { id: 'chicken', name: '닭', speed: 7.723, accel: 7.5, light: 0.9, agi: 0.7, tr: {},
+    { id: 'chicken', name: '닭', speed: 7.765, accel: 7.5, light: 0.9, agi: 0.7, tr: {},
       wx: { rain: -0.03 },
       skill: { name: '달걀 폭탄', desc: '뒤따르는 동물 레인에 달걀을 낳아 미끄러지게 해요.' },
       passive: '뒤에 아무도 없으면 파닥파닥 날갯짓으로 추격해요.' },
-    { id: 'parrot', name: '앵무새', speed: 7.623, accel: 7.0, light: 1.0, agi: 0.7, tr: {},
+    { id: 'parrot', name: '앵무새', speed: 7.669, accel: 7.0, light: 1.0, agi: 0.7, tr: {},
       wx: { heat: 0.03, snow: -0.05 },
       skill: { name: '따라 하기', desc: '방금 다른 동물이 쓴 스킬을 그대로 따라 해요.' },
       passive: '아직 아무도 스킬을 안 썼으면 그냥 날아가요.' },
-    { id: 'flamingo', name: '플라밍고', speed: 7.509, accel: 6.5, light: 0.8, agi: 0.7, tr: { water: 1 },
+    { id: 'flamingo', name: '플라밍고', speed: 7.578, accel: 6.5, light: 0.8, agi: 0.7, tr: { water: 1 },
       wx: { rain: 0.03, heat: 0.02, snow: -0.05 },
       skill: { name: '성큼성큼', desc: '긴 다리로 성큼성큼, 바닥 방해를 넘어가요.' },
       passive: '비 오는 날 물웅덩이가 반가워요.' },
-    { id: 'ostrich', name: '타조', speed: 7.636, accel: 8.5, light: 0.5, agi: 0.7, tr: {},
+    { id: 'ostrich', name: '타조', speed: 7.689, accel: 8.5, light: 0.5, agi: 0.7, tr: {},
       wx: { heat: 0.04, snow: -0.05 },
       skill: { name: '뒷발차기', desc: '바로 뒤 동물을 뻥 차서 뒤로 밀어내요.' },
       passive: '더운 날씨에 강해요.' },
-    { id: 'camel', name: '낙타', speed: 7.538, accel: 5.5, light: 0.2, agi: 0.3, tr: {},
+    { id: 'camel', name: '낙타', speed: 7.599, accel: 5.5, light: 0.2, agi: 0.3, tr: {},
       wx: { heat: 0.07, snow: -0.04, rain: -0.02 },
       skill: { name: '혹 에너지', desc: '한동안 느려지는 방해가 안 통하고 꾸준히 빨라요.' },
       passive: '폭염에도 끄떡없어요.' },
-    { id: 'alpaca', name: '알파카', speed: 7.766, accel: 6.5, light: 0.6, agi: 0.5, tr: {},
+    { id: 'alpaca', name: '알파카', speed: 7.819, accel: 6.5, light: 0.6, agi: 0.5, tr: {},
       wx: { snow: 0.03, heat: -0.03 },
       skill: { name: '퉤! 침 뱉기', desc: '앞 동물 얼굴에 침을 뱉어 앞이 안 보이게 해요.' },
       passive: '털옷 덕분에 눈 오는 날이 좋아요.' },
-    { id: 'bat', name: '박쥐', speed: 7.651, accel: 7.5, light: 1.0, agi: 0.8, tr: { nofog: 1 },
+    { id: 'bat', name: '박쥐', speed: 7.687, accel: 7.5, light: 1.0, agi: 0.8, tr: { nofog: 1 },
       wx: { fog: 0.05, heat: -0.02 },
       skill: { name: '초음파', desc: '깜짝 놀란 동물들이 들고 있던 아이템을 떨어뜨려요.' },
       passive: '안개 속에서도 길을 잘 찾아요.' },
-    { id: 'redpanda', name: '레서판다', speed: 7.557, accel: 7.0, light: 0.7, agi: 0.7, tr: {},
+    { id: 'redpanda', name: '레서판다', speed: 7.561, accel: 7.0, light: 0.7, agi: 0.7, tr: {},
       wx: { snow: 0.03, heat: -0.03 },
       skill: { name: '만세 위협', desc: '두 팔 번쩍! 너무 귀여워서 가까운 동물들이 멈춰 서요.' },
       passive: '눈 오는 날에 조금 더 힘이 나요.' }
   ];
+
+  // ───────────── 새 100종 (해양 · 파충류 · 새 · 공룡 · 포유류) ─────────────
+  // [id, 이름, 분류, 크기(S 작음 · M 보통 · L 큼), 특성, 날씨 보정, 스킬 이름, 스킬 설명, 스킬 유형, 매개변수, (중계 문구)]
+  var MORE = [
+    // 바다 동물
+    ['shark', '상어', 'sea', 'M', 'water', { rain: 0.04, heat: -0.02 }, '덥석 물기', '앞 동물 꼬리를 덥석! 깜짝 놀라 넘어져요.', 'hitAhead', { range: 18, kind: 'stun', fx: 'trip', t: 1.0, self: [1.45, 2.3], pop: '으악, 상어다!' }],
+    ['whale', '고래', 'sea', 'L', 'water heavy', { rain: 0.05, heat: -0.03 }, '물기둥 분수', '등에서 물기둥을 뿜어 주변 동물을 흠뻑 적셔요.', 'area', { range: 26, kind: 'slow', fx: 'wet', m: 0.66, t: 2.3, self: [1.3, 2.3], ev: 'howl', pop: '푸하!' }],
+    ['dolphin', '돌고래', 'sea', 'M', 'water', { rain: 0.05 }, '공중제비 점프', '물 위로 솟구치듯 높이 뛰어 장애물을 넘어요.', 'boost', { m: 1.9, t: 1.3, air: 1, fx: 'jump' }, '하늘 높이 솟구칩니다!'],
+    ['orca', '범고래', 'sea', 'L', 'water ice heavy', { rain: 0.04, snow: 0.04, heat: -0.05 }, '큰 파도 일으키기', '큰 파도가 덮쳐 가까운 동물들이 휩쓸려요.', 'area', { range: 22, kind: 'stun', fx: 'spin', t: 0.8, ground: 1, self: [1.18, 1.8], ev: 'roar', pop: '철썩!' }],
+    ['octopus', '문어', 'sea', 'M', 'water', { rain: 0.04, heat: -0.03 }, '먹물 뿌리기', '지나간 자리에 먹물을 뿌려 뒤따르는 동물 앞이 캄캄해져요.', 'patch', { ink: 1, self: [1.35, 2.4] }],
+    ['squid', '오징어', 'sea', 'M', 'water', { rain: 0.04, heat: -0.03 }, '제트 분사', '물을 내뿜어 로켓처럼 튀어 나가요. 잠깐 숨이 차요.', 'boost', { m: 2.0, t: 1.4, fx: 'rocket', tired: [0.82, 2.2] }, '쐐애액!'],
+    ['crab', '게', 'sea', 'S', 'water', { rain: 0.04 }, '집게 꼬집기', '앞 동물을 집게로 콕! 따끔해서 펄쩍 뛰어요.', 'hitAhead', { range: 16, kind: 'stun', fx: 'sting', t: 0.9, self: [1.45, 2.3], pop: '아얏!' }],
+    ['lobster', '바닷가재', 'sea', 'M', 'water', { rain: 0.04 }, '집게 붙잡기', '큰 집게로 앞 동물을 꽉 붙잡아 느리게 만들어요.', 'hitAhead', { range: 20, kind: 'slow', fx: 'pulled', m: 0.5, t: 2.2, self: [1.45, 2.5], pop: '놔 줘~' }],
+    ['shrimp', '새우', 'sea', 'S', 'water', { rain: 0.04 }, '꼬리 튕기기', '꼬리를 탁 튕겨 순식간에 앞으로 튀어 나가요.', 'boost', { m: 2.3, t: 0.9, air: 1, fx: 'jump' }, '탁! 하고 튀어 나갑니다.'],
+    ['jellyfish', '해파리', 'sea', 'S', 'water', { rain: 0.05 }, '찌릿 촉수', '가까이 온 동물들이 촉수에 닿아 찌릿해요.', 'area', { range: 13, kind: 'stun', fx: 'zap', t: 0.9, self: [1.3, 2.2], ev: 'sonar', pop: '찌릿!' }],
+    ['starfish', '불가사리', 'sea', 'S', 'water', { rain: 0.04 }, '반짝 별 변신', '잠깐 반짝이는 별이 되어 방해 없이 달려요.', 'guard', { imm: 1, m: 1.35, t: 2.4, fx: 'star' }, '반짝반짝 빛나며 달립니다.'],
+    ['seahorse', '해마', 'sea', 'S', 'water', { rain: 0.04 }, '물방울 대포', '맨 앞 동물에게 물방울을 쏘아 느리게 해요.', 'hitLeader', { kind: 'slow', fx: 'wet', m: 0.58, t: 2.3, fog: 1, proj: 'water', self: [1.42, 2.5], pop: '퐁퐁퐁!' }],
+    ['clownfish', '흰동가리', 'sea', 'S', 'water', { rain: 0.04 }, '말미잘 숨바꼭질', '말미잘 속에 숨듯 방해를 피하며 달려요.', 'guard', { imm: 1, m: 1.25, t: 2.9, fx: 'illusion' }, '요리조리 숨으며 달려요.'],
+    ['puffer', '복어', 'sea', 'S', 'water', { rain: 0.04 }, '빵빵 부풀기', '몸을 가시 공처럼 부풀려요. 건드리면 따끔!', 'guard', { thorns: 1, m: 1.18, t: 3.6 }, '건드리면 따끔합니다!'],
+    ['manta', '쥐가오리', 'sea', 'M', 'water', { rain: 0.04 }, '수면 활공', '넓은 지느러미로 트랙 위를 미끄러지듯 날아요.', 'boost', { m: 1.42, t: 3.0, air: 1, fx: 'fly' }, '트랙 위를 스르륵 날아갑니다.'],
+    ['walrus', '바다코끼리', 'sea', 'L', 'water ice heavy', { snow: 0.06, rain: 0.03, heat: -0.06 }, '쿵 엉덩방아', '쿵! 하고 주저앉아 땅을 울려 주변 동물이 넘어져요.', 'area', { range: 22, kind: 'stun', fx: 'trip', t: 0.75, ground: 1, self: [1.2, 1.8], ev: 'roar', pop: '쿵! 꽈당' }],
+    ['narwhal', '일각고래', 'sea', 'M', 'water ice', { snow: 0.05, rain: 0.03, heat: -0.05 }, '뿔 콕 찌르기', '긴 뿔로 앞 동물 엉덩이를 콕! 깜짝 놀라 멈춰요.', 'hitAhead', { range: 20, kind: 'stun', fx: 'sting', t: 0.95, self: [1.42, 2.3], pop: '앗 따가!' }],
+    ['sealion', '바다사자', 'sea', 'M', 'water', { rain: 0.05, heat: -0.03 }, '박수 응원', '짝짝짝! 나와 뒤처진 동물들이 함께 힘을 내요.', 'rally', { n: 2, m: 1.35, sm: 1.55, t: 2.9 }],
+    ['manatee', '매너티', 'sea', 'L', 'water steady', { rain: 0.04 }, '느긋한 헤엄', '오래오래 꾸준히 빨라요. 느려지는 방해도 안 통해요.', 'guard', { noslow: 1, cleanse0: 1, m: 1.16, t: 5.5, fx: 'steady' }, '한동안 느려지지 않아요.'],
+    ['beluga', '흰고래', 'sea', 'M', 'water ice', { snow: 0.06, rain: 0.03, heat: -0.06 }, '바다의 자장가', '고운 노래에 가까운 동물 둘이 스르르 잠들어요.', 'area', { range: 25, max: 2, kind: 'stun', fx: 'sleep', t: 1.3, self: [1.25, 2.0], ev: 'sonar', pop: '쿨쿨…' }],
+    ['swordfish', '황새치', 'sea', 'M', 'water', { rain: 0.05 }, '쾌속 찌르기', '점점 빨라지는 직선 돌진. 막을 수 없어요.', 'boost', { m: 1.15, t: 2.5, imm: 1, ramp: [1.15, 1.5], fx: 'charge' }, '점점 빨라집니다!'],
+    ['angler', '아귀', 'sea', 'S', 'water nofog', { fog: 0.05, rain: 0.03 }, '초롱불 유혹', '반짝이는 초롱불에 홀린 앞 동물들이 멈춰 서요.', 'area', { dir: 'ahead', range: 22, max: 2, kind: 'stun', fx: 'charm', t: 0.95, self: [1.3, 2.2], ev: 'charm', pop: '반짝반짝…' }],
+    ['seaturtle', '바다거북', 'sea', 'M', 'water steady', { rain: 0.05 }, '해류 타기', '해류를 탄 듯 매끄럽게. 젖은 길이면 훨씬 오래가요.', 'boost', { m: 1.45, t: 2.4, gnd: 1, wetK: 1.5, fx: 'slide' }, '물결을 타고 미끄러집니다.'],
+    // 파충류 · 양서류
+    ['snake', '뱀', 'rep', 'M', '', { heat: 0.03, snow: -0.06 }, '휘감기', '앞 동물을 스르륵 휘감아 느리게 만들어요.', 'hitAhead', { range: 20, kind: 'slow', fx: 'pulled', m: 0.52, t: 2.2, self: [1.45, 2.4], pop: '꼼짝 못 하겠어!' }],
+    ['cobra', '코브라', 'rep', 'M', '', { heat: 0.04, snow: -0.06 }, '후드 펼치기', '후드를 쫙 펼쳐 앞선 동물들을 겁줘요.', 'area', { dir: 'ahead', range: 40, kind: 'slow', fx: 'scared', m: 0.7, t: 2.2, self: [1.38, 2.4], ev: 'roar', pop: '히익!' }],
+    ['lizard', '도마뱀', 'rep', 'S', '', { heat: 0.04, snow: -0.05 }, '꼬리 떼고 줄행랑', '꼬리를 떼어 주고 달아나요. 느려진 것도 싹 풀려요.', 'guard', { cleanse: 1, shield: 6, m: 1.4, t: 2.4 }, '꼬리를 떼어 주고 달아납니다.'],
+    ['chameleon', '카멜레온', 'rep', 'S', 'nofog', { heat: 0.03, snow: -0.05, fog: 0.03 }, '색깔 흉내', '맨 앞 동물의 스킬을 그대로 흉내 내요.', 'mimic', { who: 'leader' }],
+    ['iguana', '이구아나', 'rep', 'M', '', { heat: 0.06, snow: -0.07 }, '일광욕 충전', '잠깐 햇볕을 쬐고 힘차게 달려요. 더운 날엔 더 오래가요.', 'feast', { wait: 0.9, m: 1.56, t: 2.7, heatK: 1.4 }],
+    ['gecko', '도마뱀붙이', 'rep', 'S', '', { heat: 0.03, snow: -0.05 }, '찰싹 발바닥', '어디든 붙는 발로 미끄러운 길도 장애물도 그냥 지나가요.', 'boost', { m: 1.45, t: 3.0, gnd: 1, noslow: 1 }, '찰싹찰싹 달라붙어 달립니다.'],
+    ['komodo', '코모도왕도마뱀', 'rep', 'L', 'heavy', { heat: 0.04, snow: -0.07 }, '끈적 침 공격', '앞 동물에게 침을 묻혀 오래도록 느리게 만들어요.', 'hitAhead', { range: 24, kind: 'slow', fx: 'pie', m: 0.7, t: 4.0, fog: 1, proj: 'spit', self: [1.42, 2.5], pop: '끈적끈적~' }],
+    ['tortoise', '땅거북', 'rep', 'L', 'steady heavy', { heat: 0.03 }, '단단한 등딱지', '등딱지 속에 쏙! 한참 동안 어떤 방해도 안 통해요.', 'guard', { imm: 1, m: 1.22, t: 3.4, fx: 'shell' }, '등딱지 속에서 끄떡없이 갑니다.'],
+    ['axolotl', '우파루파', 'rep', 'S', 'water', { rain: 0.06, heat: -0.05 }, '말랑 재생', '느려진 것을 싹 낫게 하고 방패까지 둘러요.', 'guard', { cleanse: 1, shield: 8, m: 1.28, t: 2.3 }, '말끔히 낫고 방패를 둘렀어요.'],
+    ['salamander', '도롱뇽', 'rep', 'S', 'water', { rain: 0.06, heat: -0.04 }, '미끌 점액', '지나간 자리에 점액을 남겨 뒤따르는 동물이 미끄러져요.', 'patch', { self: [1.35, 2.4] }],
+    ['toad', '두꺼비', 'rep', 'S', 'water hurdler', { rain: 0.07, heat: -0.04 }, '혓바닥 낚아채기', '긴 혀로 다른 동물의 아이템을 날름 가져와요.', 'steal', { self: [1.2, 1.5] }],
+    // 새
+    ['eagle', '독수리', 'bird', 'M', '', { rain: -0.03 }, '급강하 낚아채기', '하늘에서 내려와 맨 앞 동물을 번쩍 들어 올려요.', 'hitLeader', { kind: 'stun', fx: 'lift', t: 1.2, self: [1.42, 2.3], pop: '어어어~?' }],
+    ['falcon', '매', 'bird', 'S', '', { rain: -0.03 }, '쏜살 급강하', '세상에서 가장 빠른 급강하. 금방 숨이 차요.', 'boost', { m: 2.0, t: 1.4, air: 1, fx: 'fly', tired: [0.88, 1.6] }, '쏜살같이 내리꽂힙니다!'],
+    ['crow', '까마귀', 'bird', 'S', 'nofog', { fog: 0.03 }, '반짝이 슬쩍', '반짝이는 건 못 참아요. 다른 동물의 아이템을 가져와요.', 'steal', { self: [1.25, 1.6] }],
+    ['swan', '백조', 'bird', 'M', 'water', { rain: 0.04 }, '우아한 날갯짓', '우아하게 날개를 펴면 방해가 스쳐 지나가요.', 'guard', { imm: 1, m: 1.28, t: 2.8, fx: 'illusion' }, '우아하게 미끄러져 갑니다.'],
+    ['goose', '거위', 'bird', 'M', 'water', { rain: 0.04 }, '꽥꽥 소동', '꽥꽥! 시끄러운 소리에 주변 동물들이 깜짝 놀라요.', 'area', { range: 26, kind: 'slow', fx: 'scared', m: 0.66, t: 2.2, self: [1.3, 2.2], ev: 'roar', pop: '깜짝이야!' }],
+    ['peacock', '공작', 'bird', 'M', '', { rain: -0.03 }, '꼬리 부채 펼치기', '화려한 꼬리에 가까운 동물들이 넋을 잃어요.', 'area', { range: 20, kind: 'stun', fx: 'charm', t: 0.9, self: [1.3, 2.2], ev: 'charm', pop: '우와, 예쁘다…' }],
+    ['toucan', '큰부리새', 'bird', 'S', '', { heat: 0.03, snow: -0.05 }, '큰 부리 콕', '커다란 부리로 앞 동물 머리를 콕! 어질어질해요.', 'hitAhead', { range: 22, kind: 'stun', fx: 'bonk2', t: 1.0, self: [1.42, 2.3], pop: '콩! 아야' }],
+    ['pelican', '펠리컨', 'bird', 'M', 'water', { rain: 0.04 }, '부리 주머니', '부리 주머니에서 쓸 만한 아이템을 꺼내요.', 'item', { list: ['rocket', 'shield', 'banana', 'pie', 'carrot', 'magnet'] }],
+    ['woodpecker', '딱따구리', 'bird', 'S', '', {}, '따다다닥 쪼기', '앞 동물을 따다다닥! 정신없어서 주춤해요.', 'hitAhead', { range: 22, kind: 'slow', fx: 'bonk', m: 0.6, t: 2.6, self: [1.45, 2.5], pop: '따다다닥!' }],
+    ['pigeon', '비둘기', 'bird', 'S', '', {}, '편지 배달', '나와 맨 뒤 동물들에게 응원 편지를 배달해요.', 'rally', { n: 2, m: 1.35, sm: 1.55, t: 2.9 }],
+    ['seagull', '갈매기', 'bird', 'S', 'water', { rain: 0.03 }, '간식 낚아채기', '빨라진 동물의 기운을 간식처럼 낚아채요.', 'leech', {}],
+    ['sparrow', '참새', 'bird', 'S', '', {}, '짹짹 떼 지어 날기', '주변에 동물이 많을수록 신나서 빨라져요.', 'scale', { by: 'near', range: 20, base: 1.2, step: 0.07, max: 1.6, t: 2.4 }, '짹짹! 신나게 날아갑니다.'],
+    ['hummingbird', '벌새', 'bird', 'S', '', { rain: -0.03, heat: 0.02 }, '초고속 날갯짓', '눈에 안 보일 만큼 빠른 날갯짓으로 붕 떠서 가요.', 'boost', { m: 1.7, t: 1.9, air: 1, fx: 'fly' }, '붕~ 하고 날아갑니다.'],
+    ['kiwi', '키위새', 'bird', 'S', 'nofog', { fog: 0.04 }, '지렁이 간식', '잠깐 멈춰 지렁이를 먹고 힘차게 달려요.', 'feast', { wait: 0.9, m: 1.58, t: 2.7 }],
+    ['turkey', '칠면조', 'bird', 'M', '', {}, '깃털 부풀리기', '깃털을 잔뜩 부풀려 방해를 튕겨 내요.', 'guard', { imm: 1, m: 1.3, t: 3.0, fx: 'giant' }, '몸이 두 배로 커 보여요!'],
+    ['crane', '두루미', 'bird', 'M', 'water', { rain: 0.03, snow: 0.03 }, '학다리 성큼', '긴 다리로 성큼성큼, 바닥 방해를 넘어가요.', 'boost', { m: 1.34, t: 2.6, gnd: 1 }, '성큼성큼 넘어갑니다.'],
+    ['stork', '황새', 'bird', 'M', 'water', { rain: 0.03 }, '행운 배달', '뒤에 있는 친구에게 행운을 배달해 함께 빨라져요.', 'buddy', { m: 1.5, m2: 1.3, t: 2.8 }],
+    ['puffin', '퍼핀', 'bird', 'S', 'water ice', { rain: 0.04, snow: 0.04, heat: -0.05 }, '파도 타기', '파도를 타듯 미끄러져요. 젖은 길이면 더 멀리!', 'boost', { m: 1.36, t: 2.0, gnd: 1, wetK: 1.4, fx: 'slide' }, '쭈욱 미끄러집니다.'],
+    ['robin', '울새', 'bird', 'S', '', { snow: 0.02 }, '아침 노래', '맑은 노래로 나와 뒤처진 동물들이 기운을 차려요.', 'rally', { n: 3, m: 1.3, sm: 1.55, t: 2.9 }],
+    ['canary', '카나리아', 'bird', 'S', '', { snow: -0.03 }, '고운 노래 자장가', '노래를 들은 가까운 동물 둘이 꾸벅꾸벅 졸아요.', 'area', { range: 25, max: 2, kind: 'stun', fx: 'sleep', t: 1.3, self: [1.42, 2.4], ev: 'sonar', pop: '쿨쿨…' }],
+    ['cockatoo', '왕관앵무', 'bird', 'S', '', { heat: 0.03, snow: -0.04 }, '흉내 내기', '바로 앞 동물의 스킬을 그대로 흉내 내요.', 'mimic', { who: 'ahead' }],
+    ['vulture', '대머리수리', 'bird', 'M', '', { heat: 0.04 }, '기다렸다 덮치기', '뒤에서 기다릴수록 더 세게 치고 나가요.', 'scale', { by: 'rank', base: 1.3, step: 0.07, max: 1.8, t: 2.4 }, '때를 기다렸다 치고 나갑니다!'],
+    ['dodo', '도도새', 'bird', 'M', '', {}, '될 대로 돼라', '얼마나 빨라질지는 도도새도 몰라요.', 'boost', { rand: [1.15, 2.1], t: 2.4 }, '에라 모르겠다, 달려!'],
+    // 공룡 · 옛 동물
+    ['trex', '티라노사우루스', 'dino', 'L', 'heavy', { heat: 0.02 }, '쩌렁쩌렁 대포효', '무시무시한 포효에 멀리 있는 동물까지 겁을 먹어요.', 'area', { range: 36, kind: 'slow', fx: 'scared', m: 0.66, t: 2.2, self: [1.25, 2.2], ev: 'roar', pop: '으아악!' }],
+    ['triceratops', '트리케라톱스', 'dino', 'L', 'heavy', {}, '세 뿔 돌진', '뿔을 앞세워 돌진! 스쳐 지나간 동물은 휘청거려요.', 'boost', { m: 1.5, t: 2.4, imm: 1, bump: 1, fx: 'charge' }, '뿔을 앞세워 돌진합니다!'],
+    ['stego', '스테고사우루스', 'dino', 'L', 'heavy', {}, '꼬리 가시 휘두르기', '꼬리를 휘둘러 뒤따르는 동물들을 넘어뜨려요.', 'area', { dir: 'behind', range: 16, kind: 'stun', fx: 'trip', t: 0.9, self: [1.45, 2.4], pop: '퍽! 꽈당' }],
+    ['brachio', '브라키오사우루스', 'dino', 'L', 'heavy reach', {}, '쿵쿵 발 구르기', '큰 발로 쿵쿵! 땅이 울려 주변 동물이 넘어져요.', 'area', { range: 24, kind: 'stun', fx: 'trip', t: 0.75, ground: 1, self: [1.25, 2.0], ev: 'roar', pop: '쿵! 꽈당' }],
+    ['raptor', '벨로키랍토르', 'dino', 'M', 'quick', {}, '발톱 걸기', '날쌔게 달려들어 앞 동물 발을 걸어요.', 'hitAhead', { range: 24, kind: 'stun', fx: 'trip', t: 0.95, leap: 1, fog: 1, pop: '어이쿠!' }],
+    ['ptero', '프테라노돈', 'dino', 'M', '', { rain: -0.03 }, '하늘 활공', '큰 날개를 펴고 트랙 위를 길게 날아가요.', 'boost', { m: 1.4, t: 3.2, air: 1, fx: 'fly' }, '큰 날개로 길게 날아갑니다.'],
+    ['ankylo', '안킬로사우루스', 'dino', 'L', 'heavy', {}, '꼬리 곤봉', '꼬리 곤봉으로 바로 뒤 동물을 뻥! 뒤로 밀어내요.', 'kick', { range: 12, push: 6, self: [1.52, 2.4] }],
+    ['parasaur', '파라사우롤로푸스', 'dino', 'M', '', {}, '뿔나팔 불기', '뿌우우~ 나팔 소리에 모두가 귀를 막고 느려져요.', 'global', { kind: 'slow', fx: 'slowmo', m: 0.6, t: 2.2, self: [1.35, 2.4], ev: 'slowmo', pop: '귀 따가워~' }],
+    ['spino', '스피노사우루스', 'dino', 'L', 'water heavy', { rain: 0.05 }, '물살 가르기', '물살을 가르듯 돌진해요. 젖은 길이면 더 오래가요.', 'boost', { m: 1.4, t: 2.1, gnd: 1, wetK: 1.5, fx: 'slide' }, '물살을 가르며 나갑니다.'],
+    ['diplodocus', '디플로도쿠스', 'dino', 'L', 'heavy reach', {}, '긴 꼬리 채찍', '긴 꼬리를 휘둘러 뒤따르는 동물들을 빙글 돌려요.', 'area', { dir: 'behind', range: 20, kind: 'stun', fx: 'spin', t: 0.85, self: [1.45, 2.4], pop: '찰싹!' }],
+    ['pachy', '파키케팔로사우루스', 'dino', 'M', '', {}, '돌머리 박치기', '단단한 머리로 앞 동물을 쾅! 넘어뜨려요.', 'hitAhead', { range: 16, kind: 'stun', fx: 'trip', t: 1.05, self: [1.45, 2.3], pop: '쾅!' }],
+    ['dilopho', '딜로포사우루스', 'dino', 'M', '', {}, '독 침 뱉기', '앞 동물 얼굴에 침을 뱉어 앞이 안 보이게 해요.', 'hitAhead', { range: 30, kind: 'slow', fx: 'pie', m: 0.58, t: 2.3, fog: 1, proj: 'spit', back: 20, self: [1.45, 2.5], pop: '으악, 침이다!' }],
+    ['compy', '콤프소그나투스', 'dino', 'S', 'quick', {}, '우르르 몰려가기', '주변에 동물이 많을수록 더 신나게 달려요.', 'scale', { by: 'near', range: 20, base: 1.2, step: 0.07, max: 1.6, t: 2.4 }, '우르르 몰려갑니다!'],
+    ['plesio', '플레시오사우루스', 'dino', 'M', 'water reach', { rain: 0.06 }, '물속 질주', '물속처럼 매끄럽게. 젖은 길이면 훨씬 오래가요.', 'boost', { m: 1.32, t: 2.2, gnd: 1, wetK: 1.5, fx: 'slide' }, '매끄럽게 미끄러져 갑니다.'],
+    ['mammoth', '매머드', 'dino', 'L', 'heavy ice', { snow: 0.07, heat: -0.08 }, '눈보라 콧김', '코로 눈보라를 뿜어 앞 동물을 꽁꽁 얼려요.', 'hitAhead', { range: 28, kind: 'stun', fx: 'ice', t: 1.15, fog: 1, proj: 'frost', self: [1.3, 2.0], pop: '꽁꽁!' }],
+    ['sabertooth', '검치호', 'dino', 'M', '', { snow: 0.04, heat: -0.03 }, '송곳니 덮치기', '훌쩍 뛰어 앞 동물을 덮쳐 넘어뜨려요.', 'hitAhead', { range: 25, kind: 'stun', fx: 'trip', t: 0.9, leap: 1, fog: 1, pop: '으악!' }],
+    ['dimetrodon', '디메트로돈', 'dino', 'M', '', { heat: 0.05, snow: -0.06 }, '돛 충전', '등의 돛으로 햇볕을 모아 힘차게 달려요. 더운 날엔 더 오래가요.', 'feast', { wait: 0.9, m: 1.56, t: 2.7, heatK: 1.4 }],
+    ['archaeo', '시조새', 'dino', 'S', '', {}, '서툰 첫 비행', '파닥파닥! 얼마나 날지는 그때그때 달라요.', 'boost', { rand: [1.25, 2.0], t: 2.2, air: 1, fx: 'fly' }, '파닥파닥 날아오릅니다!'],
+    // 포유류
+    ['capybara', '카피바라', 'mam', 'M', 'water steady', { rain: 0.04 }, '다 같이 친구', '누구와도 친해요. 나와 뒤에 있는 친구가 함께 빨라져요.', 'buddy', { m: 1.5, m2: 1.35, t: 2.8 }],
+    ['fennec', '사막여우', 'mam', 'S', 'nofog', { heat: 0.06, snow: -0.04 }, '큰 귀 레이더', '큰 귀로 방해를 미리 알아채고 요리조리 피해요.', 'guard', { imm: 1, m: 1.3, t: 3.0, fx: 'illusion' }, '요리조리 피하며 달려요.'],
+    ['meerkat', '미어캣', 'mam', 'S', '', { heat: 0.04 }, '보초 서기', '벌떡 서서 살핀 뒤 방패를 두르고 달려요.', 'guard', { shield: 8, m: 1.32, t: 2.2 }, '방패를 두르고 달립니다.'],
+    ['badger', '오소리', 'mam', 'M', 'nofog', { fog: 0.03 }, '땅굴 파기', '땅속으로 쏙 들어가 저 앞에서 튀어나와요.', 'burrow', {}],
+    ['ferret', '족제비', 'mam', 'S', 'nimble', {}, '쏙쏙 빠져나가기', '느려진 것을 싹 떨치고 날쌔게 빠져나가요.', 'guard', { cleanse: 1, gnd: 1, m: 1.42, t: 2.2 }, '날쌔게 빠져나갑니다.'],
+    ['chipmunk', '줄무늬다람쥐', 'mam', 'S', 'glutton', {}, '볼주머니 간식', '볼에 넣어 둔 도토리를 먹고 힘을 내요.', 'feast', { wait: 0.9, m: 1.55, t: 2.7 }],
+    ['leopard', '표범', 'mam', 'M', '', { heat: 0.02 }, '나무 위 덮치기', '훌쩍 뛰어 앞 동물을 덮쳐 넘어뜨려요.', 'hitAhead', { range: 25, kind: 'stun', fx: 'trip', t: 0.9, leap: 1, fog: 1, pop: '으악!' }],
+    ['panther', '흑표범', 'mam', 'M', 'nofog nimble', { fog: 0.05 }, '그림자 숨기', '어둠에 숨듯 방해를 피하며 달려요.', 'guard', { imm: 1, m: 1.24, t: 2.9, fx: 'illusion' }, '그림자처럼 스며들어 달려요.'],
+    ['hyena', '하이에나', 'mam', 'M', '', { heat: 0.03 }, '낄낄 가로채기', '빨라진 동물의 기운을 낄낄 웃으며 가로채요.', 'leech', {}],
+    ['lynx', '스라소니', 'mam', 'M', 'nimble', { snow: 0.05 }, '날쌘 앞발', '앞 동물을 툭 쳐서 빙글 돌게 해요.', 'hitAhead', { range: 22, kind: 'stun', fx: 'spin', t: 1.15, fog: 1, proj: 'paw', self: [1.42, 2.2], pop: '빙글빙글~' }],
+    ['bison', '들소', 'mam', 'L', 'heavy', { snow: 0.03 }, '대평원 돌진', '점점 빨라지는 돌진. 어떤 방해도 안 통해요.', 'boost', { m: 1.15, t: 2.8, imm: 1, ramp: [1.15, 1.6], fx: 'charge' }, '점점 빨라집니다!'],
+    ['moose', '무스', 'mam', 'L', 'heavy', { snow: 0.05, heat: -0.04 }, '큰 뿔 반사', '다음 방해를 큰 뿔로 받아쳐 되돌려줘요.', 'guard', { shield: 6, reflect: 1, m: 1.25, t: 2.2 }, '다음 방해는 그대로 되돌아갑니다.'],
+    ['reindeer', '순록', 'mam', 'M', 'hurdler', { snow: 0.07, heat: -0.05 }, '썰매 끄는 비행', '빨간 코를 밝히고 하늘로! 눈 오는 날엔 더 오래 날아요.', 'boost', { m: 1.45, t: 2.6, air: 1, snowK: 1.5, fx: 'fly' }, '하늘로 날아오릅니다!'],
+    ['llama', '라마', 'mam', 'M', '', { snow: 0.02 }, '퉤퉤 침 세례', '앞선 동물들에게 침을 뱉어 주춤하게 해요.', 'area', { dir: 'ahead', range: 40, max: 3, kind: 'slow', fx: 'bonk', m: 0.72, t: 1.9, self: [1.45, 2.4], pop: '으, 침!' }],
+    ['donkey', '당나귀', 'mam', 'M', '', {}, '고집 뒷발차기', '바로 뒤 동물을 뒷발로 뻥! 뒤로 밀어내요.', 'kick', { range: 10, push: 6, self: [1.52, 2.4] }],
+    ['boar', '멧돼지', 'mam', 'M', 'heavy mud', {}, '저돌 맹진', '앞만 보고 돌진! 스쳐 지나간 동물은 휘청거려요.', 'boost', { m: 1.45, t: 2.2, imm: 1, bump: 1, fx: 'charge' }, '앞만 보고 돌진합니다!'],
+    ['anteater', '개미핥기', 'mam', 'M', '', {}, '긴 혀 낼름', '긴 혀로 앞 동물을 붙잡고 단숨에 따라붙어요.', 'grapple', { range: 22 }],
+    ['armadillo', '아르마딜로', 'mam', 'S', '', {}, '공처럼 말기', '몸을 공처럼 말고 데굴데굴, 방해도 튕겨 내요.', 'boost', { m: 1.45, t: 2.6, imm: 1, fx: 'roll' }, '데굴데굴 굴러갑니다.'],
+    ['pangolin', '천산갑', 'mam', 'S', '', {}, '비늘 갑옷', '비늘을 세운 동안 방해한 동물이 오히려 따끔!', 'guard', { thorns: 1, m: 1.18, t: 3.6 }, '건드리면 따끔합니다!'],
+    ['platypus', '오리너구리', 'mam', 'S', 'water', { rain: 0.05 }, '독 발톱', '숨겨 둔 독 발톱으로 앞 동물을 콕 찔러요.', 'hitAhead', { range: 18, kind: 'stun', fx: 'sting', t: 1.0, self: [1.42, 2.3], pop: '앗 따가!' }],
+    ['wombat', '웜뱃', 'mam', 'M', '', {}, '네모 블록 쌓기', '지나간 자리에 블록을 쌓아 뒤따르는 동물을 막아요.', 'wall', { self: [1.5, 2.6] }],
+    ['quokka', '쿼카', 'mam', 'S', '', {}, '행복 미소', '방긋 웃으면 가까운 동물들이 따라 웃다 멈춰요.', 'area', { range: 18, kind: 'stun', fx: 'charm', t: 0.9, self: [1.3, 2.2], ev: 'charm', pop: '헤헤, 귀여워…' }],
+    ['lemur', '여우원숭이', 'mam', 'S', '', { heat: 0.03 }, '나무 타기 점프', '나무 사이를 건너뛰듯 높이 뛰어 장애물을 넘어요.', 'boost', { m: 1.9, t: 1.3, air: 1, fx: 'jump' }, '훌쩍 뛰어오릅니다!'],
+    ['orangutan', '오랑우탄', 'mam', 'L', '', { heat: 0.02 }, '긴 팔 쭉 뻗기', '긴 팔로 앞 동물을 붙잡고 단숨에 따라붙어요.', 'grapple', { range: 24 }],
+    ['chimp', '침팬지', 'mam', 'M', '', {}, '도구 쓰기', '똑똑하게 도구를 골라 써요. 쓸 만한 아이템을 바로 얻어요.', 'item', { list: ['rocket', 'shield', 'magnet', 'mush', 'bolt'] }]
+  ];
+  var MORE_SPEED = {
+    shark: 7.607, whale: 7.545, dolphin: 7.542, orca: 7.423, octopus: 7.631, squid: 7.636, crab: 7.55, lobster: 7.572,
+    shrimp: 7.507, jellyfish: 7.449, starfish: 7.487, seahorse: 7.529, clownfish: 7.508, puffer: 7.494, manta: 7.515, walrus: 7.443,
+    narwhal: 7.442, sealion: 7.536, manatee: 7.597, beluga: 7.496, swordfish: 7.518, angler: 7.567, seaturtle: 7.437, snake: 7.707,
+    cobra: 7.669, lizard: 7.521, chameleon: 7.555, iguana: 7.832, gecko: 7.483, komodo: 7.699, tortoise: 7.56, axolotl: 7.477,
+    salamander: 7.566, toad: 7.528, eagle: 7.734, falcon: 7.647, crow: 7.636, swan: 7.535, goose: 7.555, peacock: 7.632,
+    toucan: 7.671, pelican: 7.595, woodpecker: 7.614, pigeon: 7.592, seagull: 7.558, sparrow: 7.584, hummingbird: 7.593, kiwi: 7.744,
+    turkey: 7.599, crane: 7.63, stork: 7.567, puffin: 7.429, robin: 7.603, canary: 7.599, cockatoo: 7.628, vulture: 7.59,
+    dodo: 7.595, trex: 7.685, triceratops: 7.483, stego: 7.632, brachio: 7.598, raptor: 7.614, ptero: 7.678, ankylo: 7.654,
+    parasaur: 7.566, spino: 7.579, diplodocus: 7.566, pachy: 7.676, dilopho: 7.674, compy: 7.596, plesio: 7.53, mammoth: 7.617,
+    sabertooth: 7.609, dimetrodon: 7.845, archaeo: 7.541, capybara: 7.532, fennec: 7.496, meerkat: 7.544, badger: 7.648, ferret: 7.471,
+    chipmunk: 7.801, leopard: 7.606, panther: 7.454, hyena: 7.641, lynx: 7.466, bison: 7.518, moose: 7.656, reindeer: 7.562,
+    llama: 7.659, donkey: 7.645, boar: 7.488, anteater: 7.687, armadillo: 7.493, pangolin: 7.596, platypus: 7.516, wombat: 7.639,
+    quokka: 7.529, lemur: 7.589, orangutan: 7.75, chimp: 7.614
+  };
+  var SIZE_DEF = { S: [8.4, 0.9, 0.8], M: [7.0, 0.5, 0.65], L: [5.6, 0.1, 0.35] };
+  MORE.forEach(function (m) {
+    var d = SIZE_DEF[m[3]], tr = {};
+    m[4].split(' ').forEach(function (k) { if (k) tr[k] = 1; });
+    ANIMALS.push({ id: m[0], name: m[1], cat: m[2], speed: MORE_SPEED[m[0]] || 7.6, accel: d[0], light: d[1], agi: d[2], tr: tr, wx: m[5],
+      skill: { name: m[6], desc: m[7], type: m[8], p: m[9], say: m[10] } });
+  });
+
+  // 분류 (도감에서 묶어 보여 줌)
+  var CATS = [['mam', '포유류'], ['bird', '새'], ['rep', '파충류 · 양서류'], ['sea', '바다 동물'], ['dino', '공룡 · 옛 동물']];
+  var CAT_OF = { penguin: 'bird', duck: 'bird', owl: 'bird', chicken: 'bird', parrot: 'bird', flamingo: 'bird', ostrich: 'bird', turtle: 'rep', croc: 'rep', frog: 'rep', seal: 'sea' };
+  // 특성 · 날씨로 '한마디'를 자동으로 붙인다 (직접 적은 것이 없을 때)
+  function autoPassive(a) {
+    var t = a.tr, w = a.wx, best = null, k;
+    if (t.reach) return '결승선에서는 긴 목이 먼저 닿아요.';
+    if (t.heavy) return '두더지와 허들쯤은 그냥 밟고 지나가요.';
+    if (t.ice) return '빙판길이 오히려 좋아요.';
+    if (t.hurdler) return '허들도 가볍게 넘어요.';
+    if (t.water) return '비 오는 날 물웅덩이가 반가워요.';
+    if (t.nofog) return '안개 속에서도 길을 잘 찾아요.';
+    if (t.glutton) return '간식을 먹으면 힘이 더 오래가요.';
+    if (t.steady) return '꾸준해서 날씨가 나빠도 덜 느려져요.';
+    if (t.quick) return '출발이 아주 빨라요.';
+    if (t.nimble) return '넘어져도 금방 일어나요.';
+    for (k in w) if (w[k] > 0 && (!best || w[k] > w[best])) best = k;
+    if (best === 'snow') return '눈 오는 날에 강해요.';
+    if (best === 'heat') return '더운 날씨에 강해요.';
+    if (best === 'rain') return '비 오는 날에 강해요.';
+    if (best === 'fog') return '안개 낀 날에 강해요.';
+    if (a.light >= 0.85) return '가벼워서 뒷바람을 잘 타요.';
+    if (a.light <= 0.15) return '묵직해서 바람에 잘 안 밀려요.';
+    return '어떤 날씨에도 한결같이 달려요.';
+  }
+  ANIMALS.forEach(function (a) {
+    if (!a.cat) a.cat = CAT_OF[a.id] || 'mam';
+    if (!a.passive) a.passive = autoPassive(a);
+  });
+  // 결과 문장에 쓰는 말
+  var FXWORD = { spin: '빙글 돌아요.', trip: '넘어졌어요.', zap: '찌릿해서 멈췄어요.', sleep: '스르르 잠들었어요.', lift: '하늘로 붕 떠올랐어요.', sting: '따끔해서 펄쩍 뛰었어요.',
+    ice: '꽁꽁 얼었어요.', pity: '멈춰 섰어요.', charm: '넋을 잃고 멈춰 섰어요.', bonk2: '머리가 어질어질해요.', pie: '앞이 안 보여요.', wet: '흠뻑 젖었어요.',
+    scared: '깜짝 놀라 주춤해요.', lost: '길을 헤매요.', stink: '코를 막고 주춤해요.', bonk: '아파서 주춤해요.', slowmo: '느릿느릿해졌어요.', pulled: '붙잡혀 버둥거려요.' };
+
   var ANIMAL_BY_ID = {};
   ANIMALS.forEach(function (a) { ANIMAL_BY_ID[a.id] = a; });
 
@@ -356,6 +523,8 @@
     });
 
     // ── 화면으로 보내는 알림 ──
+    // 이름 나열 (많으면 '아무개, 아무개 등 7마리' 로 줄인다)
+    function shortNames(nm) { return nm.length > 3 ? nm.slice(0, 2).join(', ') + ' 등 ' + nm.length + '마리' : nm.join(', '); }
     function log(cls, r, msg) { race.ev.push({ k: 'log', cls: cls, r: r ? r.i : -1, msg: msg, t: race.t }); }
     function pop(r, text, cls) { race.ev.push({ k: 'pop', r: r.i, text: text, cls: cls || '' }); }
     function banner(id, title, sub) { race.ev.push({ k: 'banner', id: id, title: title, sub: sub || '' }); }
@@ -635,7 +804,7 @@
             addFx(q, { kind: 'boost', fx: 'snack', t: d, m: 1.28 });
             pop(q, '냠냠! 힘이 난다', 'good');
           });
-          log('event', null, '간식이 쏟아집니다! ' + list.map(function (q) { return q.name; }).join(', ') + ' 냠냠 먹고 힘을 내요.');
+          log('event', null, '간식이 쏟아집니다! ' + josa(shortNames(list.map(function (q) { return q.name; })), '이', '가') + ' 냠냠 먹고 힘을 내요.');
           sfx('item');
           break;
         case 'crowd':
@@ -645,7 +814,7 @@
             addFx(q, { kind: 'boost', fx: 'cheer', t: 3.0, m: 1.38 });
             pop(q, '힘내라 힘!', 'good');
           });
-          log('event', null, '관중들이 ' + josa(list.map(function (q) { return q.name; }).join(', '), '을', '를') + ' 응원합니다! 추격이 시작돼요.');
+          log('event', null, '관중들이 ' + josa(shortNames(list.map(function (q) { return q.name; })), '을', '를') + ' 응원합니다! 추격이 시작돼요.');
           sfx('cheer');
           break;
         case 'ufo':
@@ -828,7 +997,7 @@
             r.stats.helps++;
           });
           pop(r, '다 같이 힘내자!', 'item'); sfx('cheer');
-          done(josa(r.name, '이', '가') + ' 확성기로 응원합니다! ' + (list.length ? list.map(function (o) { return o.name; }).join(', ') + '도 함께 힘을 내요.' : ''));
+          done(josa(r.name, '이', '가') + ' 확성기로 응원합니다! ' + (list.length ? shortNames(list.map(function (o) { return o.name; })) + '도 함께 힘을 내요.' : ''));
           break;
         case 'mush':
           addFx(r, { kind: 'boost', fx: 'giant', t: 3.2, m: 1.3, imm: true });
@@ -848,7 +1017,7 @@
             res = applyNeg(r, o, { kind: 'stun', fx: 'sleep', t: 1.4 });
             if (res === 'hit') { slept.push(o.name); pop(o, '쿨쿨…', 'bad'); }
           });
-          done(josa(r.name, '이', '가') + ' 자장가를 틀었어요. ' + (slept.length ? slept.join(', ') + ' 꾸벅꾸벅!' : '하지만 아무도 잠들지 않았어요.'));
+          done(josa(r.name, '이', '가') + ' 자장가를 틀었어요. ' + (slept.length ? shortNames(slept) + ' 꾸벅꾸벅!' : '하지만 아무도 잠들지 않았어요.'));
           break;
         case 'tornado':
           list = sortedActive().filter(function (o) { return o !== r; }).slice(0, 3);
@@ -860,7 +1029,7 @@
             res = applyNeg(r, o, { kind: 'stun', fx: 'spin', t: 1.0 });
             if (res === 'hit') { spun.push(o.name); pop(o, '빙글빙글~', 'bad'); }
           });
-          done(josa(r.name, '이', '가') + ' 회오리를 보냈어요! ' + (spun.length ? spun.join(', ') + ' 빙글빙글!' : '하지만 모두 피했어요.'));
+          done(josa(r.name, '이', '가') + ' 회오리를 보냈어요! ' + (spun.length ? shortNames(spun) + ' 빙글빙글!' : '하지만 모두 피했어요.'));
           break;
       }
     }
@@ -897,7 +1066,8 @@
         return race.racers.filter(function (o) { return o !== r && !o.finished && o.x <= r.x && r.x - o.x <= d; })
           .sort(function (p, q) { return q.x - p.x; });
       }
-      function nameList(arr) { return arr.map(function (o) { return o.name; }).join(', '); }
+      // 이름 나열 (많으면 '아무개, 아무개 등 7마리' 로 줄인다)
+      function nameList(arr) { return shortNames(arr.map(function (o) { return o.name; })); }
       switch (id) {
         case 'rabbit':
           if (boosted(r)) break;
@@ -954,7 +1124,7 @@
           });
           addFx(r, { kind: 'boost', fx: 'roar', t: 2.2, m: 1.3 });
           race.ev.push({ k: 'roar', r: r.i });
-          fin(josa(r.name, '이', '가') + ' 쩌렁쩌렁 포효합니다! ' + (scared.length ? scared.join(', ') + ' 깜짝 놀라 주춤!' : '기합을 넣고 속도를 올려요.'));
+          fin(josa(r.name, '이', '가') + ' 쩌렁쩌렁 포효합니다! ' + (scared.length ? shortNames(scared) + ' 깜짝 놀라 주춤!' : '기합을 넣고 속도를 올려요.'));
           break;
         case 'penguin':
           if (boosted(r)) break;
@@ -993,7 +1163,7 @@
             });
             addFx(r, { kind: 'boost', fx: 'fart', t: 2.0, m: 1.4 });
             race.ev.push({ k: 'stink', r: r.i });
-            fin(josa(r.name, '이', '가') + ' 뿡뿡 구름을 뿜었어요! ' + (stunk.length ? stunk.join(', ') + ' 코를 막고 주춤!' : ''));
+            fin(josa(r.name, '이', '가') + ' 뿡뿡 구름을 뿜었어요! ' + (stunk.length ? shortNames(stunk) + ' 코를 막고 주춤!' : ''));
           } else {
             r.skillWait += dt;
             if (r.skillWait > 2.5 && !boosted(r)) {
@@ -1429,9 +1599,181 @@
           race.ev.push({ k: 'charm', r: r.i });
           fin(josa(r.name, '이', '가') + ' 두 팔 번쩍 만세 위협! ' + (names.length ? nameList(names) + ' 귀여워서 그만 멈춰 섰어요.' : '아무도 없지만 귀여워요.'));
           break;
+        default:
+          castTyped(ANIMAL_BY_ID[id].skill);
+          break;
       }
       return used;
+
+      // ───── 표로 정의한 스킬 (새 100종) ─────
+      function castTyped(sk) {
+        var P = sk.p || {}, tg, li, hit = [], res2, ex, cnt, me = josa(r.name, '이', '가') + ' ' + sk.name + '! ';
+        function self(arr, fx, extra) { if (arr) selfBoost(fx || 'dash', arr[0], arr[1], extra); }
+        function neg(o) { return applyNeg(r, o, { kind: P.kind || 'slow', fx: P.fx, t: P.t, m: P.m, fogMiss: !!P.fog, ground: !!P.ground }); }
+        function waitAlt() {    // 쓸 상대가 없으면 조금 기다렸다가 혼자 속도만 올린다
+          r.skillWait += dt;
+          if (r.skillWait > (P.wait || 3.5) && !boosted(r)) { self(P.alt || [1.4, 2.0]); fin(josa(r.name, '은', '는') + ' ' + josa(sk.name, '을', '를') + ' 쓸 상대가 없어 혼자 속도를 올려요.'); }
+        }
+        function flags() { var e = {}; if (P.gnd) e.gnd = true; if (P.air) e.air = true; if (P.imm) e.imm = true; if (P.noslow) e.noslow = true; if (P.thorns) { e.imm = true; e.thorns = true; } return e; }
+        switch (sk.type) {
+          case 'boost':
+            if (boosted(r)) return;
+            ex = flags();
+            if (P.ramp) ex.ramp = P.ramp;
+            if (P.tired) { ex.cancelOnStun = true; ex.onEnd = function () { if (!r.finished) { addFx(r, { kind: 'slow', fx: 'tired', t: P.tired[1], m: P.tired[0] }); pop(r, '헥헥…', 'bad'); } }; }
+            if (P.bump) { r.bumped = {}; ex.onEnd = function () { r.bumped = null; }; }
+            selfBoost(P.fx || 'dash', P.rand ? rng.range(P.rand[0], P.rand[1]) : P.m,
+              P.t * (P.wetK && wet() ? P.wetK : 1) * (P.snowK && race.weather.id === 'snow' ? P.snowK : 1), ex);
+            fin(me + (sk.say || '힘차게 치고 나갑니다.'));
+            return;
+          case 'scale':
+            if (boosted(r)) return;
+            cnt = P.by === 'near' ? othersWithin(P.range || 20).length : rankAmongActive(r) - 1;
+            selfBoost(P.fx || 'dash', Math.min(P.max || 1.75, P.base + P.step * cnt), P.t, flags());
+            if (P.by === 'near') race.ev.push({ k: 'howl', r: r.i });
+            fin(me + (sk.say || '속도를 올립니다.'));
+            return;
+          case 'hitAhead':
+          case 'hitLeader':
+            tg = sk.type === 'hitLeader' ? leaderOf() : aheadOf(r, P.range || 25);
+            if (sk.type === 'hitLeader' && tg === r) tg = behindOf(r, 60);
+            if (!tg && P.back) tg = behindOf(r, P.back);
+            if (!tg) return waitAlt();
+            if (P.proj) proj(P.proj, r, tg);
+            if (P.leap) selfBoost('jump', 2.3, 1.0, { air: true });
+            res2 = neg(tg);
+            if (res2 === 'hit') pop(tg, P.pop || '으악!', 'bad');
+            self(P.self);
+            fin(me + (res2 === 'hit' ? josa(tg.name, '이', '가') + ' ' + (FXWORD[P.fx] || '당했어요.') : josa(tg.name, '은', '는') + (res2 === 'miss' ? ' 아슬아슬하게 피했어요.' : ' 막아 냈어요.')));
+            return;
+          case 'area':
+          case 'global':
+            li = sk.type === 'global' ? race.racers.filter(function (o) { return o !== r && !o.finished; })
+              : (P.dir === 'ahead' ? aheadList(P.range) : (P.dir === 'behind' ? behindList(P.range) : othersWithin(P.range || 24)));
+            if (P.max) li = li.sort(function (p, q) { return Math.abs(p.x - r.x) - Math.abs(q.x - r.x); }).slice(0, P.max);
+            if (!li.length) { r.skillWait += dt; if (r.skillWait < (P.wait || 5)) return; }
+            li.forEach(function (o) { res2 = neg(o); if (res2 === 'hit') { hit.push(o); pop(o, P.pop || '으악!', 'bad'); } });
+            self(P.self);
+            if (P.ev) race.ev.push({ k: P.ev, r: r.i });
+            if (P.fx === 'sleep') sfx('lullaby');
+            fin(me + (hit.length ? josa(nameList(hit), '이', '가') + ' ' + (FXWORD[P.fx] || '당했어요.') : (li.length ? '하지만 모두 버텨 냈어요.' : '기세를 올려 달려요.')));
+            return;
+          case 'patch':
+            if (!behindOf(r, 40)) return waitAlt();
+            tg = { type: 'slick', mud: false, ink: !!P.ink, src: r, x: r.x - 2, x1: r.x + 10, done: {}, id: race.objects.length };
+            tg.done[r.i] = true;
+            race.objects.push(tg);
+            self(P.self);
+            fin(me + (P.ink ? '지나간 자리가 먹물로 캄캄해졌어요.' : '지나간 자리가 미끌미끌해졌어요.'));
+            return;
+          case 'wall':
+            if (!behindOf(r, 45)) return waitAlt();
+            tg = { type: 'hurdles', log: true, x: r.x - 1.5, done: {}, broken: {}, id: race.objects.length };
+            tg.done[r.i] = true;
+            race.objects.push(tg);
+            self(P.self); sfx('pop');
+            fin(me + '뒤따르는 동물은 넘어가야 해요.');
+            return;
+          case 'guard':
+            if (P.reflect ? hasFlag(r, 'reflect') : boosted(r)) return;
+            if (P.cleanse && !hasKind(r, 'slow')) { r.skillWait += dt; if (r.skillWait < 6) return; }
+            if (P.cleanse || P.cleanse0) r.fx = r.fx.filter(function (e) { return e.kind !== 'slow'; });
+            if (P.shield) addFx(r, { kind: 'shield', fx: P.reflect ? 'reflect' : 'shield', t: P.shield, reflect: !!P.reflect });
+            selfBoost(P.fx || (P.thorns ? 'thorns' : 'dash'), P.m || 1.25, P.t || 2.5, flags());
+            fin(me + (sk.say || '든든하게 달려요.'));
+            return;
+          case 'item':
+            if (r.item) return;
+            r.item = rng.pick(P.list); r.itemT = rng.range(0.4, 1.0); r.itemWait = 0;
+            self(P.self || [1.2, 2.0]);
+            fin(me + josa(ITEMS[r.item].name, '을', '를') + ' 꺼냈어요.');
+            return;
+          case 'steal':
+            if (r.item) return;
+            li = race.racers.filter(function (o) { return o !== r && !o.finished && o.item && !hasFlag(o, 'imm'); })
+              .sort(function (p, q) { return Math.abs(p.x - r.x) - Math.abs(q.x - r.x); });
+            if (li.length) {
+              tg = li[0]; r.item = tg.item; tg.item = null; r.itemT = rng.range(0.5, 1.2); r.itemWait = 0;
+              r.stats.gave++; tg.stats.took++;
+              pop(tg, '내 아이템 어디 갔지?', 'bad'); proj('steal', tg, r); self(P.self);
+              fin(me + tg.name + '의 ' + josa(ITEMS[r.item].name, '을', '를') + ' 가져갔어요!');
+            } else {
+              r.skillWait += dt;
+              if (r.skillWait > 3) { giveItem(r); r.itemT = rng.range(0.5, 1.2); self(P.self); fin(me + '어디선가 ' + josa(ITEMS[r.item].name, '을', '를') + ' 구해 왔어요.'); }
+            }
+            return;
+          case 'leech':
+            li = race.racers.filter(function (o) {
+              if (o === r || o.finished || hasFlag(o, 'imm')) return false;
+              for (var k = 0; k < o.fx.length; k++) if (o.fx[k].kind === 'boost') return true;
+              return false;
+            }).sort(function (p, q) { return Math.abs(p.x - r.x) - Math.abs(q.x - r.x); });
+            if (li.length) {
+              tg = li[0]; tg.fx = tg.fx.filter(function (e) { return e.kind !== 'boost'; });
+              r.stats.gave++; tg.stats.took++;
+              pop(tg, '어? 힘이 빠지네', 'bad'); proj('steal', tg, r);
+              selfBoost('stolen', 1.5, 2.3);
+              fin(me + tg.name + '의 기운을 가로챘어요!');
+            } else {
+              r.skillWait += dt;
+              if (r.skillWait > 4 && !boosted(r)) { selfBoost('dash', 1.35, 2.0); fin(josa(r.name, '은', '는') + ' 가로챌 기운이 없어 혼자 속도를 올려요.'); }
+            }
+            return;
+          case 'buddy':
+            if (boosted(r)) return;
+            tg = behindOf(r, P.range || 45);
+            if (tg) {
+              selfBoost('buddy', P.m, P.t); addFx(tg, { kind: 'boost', fx: 'buddy', t: P.t, m: P.m2 });
+              r.stats.helps++; pop(tg, '고마워 친구!', 'good');
+              race.ev.push({ k: 'buddy', a: r.i, b: tg.i });
+              fin(me + josa(tg.name, '과', '와') + ' 함께 속도를 올립니다.');
+            } else { selfBoost('buddy', P.m + 0.1, P.t); fin(me + '친구들을 따라잡으러 힘껏 달려요.'); }
+            return;
+          case 'rally':
+            li = sortedActive().filter(function (o) { return o !== r; }).slice(-(P.n || 2));
+            li.forEach(function (o) { addFx(o, { kind: 'boost', fx: 'cheer', t: P.t, m: P.m }); pop(o, '응원 받았다!', 'good'); r.stats.helps++; });
+            selfBoost('cheer', P.sm || P.m, P.t);
+            sfx('cheer');
+            fin(me + (li.length ? nameList(li) + '도 함께 힘을 내요.' : '혼자서도 힘을 내요.'));
+            return;
+          case 'grapple':
+            tg = aheadOf(r, P.range || 22);
+            if (!tg || tg.x - r.x <= 2.5) return waitAlt();
+            res2 = applyNeg(r, tg, { kind: 'slow', fx: 'pulled', t: 1.2, m: 0.8, minor: true });
+            race.ev.push({ k: 'tongue', a: r.i, b: tg.i });
+            if (res2 === 'hit') { r.x = tg.x - 1.0; r.prevX = r.x; r.hop = race.t; selfBoost('dash', 1.4, 1.8); fin(me + tg.name + ' 바로 뒤까지 단숨에 따라붙었어요.'); }
+            else fin(me + '하지만 ' + josa(tg.name, '이', '가') + ' 빠져나갔어요.');
+            return;
+          case 'kick':
+            tg = behindOf(r, P.range || 10);
+            if (!tg) return waitAlt();
+            res2 = applyNeg(r, tg, { kind: 'stun', fx: 'trip', t: 0.6 });
+            if (res2 === 'hit') { tg.x = Math.max(0, tg.x - (P.push || 6)); tg.prevX = tg.x; pop(tg, '뻥! 으아아', 'bad'); }
+            race.ev.push({ k: 'kick', a: r.i, b: tg.i });
+            self(P.self); sfx('trip');
+            fin(me + (res2 === 'hit' ? josa(tg.name, '이', '가') + ' 뒤로 밀려났어요.' : josa(tg.name, '은', '는') + ' 막아 냈어요.'));
+            return;
+          case 'burrow':
+            if (boosted(r)) return;
+            selfBoost('burrow', P.m || 2.0, P.t || 1.0, { imm: true, air: true });
+            fin(me + '땅속 지름길로 갑니다.');
+            return;
+          case 'feast':
+            if (boosted(r)) return;
+            addFx(r, { kind: 'stun', fx: 'eat', t: P.wait || 0.8, m: 0,
+              onEnd: function () { if (!r.finished) { addFx(r, { kind: 'boost', fx: 'power', t: P.t * (P.heatK && race.weather.id === 'heat' ? P.heatK : 1), m: P.m }); pop(r, '힘이 솟는다!', 'good'); sfx('boost'); } } });
+            fin(me + '잠시 뒤 폭풍 질주가 시작돼요.');
+            return;
+          case 'mimic':
+            tg = P.who === 'ahead' ? aheadOf(r, 80) : leaderOf();
+            if (tg === r) tg = behindOf(r, 80);
+            if (!tg || tg.a.id === 'parrot' || tg.a.skill.type === 'mimic') return waitAlt();
+            castSkill(r, dt, tg.a.id, true);
+            return;
+        }
+      }
     }
+
 
     // ───────────── 트랙 위 물건과 부딪힘 ─────────────
     function checkObjects(r) {
@@ -1477,6 +1819,11 @@
           case 'slick':
             if (!o.done[r.i] && r.prevX < o.x && r.x >= o.x) {
               o.done[r.i] = true;
+              if (o.ink) {
+                res = applyNeg(o.src || null, r, { kind: 'slow', fx: 'ink', t: 2.0, m: 0.6, ground: true });
+                if (res === 'hit') { pop(r, '앞이 캄캄해!', 'bad'); log('hit', r, josa(r.name, '이', '가') + ' 먹물을 뒤집어썼어요!'); }
+                break;
+              }
               if (o.mud ? r.a.tr.mud : r.a.tr.ice) {
                 addFx(r, { kind: 'boost', fx: 'splash', t: 2.0, m: 1.4 });
                 pop(r, o.mud ? '진흙이다, 야호!' : '야호! 미끄럼틀', 'good');
@@ -1573,7 +1920,7 @@
         if (Math.abs(o.x - r.x) < 1.3 && r.v > o.v + 0.5) {
           r.bumped[o.i] = true;
           var res = applyNeg(r, o, { kind: 'stun', fx: 'spin', t: 0.7 });
-          if (res === 'hit') { pop(o, '어이쿠!', 'bad'); log('hit', o, josa(o.name, '이', '가') + ' 굴러가는 ' + r.name + '에게 스쳐 휘청!'); }
+          if (res === 'hit') { pop(o, '어이쿠!', 'bad'); log('hit', o, josa(o.name, '이', '가') + ' 돌진하는 ' + r.name + '에게 스쳐 휘청!'); }
         }
       });
     }
@@ -1649,6 +1996,7 @@
     ANIMAL_BY_ID: ANIMAL_BY_ID,
     ITEMS: ITEMS,
     WEATHERS: WEATHERS,
+    CATS: CATS,
     createRace: createRace,
     josa: josa
   };

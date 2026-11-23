@@ -442,8 +442,29 @@
       d.appendChild(tx); box.appendChild(d);
     }
     $('g-animals-title').textContent = '동물 ' + S.ANIMALS.length + '종과 스킬';
-    var a = $('g-animals');
-    S.ANIMALS.forEach(function (an) { item(a, iconURL('face', an.id, 46), an.name, an.skill.name, an.skill.desc, an.passive); });
+    var a = $('g-animals'), groups = [];
+    S.CATS.forEach(function (ct) {
+      var list = S.ANIMALS.filter(function (an) { return an.cat === ct[0]; });
+      if (!list.length) return;
+      var h = el('h4', 'g-cat', ct[1]); h.appendChild(el('span', null, list.length + '종'));
+      var grid = el('div', 'g-grid');
+      a.appendChild(h); a.appendChild(grid);
+      list.forEach(function (an) {
+        item(grid, iconURL('face', an.id, 46), an.name, an.skill.name, an.skill.desc, an.passive);
+        grid.lastChild.setAttribute('data-k', (an.name + ' ' + an.skill.name + ' ' + ct[1]).toLowerCase());
+      });
+      groups.push([h, grid]);
+    });
+    $('g-search').addEventListener('input', function () {
+      var q = this.value.trim().toLowerCase(), total = 0;
+      groups.forEach(function (g) {
+        var shown = 0, kids = g[1].children, i2;
+        for (i2 = 0; i2 < kids.length; i2++) { kids[i2].hidden = !!q && kids[i2].getAttribute('data-k').indexOf(q) < 0; if (!kids[i2].hidden) shown++; }
+        g[0].hidden = g[1].hidden = !shown;
+        total += shown;
+      });
+      $('g-none').hidden = total > 0;
+    });
     var it = $('g-items');
     Object.keys(S.ITEMS).forEach(function (id) { item(it, iconURL('item', id, 34), S.ITEMS[id].name, null, S.ITEMS[id].desc); });
     var w = $('g-weather');
