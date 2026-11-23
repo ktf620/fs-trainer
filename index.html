@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>동물 달리기 500m</title>
-<meta name="description" content="레인마다 이름을 적고 출발! 최대 22명, 동물 150종 가운데 랜덤으로 뽑힌 동물들이 스킬과 아이템을 쓰며 500m를 달리는 경주 게임. 누가 이길지는 매번 달라져요.">
+<title>동물 달리기 1km</title>
+<meta name="description" content="레인마다 이름을 적고 출발! 최대 22명, 동물 150종 가운데 랜덤으로 뽑힌 동물들이 스킬 · 필살기 · 아이템을 쓰며 1km를 달리는 경주 게임. 누가 이길지는 매번 달라져요.">
 <meta name="theme-color" content="#5fb9ff">
-<meta property="og:title" content="동물 달리기 500m">
+<meta property="og:title" content="동물 달리기 1km">
 <meta property="og:description" content="이름을 달고 뛰는 동물 달리기 경주. 누가 1등 할까요?">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ffd23f'/%3E%3Ccircle cx='32' cy='36' r='18' fill='%23ff8b3d' stroke='%234a3226' stroke-width='4'/%3E%3Cpath d='M17 24 14 8l14 8zM47 24l3-16-14 8z' fill='%23ff8b3d' stroke='%234a3226' stroke-width='4' stroke-linejoin='round'/%3E%3Ccircle cx='25' cy='34' r='3.5' fill='%232b2018'/%3E%3Ccircle cx='39' cy='34' r='3.5' fill='%232b2018'/%3E%3Cellipse cx='32' cy='43' rx='4' ry='3' fill='%233b2a20'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,7 @@
 <body>
 <div id="app">
   <header class="top">
-    <h1 class="logo">동물 달리기 <span>500m</span></h1>
+    <h1 class="logo">동물 달리기 <span>1km</span></h1>
     <div class="top-btns">
       <button type="button" id="btn-guide" class="btn ghost">도감</button>
       <button type="button" id="btn-sound" class="btn ghost" aria-pressed="true">소리 켬</button>
@@ -118,7 +118,8 @@
       <button type="button" id="btn-guide-close" class="btn small">닫기</button>
     </div>
     <h3 id="g-animals-title">동물과 스킬</h3>
-    <input type="search" id="g-search" class="g-search" placeholder="동물 · 스킬 이름으로 찾기 (예: 고래, 포효, 공룡)" aria-label="동물 찾기" autocomplete="off">
+    <p class="g-help">필살기 게이지는 달리는 동안 조금씩 차고, 뒤처지거나 방해를 당하면 더 빨리 차요. 가득 차면 곧바로 터집니다.</p>
+    <input type="search" id="g-search" class="g-search" placeholder="동물 · 스킬 · 필살기 이름으로 찾기 (예: 고래, 포효, 공룡)" aria-label="동물 찾기" autocomplete="off">
     <div id="g-animals"></div>
     <p id="g-none" class="g-none" hidden>찾는 동물이 없어요.</p>
     <h3>아이템 12종</h3>

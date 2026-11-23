@@ -1,4 +1,4 @@
-/* 동물 달리기 500m — 그림 (아이템 · 트랙 위 물건 · 날씨 · 배경 조각) */
+/* 동물 달리기 1km — 그림 (아이템 · 트랙 위 물건 · 날씨 · 배경 조각) */
 (function (root) {
   'use strict';
   var Art = root.Art, OL = Art.OL, TAU = Math.PI * 2, shade = Art.shade;

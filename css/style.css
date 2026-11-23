@@ -1,4 +1,4 @@
-/* 동물 달리기 500m — 화면 꾸밈 (만화 스티커 느낌 : 굵은 테두리 · 통통한 버튼) */
+/* 동물 달리기 1km — 화면 꾸밈 (만화 스티커 느낌 : 굵은 테두리 · 통통한 버튼) */
 :root {
   color-scheme: light;
   --ink: #4a3226;
@@ -136,6 +136,16 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
 .askill { margin-top: 5px; font-size: 13px; line-height: 1.4; color: var(--ink-soft); }
 .askill b { display: inline-block; font-family: var(--display); font-weight: 400; font-size: 14.5px; color: var(--ink); background: var(--sun); border: 2px solid var(--ink); border-radius: 999px; padding: 2px 10px; margin-bottom: 4px; }
 .askill span { display: block; }
+.ault b { background: #ff5d7a; color: #fff; }
+.cards.many .ault span { display: none; }
+.cards.many .ault { margin-top: 2px; }
+.rrow .rult { position: absolute; left: 8px; right: 8px; bottom: 1px; height: 3px; border-radius: 2px; background: rgba(75, 46, 36, .1); overflow: hidden; pointer-events: none; }
+.rrow .rult b { display: block; height: 100%; width: 0; background: #ffb02e; transition: width .3s linear; }
+.rrow.ready .rult b { background: #ff3d6e; }
+.rrow.ready { box-shadow: 0 0 0 2px #ff3d6e; }
+.log li.ult { background: #ffe3ea; font-weight: 700; }
+.g-item em.u { background: #ff5d7a; color: #fff; }
+.g-help { font-size: 13px; color: var(--ink-soft); margin: 0 0 8px; line-height: 1.5; }
 .apassive { margin-top: 4px; font-size: 12px; color: #9a8474; line-height: 1.35; }
 .actions { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 18px; }
 #scr-lineup .actions { position: sticky; bottom: 0; padding: 10px 0 12px; margin-top: 8px; z-index: 5; background: linear-gradient(rgba(201, 239, 192, 0), rgba(214, 240, 226, .92) 38%); }

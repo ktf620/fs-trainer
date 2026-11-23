@@ -1,4 +1,4 @@
-/* 동물 달리기 500m — 소리 (Web Audio 로 직접 만든 효과음과 배경 음악, 소리 파일 없음) */
+/* 동물 달리기 1km — 소리 (Web Audio 로 직접 만든 효과음과 배경 음악, 소리 파일 없음) */
 (function (root) {
   'use strict';
   var Sfx = { on: true, ctx: null, master: null, lastAt: {}, bgm: null };
@@ -83,6 +83,7 @@
     crash: function () { noise(0.25, 0.22, 900, 0.5, 0, 200); },
     hop: function () { tone('sine', 400, 800, 0.12, 0.09); },
     magnet: function () { tone('sawtooth', 150, 400, 0.4, 0.05); },
+    ult: function () { tone('sawtooth', 220, 880, 0.35, 0.08); tone('square', 440, 440, 0.08, 0.09, 0.3); tone('square', 660, 660, 0.08, 0.09, 0.38); tone('square', 880, 1320, 0.3, 0.1, 0.46); noise(0.5, 0.12, 800, 0.6, 0.3, 4000); },
     goal: function () { tone('triangle', 784, 784, 0.1, 0.09); tone('triangle', 1046, 1046, 0.18, 0.09, 0.1); },
     win: function () {
       var n = [523, 659, 784, 1046, 784, 1046, 1318];

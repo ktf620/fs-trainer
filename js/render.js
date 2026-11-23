@@ -1,4 +1,4 @@
-/* 동물 달리기 500m — 경주 화면 그리기 (배경 · 트랙 · 동물 · 효과 · 상단 표시) */
+/* 동물 달리기 1km — 경주 화면 그리기 (배경 · 트랙 · 동물 · 효과 · 상단 표시) */
 (function (root) {
   'use strict';
   var S = root.RaceSim, Art = root.Art;
@@ -13,6 +13,7 @@
   var RS = [];                // 동물별 화면 상태
   var parts = [], projs = [], bolts = [], ufos = [], twisters = [], rings = [], weatherP = [];
   var banner = null, flashA = 0, clock = 0, excite = 0, gustDir = 0, gustT = 0, nightT = 0, balls = [];
+  var cutin = null, tstopUntil = 0, flipT = 0, shakeT = 0, booms = [], holes = [], warps = [];
   var sky = { cur: 'sunny', prev: 'sunny', mix: 1 };
   var mode = 'idle', cd = 0, goT = 0, follow = -1;
   var sA = 1;                 // 동물 기본 배율
@@ -48,10 +49,11 @@
     cv = canvas; c = cv.getContext('2d');
     race = theRace; n = race.racers.length;
     RS = race.racers.map(function (r, i) {
-      return { phase: hash(i + race.seed % 97) * TAU, pops: [], spray: 0, burst: 0, hx: 0, hy: 0, top: 0, s: 1, sx: 0, fy: 0, lift: 0, dustT: 0, fxT: 0, cheerT: 0, tearT: 0, vis: true };
+      return { phase: hash(i + race.seed % 97) * TAU, pops: [], spray: 0, burst: 0, hx: 0, hy: 0, top: 0, s: 1, sx: 0, fy: 0, lift: 0, dustT: 0, fxT: 0, cheerT: 0, tearT: 0, ultT: 0, vis: true };
     });
     parts = []; projs = []; bolts = []; ufos = []; twisters = []; rings = []; weatherP = [];
     banner = null; flashA = 0; clock = 0; excite = 0; gustDir = 0; gustT = 0; follow = -1; nightT = 0; balls = [];
+    cutin = null; tstopUntil = 0; flipT = 0; shakeT = 0; booms = []; holes = []; warps = [];
     sky.cur = sky.prev = race.weather.id; sky.mix = 1;
     mode = 'countdown'; cd = 3.4; goT = 0;
     R.resize();
@@ -116,6 +118,21 @@
           if (e.id === 'snack') spawnSnacks();
           if (e.id === 'star') spawnShootingStar();
           break;
+        case 'ult':
+          st = RS[e.r]; st.burst = 1; st.ultT = 1.3;
+          cutin = { r: e.r, name: e.name, age: 0, dur: 2.3 };
+          st.pops.push({ text: e.name + '!', cls: 'skill', age: 0 });
+          if (st.pops.length > 3) st.pops.shift();
+          for (var q4 = 0; q4 < 3; q4++) rings.push({ r: e.r, age: -q4 * 0.1, dur: 0.8, col: '#ff3d6e', big: true });
+          flashA = Math.max(flashA, 0.3);
+          break;
+        case 'warp': if (Math.abs(e.to - e.from) > 2) warps.push({ r: e.r, from: e.from, to: e.to, age: 0 }); break;
+        case 'boom': booms.push({ x: e.x, r: e.r, big: e.big, small: e.small, age: 0 }); if (!e.small) flashA = Math.max(flashA, e.big ? 0.7 : 0.3); break;
+        case 'flip': flipT = 1.0; flashA = 0.8; break;
+        case 'hole': holes.push({ x: e.x, age: 0 }); break;
+        case 'tstop': tstopUntil = Math.max(tstopUntil, race.t + e.t); break;
+        case 'shake': shakeT = 0.5; break;
+        case 'bombhop': rings.push({ r: e.r, age: 0, dur: 0.4, col: '#ff5a3c' }); break;
         case 'proj':
           projs.push({ kind: e.kind, from: e.from, to: e.to, age: 0, dur: e.kind === 'water' ? 0.7 : (e.kind === 'magnet' ? 0.8 : 0.4) });
           break;
@@ -242,7 +259,7 @@
     }
   }
 
-  var BOARD_TXT = ['힘내라 힘!', '동물 달리기 대회', '달려라 달려~', '끝까지 화이팅', '오늘의 1등은?', '500m 질주'];
+  var BOARD_TXT = ['힘내라 힘!', '동물 달리기 대회', '달려라 달려~', '끝까지 화이팅', '오늘의 1등은?', '1km 질주'];
   var BOARD_COL = ['#ff8fa3', '#7fb7ff', '#ffd23f', '#8fd46b', '#c79bff', '#ffb26b'];
   function drawStands() {
     var top = L.trackTop, sh = L.standH, ppm = view.ppm, per = 58, len = 44, j, q;
@@ -301,7 +318,7 @@
     for (x = m0; x <= view.camX + view.viewM + 10; x += 10) {
       if (x < 0 || x > S.LEN) continue;
       sx = sxOf(x);
-      if (x % 50 === 0 && x > 0 && x < S.LEN) { c.fillStyle = 'rgba(255,255,255,.3)'; c.fillRect(sx - 1.5, top, 3, th); }
+      if (x % 100 === 0 && x > 0 && x < S.LEN) { c.fillStyle = 'rgba(255,255,255,.3)'; c.fillRect(sx - 1.5, top, 3, th); }
       else { c.fillStyle = 'rgba(255,255,255,.5)'; c.fillRect(sx - 1, top, 2, 6); }
     }
     // 레인 줄
@@ -330,7 +347,7 @@
       var a = sxOf(o.x), b = sxOf(o.x1);
       if (b < -10 || a > W + 10) return;
       var g = c.createLinearGradient(a, 0, b, 0);
-      var sc0 = o.ink ? 'rgba(52,40,78,' : (o.mud ? 'rgba(120,80,50,' : 'rgba(200,240,255,');
+      var sc0 = o.lake ? 'rgba(70,150,235,' : (o.fire ? 'rgba(255,120,40,' : (o.ink ? 'rgba(52,40,78,' : (o.mud ? 'rgba(120,80,50,' : 'rgba(200,240,255,')));
       var sa0 = o.ink ? '.7)' : (o.mud ? '.72)' : '.62)');
       g.addColorStop(0, sc0 + '0)'); g.addColorStop(0.15, sc0 + sa0); g.addColorStop(0.85, sc0 + sa0); g.addColorStop(1, sc0 + '0)');
       c.fillStyle = g; c.fillRect(a, top, b - a, th);
@@ -339,6 +356,14 @@
         for (var q0 = 0; q0 < n * 2; q0++) {
           ell(a + (b - a) * (0.12 + 0.76 * hash(q0 + o.id * 5)), top + (q0 + 0.5) * lh / 2, 5 + 7 * hash(q0 * 3 + o.id), 2.5 + 3 * hash(q0 * 7 + o.id));
           c.fill();
+        }
+        return;
+      }
+      if (o.fire) {    // 불길 : 일렁이는 불꽃
+        for (var q1 = 0; q1 < n * 3; q1++) {
+          var fx0 = a + (b - a) * (0.08 + 0.84 * hash(q1 + o.id * 9)), fy0 = top + (q1 + 0.7) * lh / 3, fh = 8 + 9 * Math.abs(Math.sin(clock * 9 + q1));
+          c.beginPath(); c.moveTo(fx0 - 5, fy0); c.quadraticCurveTo(fx0 - 2, fy0 - fh * 0.6, fx0, fy0 - fh); c.quadraticCurveTo(fx0 + 3, fy0 - fh * 0.5, fx0 + 5, fy0); c.closePath();
+          c.fillStyle = q1 % 2 ? '#ffe14d' : '#ff5a2e'; c.fill();
         }
         return;
       }
@@ -354,7 +379,7 @@
     // 거리 표지판 (트랙 위쪽 가장자리)
     var top = L.trackTop, ppm = view.ppm, x, sx;
     var fs = clamp(L.standH * 0.17, 10, 15);
-    for (x = Math.floor(view.camX / 50) * 50; x <= view.camX + view.viewM + 50; x += 50) {
+    for (x = Math.floor(view.camX / 100) * 100; x <= view.camX + view.viewM + 100; x += 100) {
       if (x <= 0 || x > S.LEN) continue;
       sx = sxOf(x);
       var txt = x === S.LEN ? 'FINISH' : x + 'm', bw = fs * (x === S.LEN ? 4.6 : 3.3), bh = fs * 1.7, by = top - bh - fs * 1.6;
@@ -397,6 +422,16 @@
     var objs = race.objects, fy = laneY(i), s = sA * laneScale(i);
     for (var j = 0; j < objs.length; j++) {
       var o = objs[j], sx;
+      if (o.type === 'dam') {      // 필살기 댐 : 레인마다 통나무 더미
+        if (o.gone) continue;
+        sx = sxOf(o.x);
+        if (sx < -40 || sx > W + 40) continue;
+        for (var dg = 0; dg < 3; dg++) {
+          Art.roundRect(c, sx - 8 * s, fy + (2 - 13 - dg * 11) * s, 16 * s, 11 * s, 4 * s); c.fillStyle = dg % 2 ? '#b98450' : '#a06c46'; c.fill(); c.lineWidth = 2; c.strokeStyle = OL; c.stroke();
+          ell(sx, fy + (2 - 7.5 - dg * 11) * s, 3.4 * s, 3.4 * s); c.fillStyle = '#e2c49a'; c.fill(); c.lineWidth = 1.2; c.stroke();
+        }
+        continue;
+      }
       if (o.type === 'hurdles') {
         sx = sxOf(o.x);
         if (sx < -40 || sx > W + 40) continue;
@@ -425,7 +460,9 @@
           Art.drawItemBox(c, sx, fy - 16 * s, s * 46, clock + o.id * 0.7);
         }
       } else if (o.type === 'banana') {
-        if (o.egg) { ell(sx, fy - 7 * s, 7 * s, 9 * s); c.fillStyle = '#fffaf0'; c.fill(); c.lineWidth = 2; c.strokeStyle = OL; c.stroke(); ell(sx - 2 * s, fy - 10 * s, 2 * s, 3 * s); c.fillStyle = 'rgba(255,255,255,.9)'; c.fill(); }
+        if (o.cube) { Art.roundRect(c, sx - 7 * s, fy - 13 * s, 14 * s, 13 * s, 2.5 * s); c.fillStyle = '#a06c46'; c.fill(); c.lineWidth = 2; c.strokeStyle = OL; c.stroke(); c.fillStyle = '#c08a5c'; c.fillRect(sx - 4.5 * s, fy - 11 * s, 4 * s, 3 * s); }
+        else if (o.hole) { ell(sx, fy, 11 * s, 4.5 * s); c.fillStyle = '#3a2416'; c.fill(); c.lineWidth = 2; c.strokeStyle = OL; c.stroke(); }
+        else if (o.egg) { ell(sx, fy - 7 * s, 7 * s, 9 * s); c.fillStyle = '#fffaf0'; c.fill(); c.lineWidth = 2; c.strokeStyle = OL; c.stroke(); ell(sx - 2 * s, fy - 10 * s, 2 * s, 3 * s); c.fillStyle = 'rgba(255,255,255,.9)'; c.fill(); }
         else Art.drawPeel(c, sx, fy - 2 * s, s * 1.15);
       } else if (o.type === 'mole') {
         var up = clamp((race.t - o.born) / 0.35, 0, 1);
@@ -463,6 +500,8 @@
     else if (has.pity) pose = 'sad';
     else if (has.charm) { pose = 'idle'; o.eyes = 'happy'; o.mouth = 'open'; }
     else if (has.bonk2) pose = 'dizzy';
+    else if (has.net) pose = 'sad';
+    else if (has.stop) pose = 'idle';
     else if (has.cling) { pose = 'jump'; lift = s * 16; o.prog = 0.5; }
     else if (has.shell) pose = Art.SPEC[r.a.id].shell ? 'shell' : 'roll';
     else if (has.wheel) { pose = 'run'; o.boost = true; }
@@ -497,6 +536,15 @@
     ell(sx, fy + 2 * s, 30 * s * sh, 6.5 * s * sh); c.fillStyle = 'rgba(60,30,20,.2)'; c.fill();
 
     // 뒤쪽 효과
+    if (st.ultT > 0) {      // 필살기 : 뒤에서 퍼지는 빛살
+      c.save(); c.translate(sx, fy - 46 * s - lift); c.rotate(clock * 2);
+      c.fillStyle = 'rgba(255,225,80,' + (0.5 * Math.min(1, st.ultT)) + ')';
+      for (k = 0; k < 10; k++) { c.rotate(TAU / 10); c.beginPath(); c.moveTo(0, 0); c.lineTo(-10 * s, -98 * s); c.lineTo(10 * s, -98 * s); c.closePath(); c.fill(); }
+      c.restore();
+    }
+    if (r.ultReady && !r.finished) {   // 게이지 가득 : 발밑에서 깜빡이는 고리
+      ell(sx, fy + 2 * s, (34 + 4 * Math.sin(clock * 10)) * s, 9 * s); c.lineWidth = 3; c.strokeStyle = 'rgba(255,70,110,.85)'; c.stroke();
+    }
     var boostOn = o.boost || has.shell || has.roll || has.slide || has.jump || has.fly || has.burrow;
     if (has.star) {
       var rg = c.createRadialGradient(sx, fy - 46 * s, 8 * s, sx, fy - 46 * s, 74 * s);
@@ -567,6 +615,39 @@
     if (has.charm) {
       for (k = 0; k < 2; k++) { var hxx = a.hx + (k ? 16 : -14) * s, hyy = a.top - 4 * s - Math.abs(Math.sin(clock * 6 + k)) * 6 * s, hs = 6 * s + 2;
         c.fillStyle = '#ff5a7a'; c.beginPath(); c.moveTo(hxx, hyy + hs * 0.6); c.bezierCurveTo(hxx - hs, hyy - hs * 0.2, hxx - hs * 0.5, hyy - hs, hxx, hyy - hs * 0.35); c.bezierCurveTo(hxx + hs * 0.5, hyy - hs, hxx + hs, hyy - hs * 0.2, hxx, hyy + hs * 0.6); c.fill(); c.lineWidth = 1.4; c.strokeStyle = OL; c.stroke(); }
+    }
+    if (has.net) {         // 그물에 붙잡힘
+      c.save(); ell(sx + 2 * s, fy - 48 * s - lift, 44 * s, 52 * s); c.clip();
+      c.strokeStyle = 'rgba(255,255,255,.9)'; c.lineWidth = 1.8;
+      for (k = -6; k <= 6; k++) { c.beginPath(); c.moveTo(sx + k * 14 * s - 60 * s, fy - 110 * s); c.lineTo(sx + k * 14 * s + 60 * s, fy + 10 * s); c.moveTo(sx + k * 14 * s + 60 * s, fy - 110 * s); c.lineTo(sx + k * 14 * s - 60 * s, fy + 10 * s); c.stroke(); }
+      c.restore();
+      ell(sx + 2 * s, fy - 48 * s - lift, 44 * s, 52 * s); c.lineWidth = 2.6; c.strokeStyle = '#8a7a66'; c.stroke();
+    }
+    if (has.stop) {        // 시간이 멈춤 : 머리 위 시계
+      var cy0 = a.top - 16 * s;
+      ell(a.hx, cy0, 10 * s + 3, 10 * s + 3); c.fillStyle = '#fff'; c.fill(); c.lineWidth = 2.2; c.strokeStyle = OL; c.stroke();
+      c.beginPath(); c.moveTo(a.hx, cy0); c.lineTo(a.hx, cy0 - 7 * s - 2); c.moveTo(a.hx, cy0); c.lineTo(a.hx + 5 * s + 1, cy0); c.stroke();
+    }
+    if (has.crown) {       // 1등의 저주 : 무거운 왕관
+      var kx = a.hx, ky = a.top - 6 * s, kw = 15 * s + 4, kh = 12 * s + 3;
+      c.beginPath(); c.moveTo(kx - kw, ky); c.lineTo(kx - kw, ky - kh); c.lineTo(kx - kw * 0.5, ky - kh * 0.45); c.lineTo(kx, ky - kh * 1.15); c.lineTo(kx + kw * 0.5, ky - kh * 0.45); c.lineTo(kx + kw, ky - kh); c.lineTo(kx + kw, ky); c.closePath();
+      c.fillStyle = '#7d6bb0'; c.fill(); c.lineWidth = 2.2; c.strokeStyle = OL; c.stroke();
+    }
+    if (race.bomb && race.bomb.holder === r) {   // 폭탄
+      var bx0 = a.hx + 4 * s, by0 = a.top - 18 * s, brd = 11 * s + 4, left = Math.max(0, race.bomb.until - race.t);
+      ell(bx0, by0, brd, brd); c.fillStyle = left < 1.5 && Math.sin(clock * 30) > 0 ? '#ff3d2e' : '#2b2018'; c.fill(); c.lineWidth = 2.2; c.strokeStyle = OL; c.stroke();
+      c.beginPath(); c.moveTo(bx0 + brd * 0.5, by0 - brd * 0.8); c.quadraticCurveTo(bx0 + brd * 1.1, by0 - brd * 1.6, bx0 + brd * 1.5, by0 - brd * 1.2); c.lineWidth = 2.4; c.strokeStyle = '#8a5a3a'; c.stroke();
+      Art.drawStar(c, bx0 + brd * 1.5, by0 - brd * 1.2, 5 + 2 * Math.sin(clock * 30), clock * 9, '#ffe14d', 1.2);
+      c.font = Math.round(brd * 1.3) + 'px ' + FONT; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#fff'; c.fillText(String(Math.ceil(left)), bx0, by0 + 1);
+    }
+    if (has.reel) {        // 끌려가는 줄
+      var rtS = RS[has.reel.target.i];
+      if (rtS && rtS.vis) { c.beginPath(); c.moveTo(a.hx, a.hy); c.lineTo(rtS.hx, rtS.hy); c.lineWidth = 2.6; c.strokeStyle = 'rgba(255,255,255,.9)'; c.setLineDash([7, 5]); c.stroke(); c.setLineDash([]); }
+    }
+    if (has.block) {       // 길막 표지
+      var nx0 = sx - 30 * s, ny0 = fy - 60 * s;
+      ell(nx0, ny0, 11 * s + 3, 11 * s + 3); c.fillStyle = '#ff3d2e'; c.fill(); c.lineWidth = 2.2; c.strokeStyle = OL; c.stroke();
+      c.fillStyle = '#fff'; c.fillRect(nx0 - 7 * s - 2, ny0 - 2 * s - 1, 14 * s + 4, 4 * s + 2);
     }
     if (has.pie || has.ink) {     // 얼굴에 묻은 크림 (먹물이면 검게)
       c.fillStyle = has.pie ? '#fffaf0' : 'rgba(44,34,66,.88)'; c.strokeStyle = has.pie ? '#e8d9c0' : '#1c1530'; c.lineWidth = 1.6;
@@ -959,6 +1040,109 @@
     }
   }
 
+  // ───────────── 필살기 연출 ─────────────
+  function drawUltObjects(dt) {
+    var top = L.trackTop, th = L.trackH, j, k, o, sx, x, y, q;
+    for (j = 0; j < race.objects.length; j++) {
+      o = race.objects[j];
+      if (o.gone) continue;
+      if (o.type === 'wave') {            // 물살
+        sx = sxOf(o.x); if (sx < -90 || sx > W + 90) continue;
+        var g = c.createLinearGradient(sx - 80, 0, sx + 14, 0);
+        g.addColorStop(0, 'rgba(90,170,255,0)'); g.addColorStop(0.6, 'rgba(90,170,255,.55)'); g.addColorStop(1, 'rgba(215,242,255,.92)');
+        c.fillStyle = g; c.fillRect(sx - 80, top, 94, th);
+        c.fillStyle = '#fff';
+        for (k = 0; k < n * 2; k++) { ell(sx + 8 + 6 * Math.sin(clock * 9 + k), top + (k + 0.5) * th / (n * 2), 9, 6); c.fill(); }
+      } else if (o.type === 'herd') {     // 몰려오는 떼
+        sx = sxOf(o.x); if (sx < -140 || sx > W + 140) continue;
+        c.globalAlpha = 0.62;
+        var stp = Math.max(1, Math.ceil(n / 6));
+        for (k = 0; k < n; k += stp) Art.drawAnimal(c, o.animal, { x: sx - (k % 3) * 26 * sA, y: laneY(k), s: sA * laneScale(k) * 0.95, t: clock + k, phase: clock * 16 + k * 1.7, pose: 'run', boost: true });
+        c.globalAlpha = 1;
+      } else if (o.type === 'meteor') {   // 운석 · 코코넛
+        sx = sxOf(o.x); if (sx < -260 || sx > W + 260) continue;
+        k = clamp(1 - (o.at - race.t) / o.dur, 0, 1);
+        var rw = Math.max(16, o.rad * view.ppm);
+        c.fillStyle = 'rgba(255,60,40,' + (0.16 + 0.16 * Math.abs(Math.sin(clock * 12))) + ')'; c.fillRect(sx - rw, top, rw * 2, th);
+        c.setLineDash([8, 6]); c.lineWidth = 3; c.strokeStyle = '#ff3d2e'; c.strokeRect(sx - rw, top + 2, rw * 2, th - 4); c.setLineDash([]);
+        x = sx + (1 - k) * 260; y = -60 + k * (top + th * 0.5 + 60);
+        var rr = o.nut ? 12 : clamp(rw * 0.35, 20, 60);
+        if (!o.nut) { c.beginPath(); c.moveTo(x - rr * 0.6, y - rr * 0.6); c.lineTo(x + rr * 2.6, y - rr * 2.4); c.lineTo(x + rr * 0.7, y + rr * 0.5); c.closePath(); c.fillStyle = 'rgba(255,170,40,.75)'; c.fill(); }
+        ell(x, y, rr, rr * 0.92); c.fillStyle = o.nut ? '#8a5a3a' : '#6b4a3a'; c.fill(); c.lineWidth = 3; c.strokeStyle = OL; c.stroke();
+        ell(x - rr * 0.3, y - rr * 0.3, rr * 0.28, rr * 0.2); c.fillStyle = o.nut ? '#b98450' : '#8f6a55'; c.fill();
+      }
+    }
+    for (j = booms.length - 1; j >= 0; j--) {      // 폭발
+      var b = booms[j]; b.age += dt;
+      var bd = b.big ? 0.8 : 0.5;
+      if (b.age > bd) { booms.splice(j, 1); continue; }
+      k = b.age / bd; sx = sxOf(b.x); y = (b.r !== undefined && b.r >= 0) ? laneY(b.r) - 30 * sA : top + th / 2;
+      var br = (b.big ? th * 0.75 : (b.small ? 40 : 90)) * (0.3 + 0.7 * k);
+      ell(sx, y, br, br * 0.8); c.fillStyle = 'rgba(255,200,60,' + (0.8 * (1 - k)) + ')'; c.fill();
+      ell(sx, y, br * 0.6, br * 0.5); c.fillStyle = 'rgba(255,90,40,' + (0.8 * (1 - k)) + ')'; c.fill();
+      for (q = 0; q < 8; q++) { var an = q / 8 * TAU + j; Art.drawStar(c, sx + Math.cos(an) * br * 1.1, y + Math.sin(an) * br * 0.9, 9 * (1 - k) + 3, an, '#ffe14d', 1.5); }
+    }
+    for (j = holes.length - 1; j >= 0; j--) {      // 빨아들이는 소용돌이
+      var hl = holes[j]; hl.age += dt;
+      if (hl.age > 1.1) { holes.splice(j, 1); continue; }
+      k = hl.age / 1.1; sx = sxOf(hl.x); y = top + th / 2;
+      c.lineWidth = 5; c.lineCap = 'round';
+      for (q = 0; q < 4; q++) {
+        c.beginPath(); c.strokeStyle = 'rgba(120,70,200,' + (0.7 * (1 - k)) + ')';
+        c.ellipse(sx, y, th * 0.5 * (1 - k * 0.7) * (1 - q * 0.2), th * 0.42 * (1 - k * 0.7) * (1 - q * 0.2), 0, clock * 6 + q, clock * 6 + q + 2.2); c.stroke();
+      }
+    }
+    for (j = warps.length - 1; j >= 0; j--) {      // 자리 옮김 : 펑 + 잔상 줄
+      var wp = warps[j]; wp.age += dt;
+      if (wp.age > 0.5) { warps.splice(j, 1); continue; }
+      k = wp.age / 0.5; y = laneY(wp.r) - 34 * sA;
+      var x1 = sxOf(wp.from), x2 = sxOf(wp.to);
+      c.setLineDash([10, 8]); c.lineWidth = 4; c.strokeStyle = 'rgba(255,255,255,' + (0.8 * (1 - k)) + ')'; c.beginPath(); c.moveTo(x1, y); c.lineTo(x2, y); c.stroke(); c.setLineDash([]);
+      ell(x1, y, (16 + 30 * k) * sA + 6, (14 + 26 * k) * sA + 5); c.fillStyle = 'rgba(255,255,255,' + (0.7 * (1 - k)) + ')'; c.fill();
+      ell(x2, y, (16 + 30 * k) * sA + 6, (14 + 26 * k) * sA + 5); c.fill();
+    }
+    if (race.t < tstopUntil) {                    // 시간 정지 · 되감기
+      c.fillStyle = 'rgba(110,130,210,' + (0.24 * Math.min(1, (tstopUntil - race.t) / 0.3)) + ')'; c.fillRect(0, top, W, th);
+    }
+    if (flipT > 0) {                              // 거꾸로 세상
+      flipT -= dt;
+      c.save(); c.globalAlpha = Math.min(1, flipT * 2); c.translate(W / 2, top + th / 2); c.rotate((1 - flipT) * PI);
+      c.font = Math.round(th * 0.5) + 'px ' + FONT; c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.lineWidth = 8; c.strokeStyle = OL; c.strokeText('⇄', 0, 0); c.fillStyle = '#ffe14d'; c.fillText('⇄', 0, 0);
+      c.restore();
+    }
+  }
+
+  // 필살기 컷인 (왼쪽 아래에서 밀려 나오는 띠)
+  function drawCutin(dt) {
+    if (!cutin) return;
+    cutin.age += dt;
+    if (cutin.age > cutin.dur) { cutin = null; return; }
+    var r = race.racers[cutin.r], k = cutin.age, inK = clamp(k / 0.18, 0, 1), outK = clamp((cutin.dur - k) / 0.25, 0, 1);
+    var h = L.narrow ? 52 : 78, w = Math.min(W * 0.74, L.narrow ? 310 : 500), y = H - h - (L.narrow ? 46 : 20);
+    var x = -w + (w + 10) * (1 - Math.pow(1 - inK, 3));
+    c.save(); c.globalAlpha = outK;
+    c.beginPath(); c.moveTo(x, y); c.lineTo(x + w, y); c.lineTo(x + w - h * 0.45, y + h); c.lineTo(x, y + h); c.closePath();
+    c.fillStyle = '#2b2018'; c.fill();
+    c.beginPath(); c.moveTo(x, y + 5); c.lineTo(x + w - 10, y + 5); c.lineTo(x + w - 10 - (h - 10) * 0.45, y + h - 5); c.lineTo(x, y + h - 5); c.closePath();
+    c.fillStyle = LC[cutin.r]; c.fill();
+    c.strokeStyle = 'rgba(255,255,255,.35)'; c.lineWidth = 2;
+    for (var q = 0; q < 6; q++) { var ly = y + 10 + q * (h - 20) / 5, lx = x + ((clock * 500 + q * 97) % (w * 0.8)); c.beginPath(); c.moveTo(lx, ly); c.lineTo(lx + 40, ly); c.stroke(); }
+    var fsz = h * 0.96;
+    ell(x + h * 0.62, y + h / 2, fsz * 0.5, fsz * 0.5); c.fillStyle = '#fff8e2'; c.fill(); c.lineWidth = 3; c.strokeStyle = OL; c.stroke();
+    Art.drawFace(c, r.a.id, x + h * 0.62, y + h / 2, fsz * 0.86, clock, 'happy');
+    c.textAlign = 'left'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+    var f1 = L.narrow ? 12 : 15, f2 = L.narrow ? 19 : 29, tx = x + h * 1.25, maxW = w - h * 1.25 - h * 0.6;
+    c.font = f1 + 'px ' + FONT; c.lineWidth = 3; c.strokeStyle = OL; c.strokeText('필살기!  ' + r.name, tx, y + h * 0.27);
+    c.fillStyle = '#fff'; c.fillText('필살기!  ' + r.name, tx, y + h * 0.27);
+    c.font = f2 + 'px ' + FONT;
+    var tw = c.measureText(cutin.name).width;
+    if (tw > maxW) { f2 = Math.max(12, Math.floor(f2 * maxW / tw)); c.font = f2 + 'px ' + FONT; }
+    c.lineWidth = 5; c.strokeText(cutin.name, tx, y + h * 0.66);
+    c.fillStyle = '#ffe14d'; c.fillText(cutin.name, tx, y + h * 0.66);
+    c.restore();
+  }
+
   function drawBanner(dt) {
     if (!banner) return;
     banner.age += dt;
@@ -1008,16 +1192,19 @@
       st.phase += r.v * simDt * 2.5 / Math.sqrt(Art.SPEC[r.a.id].size);
       if (st.spray > 0) st.spray -= dt;
       if (st.burst > 0) st.burst = Math.max(0, st.burst - dt * 2.2);
+      if (st.ultT > 0) st.ultT -= dt;
     }
     updateCamera(Math.max(dt, simDt || 0));
 
     c.setTransform(DPR, 0, 0, DPR, 0, 0);
     c.clearRect(0, 0, W, H);
+    if (shakeT > 0) { shakeT -= dt; c.translate((hash(Math.floor(clock * 60)) - 0.5) * 22 * shakeT, (hash(Math.floor(clock * 60) + 7) - 0.5) * 16 * shakeT); }
     drawSky();
     drawStands();
     drawTrack();
     drawSigns();
     for (i = 0; i < n; i++) { drawLaneObjects(i); drawRacer(i); }
+    drawUltObjects(dt);
     drawBottom();
     emitRacerParts(dt);
     drawParts(dt);
@@ -1026,6 +1213,7 @@
     drawWeather(dt);
     drawHud();
     drawBanner(dt);
+    drawCutin(dt);
     drawCountdown();
   };
 

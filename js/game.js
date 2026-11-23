@@ -1,4 +1,4 @@
-/* 동물 달리기 500m — 화면 흐름 (이름 넣기 → 출전 동물 → 경주 → 결과) */
+/* 동물 달리기 1km — 화면 흐름 (이름 넣기 → 출전 동물 → 경주 → 결과) */
 (function () {
   'use strict';
   var S = window.RaceSim, Art = window.Art, Sfx = window.Sfx, Render = window.Render;
@@ -175,6 +175,10 @@
       sk.appendChild(el('b', null, r.a.skill.name));
       sk.appendChild(el('span', null, r.a.skill.desc));
       card.appendChild(sk);
+      var ul = el('div', 'askill ault');
+      ul.appendChild(el('b', null, '필살기 · ' + r.a.ult.name));
+      ul.appendChild(el('span', null, r.a.ult.desc));
+      card.appendChild(ul);
       card.appendChild(el('div', 'apassive', r.a.passive));
       box.appendChild(card);
       cardCtx.push({ cv: cv, id: r.a.id, i: i, lane: r.lane });
@@ -271,7 +275,8 @@
       var nm = el('span', 'rname', r.name);
       if (r.named) nm.appendChild(el('small', null, r.a.name));
       var stat = el('span', 'rstat', '0m');
-      li.appendChild(pos); li.appendChild(chip(i, true)); li.appendChild(img); li.appendChild(nm); li.appendChild(stat);
+      var gauge = el('i', 'rult'), gfill = el('b'); gauge.appendChild(gfill); gauge.title = '필살기 게이지';
+      li.appendChild(pos); li.appendChild(chip(i, true)); li.appendChild(img); li.appendChild(nm); li.appendChild(stat); li.appendChild(gauge);
       function toggle() {
         Render.setFollow(Render.getFollow() === i ? -1 : i);
         updateRank(); Sfx.play('click');
@@ -279,7 +284,7 @@
       li.addEventListener('click', toggle);
       li.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); toggle(); } });
       ol.appendChild(li);
-      rankRows.push({ li: li, pos: pos, stat: stat, lastPos: -1, lastStat: '' });
+      rankRows.push({ li: li, pos: pos, stat: stat, gfill: gfill, lastPos: -1, lastStat: '', lastG: -1 });
     });
     updateRank();
   }
@@ -298,6 +303,8 @@
       if (row.lastPos !== idx) { row.li.style.transform = 'translateY(' + (idx * rowH) + 'px)'; row.pos.textContent = String(idx + 1); row.lastPos = idx; }
       var st = r.finished ? r.finT.toFixed(2) + '초' : Math.floor(Math.max(0, r.x)) + 'm';
       if (st !== row.lastStat) { row.stat.textContent = st; row.lastStat = st; }
+      var gv = r.finished ? 0 : Math.round(r.ult / 4) * 4;
+      if (gv !== row.lastG) { row.gfill.style.width = gv + '%'; row.lastG = gv; row.li.classList.toggle('ready', gv >= 100); }
       row.li.classList.toggle('fin', r.finished && r.place !== 1);
       row.li.classList.toggle('first', r.finished && r.place === 1);
       row.li.classList.toggle('follow', f === r.i);
@@ -348,6 +355,7 @@
       aw.appendChild(a);
     }
     var b;
+    b = best('ults', 2); award('필살기왕', b, b ? '(필살기 ' + b.stats.ults + '번)' : '');
     b = best('gave', 2); award('방해왕', b, b ? '(' + b.stats.gave + '번 방해)' : '');
     b = best('took', 3); award('불운상', b, b ? '(' + b.stats.took + '번 당함)' : '');
     b = best('helps', 1); award('의리상', b, b ? '(' + b.stats.helps + '번 도움)' : '');
@@ -409,7 +417,7 @@
 
   function resultText() {
     var race = G.race, rs = race.racers.slice().sort(function (a, b) { return a.place - b.place; });
-    var lines = ['동물 달리기 500m 결과 (날씨: ' + race.weather.name + ')'];
+    var lines = ['동물 달리기 1km 결과 (날씨: ' + race.weather.name + ')'];
     rs.forEach(function (r, k) { lines.push((k + 1) + '등 ' + r.name + (r.named ? ' (' + r.a.name + ')' : '') + ' ' + r.finT.toFixed(2) + '초'); });
     return lines.join('\n');
   }
@@ -441,7 +449,7 @@
       if (small) tx.appendChild(el('small', null, small));
       d.appendChild(tx); box.appendChild(d);
     }
-    $('g-animals-title').textContent = '동물 ' + S.ANIMALS.length + '종과 스킬';
+    $('g-animals-title').textContent = '동물 ' + S.ANIMALS.length + '종 · 스킬과 필살기';
     var a = $('g-animals'), groups = [];
     S.CATS.forEach(function (ct) {
       var list = S.ANIMALS.filter(function (an) { return an.cat === ct[0]; });
@@ -451,7 +459,11 @@
       a.appendChild(h); a.appendChild(grid);
       list.forEach(function (an) {
         item(grid, iconURL('face', an.id, 46), an.name, an.skill.name, an.skill.desc, an.passive);
-        grid.lastChild.setAttribute('data-k', (an.name + ' ' + an.skill.name + ' ' + ct[1]).toLowerCase());
+        var tx2 = grid.lastChild.lastChild, sm = tx2.lastChild;
+        tx2.insertBefore(document.createElement('br'), sm);
+        tx2.insertBefore(el('em', 'u', '필살기 · ' + an.ult.name), sm);
+        tx2.insertBefore(el('span', null, ' ' + an.ult.desc), sm);
+        grid.lastChild.setAttribute('data-k', (an.name + ' ' + an.skill.name + ' ' + an.ult.name + ' ' + ct[1]).toLowerCase());
       });
       groups.push([h, grid]);
     });
