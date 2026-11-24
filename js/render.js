@@ -13,7 +13,7 @@
   var RS = [];                // 동물별 화면 상태
   var parts = [], projs = [], bolts = [], ufos = [], twisters = [], rings = [], weatherP = [];
   var banner = null, flashA = 0, clock = 0, excite = 0, gustDir = 0, gustT = 0, nightT = 0, balls = [];
-  var cutin = null, tstopUntil = 0, flipT = 0, shakeT = 0, booms = [], holes = [], warps = [];
+  var cutin = null, tstopUntil = 0, flipT = 0, shakeT = 0, booms = [], holes = [], warps = [], focus = null;
   var sky = { cur: 'sunny', prev: 'sunny', mix: 1 };
   var mode = 'idle', cd = 0, goT = 0, follow = -1;
   var sA = 1;                 // 동물 기본 배율
@@ -53,7 +53,7 @@
     });
     parts = []; projs = []; bolts = []; ufos = []; twisters = []; rings = []; weatherP = [];
     banner = null; flashA = 0; clock = 0; excite = 0; gustDir = 0; gustT = 0; follow = -1; nightT = 0; balls = [];
-    cutin = null; tstopUntil = 0; flipT = 0; shakeT = 0; booms = []; holes = []; warps = [];
+    cutin = null; tstopUntil = 0; flipT = 0; shakeT = 0; booms = []; holes = []; warps = []; focus = null;
     sky.cur = sky.prev = race.weather.id; sky.mix = 1;
     mode = 'countdown'; cd = 3.4; goT = 0;
     R.resize();
@@ -63,19 +63,37 @@
   R.resize = function () {
     if (!cv) return;
     var rect = cv.getBoundingClientRect();
-    W = Math.max(280, Math.round(rect.width)); H = Math.max(200, Math.round(rect.height));
-    DPR = Math.min(2, root.devicePixelRatio || 1);
+    // 큰 모니터에서는 글자·표시까지 같이 커지게, 그림 전체를 배율로 키운다 (1500×900 보다 클 때)
+    var ui = clamp(Math.min(rect.width / 1500, rect.height / 900), 1, 2.4);
+    W = Math.max(280, Math.round(rect.width / ui)); H = Math.max(200, Math.round(rect.height / ui));
+    DPR = Math.min(2, root.devicePixelRatio || 1) * ui;
     cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
     L.narrow = W < 620;
+    L.tall = H > W * 1.1;                 // 세로로 긴 화면 (휴대폰)
+    L.dense = n > 10;                     // 레인이 많으면 이름은 왼쪽 칸에 모아 적는다
     L.hud = L.narrow ? 66 : 50;
     var skyFrac = clamp(0.36 - 0.012 * Math.max(0, n - 8), 0.2, 0.36);
-    L.trackTop = Math.round(Math.max(L.hud + H * (n > 8 ? 0.12 : 0.2), H * skyFrac));
-    L.botH = Math.round(H * (n > 12 ? 0.05 : 0.075));
+    if (L.tall) skyFrac = clamp(0.24 - 0.008 * Math.max(0, n - 8), 0.13, 0.24);
+    L.short = H < 450 && !L.tall;         // 낮은 화면 (휴대폰을 눕혔을 때)
+    if (L.short) skyFrac = n > 8 ? 0.12 : 0.24;
+    else if (!L.tall && n > 16) skyFrac = 0.17;
+    L.trackTop = Math.round(Math.max(L.hud + (L.short ? (n > 8 ? 20 : 40) : (L.tall ? 44 : H * (n > 8 ? 0.12 : 0.2))), H * skyFrac));
+    L.botH = Math.round(H * (L.tall ? 0.028 : (n > 12 ? 0.05 : 0.075)));
+    if (L.narrow || L.tall || L.short) L.botH = Math.max(L.botH, 36);     // 아래 버튼이 레인을 가리지 않게
     L.trackH = H - L.trackTop - L.botH;
     L.laneH = L.trackH / n;
     L.standH = clamp(L.trackTop - L.hud - 6, 30, 120);
-    var overlap = n <= 8 ? 1.8 : Math.min(3.0, 1.8 + (n - 8) * 0.09);   // 레인이 많을수록 동물이 위 레인과 더 겹침
-    L.maxS = clamp(L.laneH * overlap / 100, 0.36, 1.25);       // 동물 최대 배율 (키 100 기준)
+    var overlap = n <= 8 ? 1.8 : Math.min(2.7, 1.8 + (n - 8) * 0.09);   // 레인이 많을수록 동물이 위 레인과 더 겹침
+    L.maxS = clamp(L.laneH * overlap / 88, 0.3, 1.5);         // 동물 최대 배율 (네 발 동물 키 88 기준)
+    L.gut = 0; L.gutFs = clamp(Math.floor(L.laneH * (L.narrow ? 0.5 : 0.66)), 8, L.narrow ? 14 : 17);
+    if (L.dense && c && race) {          // 이름 칸 : 가장 긴 이름에 맞추되 화면을 너무 먹지 않게
+      var gmax = 0, gi;
+      c.font = L.gutFs + 'px ' + FONT;
+      for (gi = 0; gi < n; gi++) gmax = Math.max(gmax, c.measureText(race.racers[gi].lane + ' ' + race.racers[gi].name).width);
+      L.gut = Math.round(clamp(gmax + L.gutFs + 22, 62, W * (L.narrow ? 0.25 : 0.17)));
+    }
+    // 무리가 길게 늘어서도 동물이 너무 작아지지 않게 하는 최소 배율 (좁은 화면에서는 폭에 맞춰 제한)
+    L.minS = Math.min(L.maxS, L.laneH * (L.dense ? 1.25 : 1) / 88, 0.3 * (W - L.gut) / 194);
     L.maxPpm = L.maxS * 100 / 2.35;
     L.minPpm = Math.min(L.maxPpm, L.narrow ? 15 : 21);
     view.ppm = W / view.viewM;
@@ -118,13 +136,20 @@
           if (e.id === 'snack') spawnSnacks();
           if (e.id === 'star') spawnShootingStar();
           break;
+        case 'act':      // 무대 : 지금부터 이 동물(또는 사건)에게 집중
+          // 빠르게 볼 때는 집중 장면도 짧게 (안 그러면 느린 장면이 경기 시간을 다 차지한다)
+          focus = { r: e.r, kind: e.kind, age: 0, dur: (e.kind === 'ult' ? 1.9 : (e.kind === 'skill' ? 1.15 : 0.9)) / paceK };
+          if (e.kind === 'skill' && e.r >= 0) cutin = { r: e.r, name: e.name, age: 0, dur: 1.9, skill: true };
+          if (e.kind === 'skill' && e.r >= 0) { RS[e.r].burst = 1; for (var q5 = 0; q5 < 2; q5++) rings.push({ r: e.r, age: -q5 * 0.12, dur: 0.7, col: '#ffe14d', big: true }); }
+          break;
+        case 'terrain': break;
         case 'ult':
           st = RS[e.r]; st.burst = 1; st.ultT = 1.3;
           cutin = { r: e.r, name: e.name, age: 0, dur: 2.3 };
           st.pops.push({ text: e.name + '!', cls: 'skill', age: 0 });
           if (st.pops.length > 3) st.pops.shift();
           for (var q4 = 0; q4 < 3; q4++) rings.push({ r: e.r, age: -q4 * 0.1, dur: 0.8, col: '#ff3d6e', big: true });
-          flashA = Math.max(flashA, 0.3);
+          flashA = Math.max(flashA, 0.12);
           break;
         case 'warp': if (Math.abs(e.to - e.from) > 2) warps.push({ r: e.r, from: e.from, to: e.to, age: 0 }); break;
         case 'boom': booms.push({ x: e.x, r: e.r, big: e.big, small: e.small, age: 0 }); if (!e.small) flashA = Math.max(flashA, e.big ? 0.7 : 0.3); break;
@@ -195,6 +220,13 @@
   // ───────────── 카메라 ─────────────
   function updateCamera(dt) {
     var rs = race.racers, minV = W / L.maxPpm, maxV = W / L.minPpm, tv, tc, j;
+    if (focus && focus.r >= 0 && mode === 'run' && !rs[focus.r].finished) {     // 집중 연출 : 주인공을 화면 가운데로
+      tc = rs[focus.r].x - view.viewM * 0.5;
+      view.camX += (tc - view.camX) * (1 - Math.exp(-dt * 9));
+      view.ppm = W / view.viewM;
+      sA = clamp(view.ppm * 2.35 / 100, L.minS, L.maxS);
+      return;
+    }
     if (mode === 'countdown') { tv = minV; tc = -tv * 0.42; }
     else if (follow >= 0 && !rs[follow].finished) { tv = clamp(minV * 1.1, minV, maxV); tc = rs[follow].x - tv * 0.5; }
     else {
@@ -207,14 +239,14 @@
         tc = S.LEN + 12 - tv * 0.96;
       } else {
         var span = lead - tail;
-        tv = clamp((span + 11) / 0.78, minV, maxV);
+        tv = clamp((span + 11) / Math.max(0.5, 0.78 - L.gut / W), minV, maxV);
         tc = lead - tv * 0.8;
       }
     }
     view.viewM += (tv - view.viewM) * (1 - Math.exp(-dt * 2.2));
     view.camX += (tc - view.camX) * (1 - Math.exp(-dt * 4));
     view.ppm = W / view.viewM;
-    sA = Math.min(view.ppm * 2.35 / 100, L.maxS);
+    sA = clamp(view.ppm * 2.35 / 100, L.minS, L.maxS);
   }
 
   // ───────────── 배경 ─────────────
@@ -313,7 +345,36 @@
     var ga = GROUND[sky.prev], gb = GROUND[sky.cur];
     var t1 = hexMix(ga[2], gb[2], m), t2 = hexMix(ga[3], gb[3], m);
     for (j = 0; j < n; j++) { c.fillStyle = j % 2 ? t2 : t1; c.fillRect(0, top + j * lh, W, lh + 1); }
-    // 10m 눈금 · 50m 선
+    // 지형 구간 : 구간마다 바닥 색과 무늬가 다르다
+    var TC = { water: ['#62b6ee', '#56aae4'], sand: ['#f1d78f', '#e9cc7e'], snow: ['#f3f8fd', '#e4eef8'], mud: ['#8d6746', '#815c3d'], rock: ['#b6afa6', '#aaa39a'], slope: ['#aedb72', '#a0d163'], forest: ['#63a55d', '#599a52'] };
+    race.terrain.forEach(function (g, gi) {
+      if (g.type === 'track') return;
+      var a = sxOf(g.x0), b = sxOf(Math.min(g.x1, S.LEN)), q, yy, xx;
+      if (b < -4 || a > W + 4) return;
+      var col = TC[g.type], a0 = Math.max(a, -4), b0 = Math.min(b, W + 4);
+      for (j = 0; j < n; j++) { c.fillStyle = col[j % 2]; c.fillRect(a0, top + j * lh, b0 - a0, lh + 1); }
+      c.save(); c.beginPath(); c.rect(a0, top, b0 - a0, th); c.clip();
+      var step = Math.max(26, ppm * 5), k0 = Math.floor((a0 - a) / step);
+      if (g.type === 'water') {            // 물결
+        c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = 2; c.lineCap = 'round';
+        for (q = k0; a + q * step < b0 + step; q++) for (j = 0; j < n; j++) { xx = a + q * step + ((j % 2) * step * 0.5) + Math.sin(clock * 2 + j) * 6; yy = top + (j + 0.5) * lh; c.beginPath(); c.moveTo(xx, yy); c.quadraticCurveTo(xx + step * 0.15, yy - 4, xx + step * 0.3, yy); c.stroke(); }
+      } else if (g.type === 'sand' || g.type === 'mud' || g.type === 'rock' || g.type === 'snow') {     // 알갱이
+        c.fillStyle = g.type === 'sand' ? 'rgba(190,150,70,.4)' : (g.type === 'mud' ? 'rgba(60,38,22,.45)' : (g.type === 'rock' ? 'rgba(90,84,78,.5)' : 'rgba(255,255,255,.95)'));
+        for (q = k0; a + q * step < b0 + step; q++) for (j = 0; j < n; j++) { var hh = hash(q * 31 + j * 7 + gi * 101); xx = a + (q + hh) * step; yy = top + (j + 0.25 + 0.5 * hash(q * 13 + j * 3 + gi)) * lh; ell(xx, yy, g.type === 'rock' ? 4 + hh * 5 : (g.type === 'mud' ? 6 + hh * 6 : 2.2 + hh * 1.6), g.type === 'rock' ? 3 + hh * 3 : (g.type === 'mud' ? 2.6 + hh * 2 : 2 + hh)); c.fill(); }
+      } else if (g.type === 'forest') {    // 나무 그림자
+        c.fillStyle = 'rgba(30,70,40,.28)';
+        for (q = k0; a + q * step * 1.6 < b0 + step * 2; q++) { xx = a + (q + hash(q + gi * 7)) * step * 1.6; ell(xx, top + hash(q * 3 + gi) * th, step * 0.7, lh * 0.9); c.fill(); }
+      }
+      if (g.type === 'rock' || g.type === 'slope') {     // 오르막 · 내리막 화살표
+        c.strokeStyle = g.type === 'rock' ? 'rgba(255,255,255,.5)' : 'rgba(255,255,255,.75)'; c.lineWidth = 3; c.lineCap = 'round'; c.lineJoin = 'round';
+        var mv = g.type === 'slope' ? (clock * 60) % (step * 2) : 0;
+        for (q = k0 - 1; a + q * step * 2 < b0 + step; q++) { xx = a + q * step * 2 + mv; yy = top + th / 2; c.beginPath(); if (g.type === 'rock') { c.moveTo(xx - 7, top + 10); c.lineTo(xx, top + 3); c.lineTo(xx + 7, top + 10); c.moveTo(xx - 7, top + th - 3); c.lineTo(xx, top + th - 10); c.lineTo(xx + 7, top + th - 3); } else { c.moveTo(xx, top + 3); c.lineTo(xx + 8, top + 8); c.lineTo(xx, top + 13); c.moveTo(xx, top + th - 13); c.lineTo(xx + 8, top + th - 8); c.lineTo(xx, top + th - 3); } c.stroke(); }
+      }
+      c.restore();
+      // 구간 이름표
+      if (a > -80 && a < W) { var lbl = S.TERRAINS[g.type].name; c.font = (L.narrow ? 11 : 13) + 'px ' + FONT; var lw0 = c.measureText(lbl).width + 16; Art.roundRect(c, a + 4, top - 22, lw0, 19, 9); c.fillStyle = col[1]; c.fill(); c.lineWidth = 2; c.strokeStyle = OL; c.stroke(); c.fillStyle = g.type === 'mud' || g.type === 'forest' ? '#fff' : OL; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillText(lbl, a + 12, top - 12); c.fillStyle = 'rgba(74,50,38,.5)'; c.fillRect(a - 1, top, 2, th); }
+    });
+    // 10m 눈금 · 100m 선
     var m0 = Math.floor(view.camX / 10) * 10, x, sx;
     for (x = m0; x <= view.camX + view.viewM + 10; x += 10) {
       if (x < 0 || x > S.LEN) continue;
@@ -701,7 +762,9 @@
       st.dustT -= dt;
       if (st.dustT <= 0 && r.v > 3 && st.lift < 4) {
         st.dustT = 0.1 + Math.random() * 0.08;
-        parts.push({ kind: 'dust', x: r.x - 0.45, y: st.fy - 1, vx: -1.2, vy: -10 - Math.random() * 8, life: 0, max: 0.42, size: (3.5 + Math.random() * 3) * s });
+        var tty = race.terrain[r.seg || 0].type;
+        if (tty === 'water') { for (var w5 = 0; w5 < 2; w5++) parts.push({ kind: 'drop', scr: true, x: st.sx - 8 * s + Math.random() * 16 * s, y: st.fy - 3, vx: -60 - Math.random() * 70, vy: -70 - Math.random() * 60, life: 0, max: 0.4, size: 2.6 * s + 1 }); }
+        else parts.push({ kind: 'dust', col: tty === 'sand' ? '236,200,120' : (tty === 'mud' ? '110,78,50' : (tty === 'snow' ? '255,255,255' : null)), x: r.x - 0.45, y: st.fy - 1, vx: -1.2, vy: -10 - Math.random() * 8, life: 0, max: tty === 'snow' || tty === 'sand' ? 0.6 : 0.42, size: (3.5 + Math.random() * 3) * s * (tty === 'sand' || tty === 'snow' || tty === 'mud' ? 1.5 : 1) });
       }
       if (st.fxT > 0 || has.fart) {
         st.fxT -= dt;
@@ -728,7 +791,7 @@
       if (p.scr) { p.x += p.vx * dt; p.y += p.vy * dt; x = p.x; y = p.y; }
       else { p.x += p.vx * dt; p.y += p.vy * dt; x = sxOf(p.x); y = p.y; }
       switch (p.kind) {
-        case 'dust': ell(x, y, p.size * (0.5 + k), p.size * (0.5 + k) * 0.8); c.fillStyle = 'rgba(255,246,236,' + (0.5 * (1 - k)) + ')'; c.fill(); break;
+        case 'dust': ell(x, y, p.size * (0.5 + k), p.size * (0.5 + k) * 0.8); c.fillStyle = 'rgba(' + (p.col || '255,246,236') + ',' + ((p.col ? 0.75 : 0.5) * (1 - k)) + ')'; c.fill(); break;
         case 'puff': ell(x, y, p.size * (0.6 + k * 1.2), p.size * (0.6 + k * 1.2) * 0.85); c.fillStyle = 'rgba(160,210,90,' + (0.6 * (1 - k)) + ')'; c.fill(); c.lineWidth = 1.2; c.strokeStyle = 'rgba(100,150,50,' + (0.5 * (1 - k)) + ')'; c.stroke(); break;
         case 'drop': p.vy += 380 * dt; c.globalAlpha = 1 - k; Art.drawDrop(c, x, y, p.size, '#8fd8ff'); c.globalAlpha = 1; break;
         case 'spark': c.globalAlpha = 1 - k; Art.drawStar(c, x, y, p.size, p.life * 6, p.col, 1.2); c.globalAlpha = 1; break;
@@ -876,8 +939,9 @@
     return f;
   };
 
+  var focusEnv = 0;
   function drawTags(dt) {
-    var fs = clamp(Math.round(11 + sA * 5) - (n > 12 ? 2 : (n > 8 ? 1 : 0)), 9, 16), j, k;
+    var fs = clamp(Math.round(11 + sA * 5) - (n > 12 ? 2 : (n > 8 ? 1 : 0)) - (L.dense && L.narrow ? 2 : 0), 8, 16), j, k;
     c.textBaseline = 'middle';
     for (var i = 0; i < n; i++) {
       var r = race.racers[i], st = RS[i];
@@ -887,8 +951,8 @@
           var ey = st.fy - L.laneH * 0.45, gapM = Math.round(view.camX - r.x);
           c.font = '12px ' + FONT;
           var etxt = '◀ ' + r.lane + '번 ' + Math.max(1, gapM) + 'm', ew = c.measureText(etxt).width + 14;
-          Art.roundRect(c, 4, ey - 10, ew, 20, 10); c.fillStyle = LC[i]; c.fill(); c.lineWidth = 1.6; c.strokeStyle = '#fff'; c.stroke();
-          c.fillStyle = LT[i]; c.textAlign = 'left'; c.fillText(etxt, 11, ey + 1);
+          if (!L.dense) { Art.roundRect(c, 4, ey - 10, ew, 20, 10); c.fillStyle = LC[i]; c.fill(); c.lineWidth = 1.6; c.strokeStyle = '#fff'; c.stroke();
+          c.fillStyle = LT[i]; c.textAlign = 'left'; c.fillText(etxt, 11, ey + 1); }
         }
         if (st.sx >= W + 90 && mode !== 'countdown') {
           var ey2 = st.fy - L.laneH * 0.45, gap2 = Math.round(r.x - view.camX - view.viewM);
@@ -901,13 +965,23 @@
         continue;
       }
       c.font = fs + 'px ' + FONT;
-      var name = r.name, tw = c.measureText(name).width, chip = fs + 4, w = tw + chip + 14, h = fs + 8;
-      var x = clamp(st.hx - w / 2, 3, W - w - 3), y = Math.max(L.hud + 2, st.top - h - 5);
-      if (follow === i) { Art.roundRect(c, x - 3, y - 3, w + 6, h + 6, h / 2 + 3); c.fillStyle = '#fff'; c.fill(); }
-      Art.roundRect(c, x, y, w, h, h / 2); c.fillStyle = LC[i]; c.fill(); c.lineWidth = 2; c.strokeStyle = OL; c.stroke();
-      ell(x + h / 2, y + h / 2, chip / 2, chip / 2); c.fillStyle = '#fff'; c.fill();
-      c.fillStyle = OL; c.textAlign = 'center'; c.font = (fs - 1) + 'px ' + FONT; c.fillText(String(r.lane), x + h / 2, y + h / 2 + 1);
-      c.font = fs + 'px ' + FONT; c.fillStyle = LT[i]; c.textAlign = 'left'; c.fillText(name, x + chip + 7, y + h / 2 + 1);
+      var name = L.dense ? '' : r.name, tw = L.dense ? -7 : c.measureText(name).width, chip = fs + 4, w = tw + chip + 14, h = fs + 8;
+      if (L.dense) { h = w = clamp(Math.round(Math.min(fs + 6, L.laneH * 0.5 + 7)), 11, 22); }
+      var x = clamp(st.hx - w / 2, 3, W - w - 3), y = Math.max(L.hud + 2, st.top - h - (L.dense ? 2 : 5));
+      c.globalAlpha = (focusEnv > 0.01 && focus && focus.r >= 0 && focus.r !== i) ? 1 - focusEnv * 0.78 : 1;
+      if (L.dense) {
+        // 번호만 : 이름은 왼쪽 칸에 있다
+        if (follow === i) { ell(x + w / 2, y + h / 2, w / 2 + 3, h / 2 + 3); c.fillStyle = '#fff'; c.fill(); }
+        ell(x + w / 2, y + h / 2, w / 2, h / 2); c.fillStyle = LC[i]; c.fill(); c.lineWidth = 1.5; c.strokeStyle = OL; c.stroke();
+        c.fillStyle = LT[i]; c.textAlign = 'center'; c.font = Math.max(7, Math.round(h * 0.62)) + 'px ' + FONT; c.fillText(String(r.lane), x + w / 2, y + h / 2 + 0.5);
+      } else {
+        if (follow === i) { Art.roundRect(c, x - 3, y - 3, w + 6, h + 6, h / 2 + 3); c.fillStyle = '#fff'; c.fill(); }
+        Art.roundRect(c, x, y, w, h, h / 2); c.fillStyle = LC[i]; c.fill(); c.lineWidth = 2; c.strokeStyle = OL; c.stroke();
+        ell(x + h / 2, y + h / 2, chip / 2, chip / 2); c.fillStyle = '#fff'; c.fill();
+        c.fillStyle = OL; c.textAlign = 'center'; c.font = (fs - 1) + 'px ' + FONT; c.fillText(String(r.lane), x + h / 2, y + h / 2 + 1);
+        c.font = fs + 'px ' + FONT; c.fillStyle = LT[i]; c.textAlign = 'left'; c.fillText(name, x + chip + 7, y + h / 2 + 1);
+      }
+      c.globalAlpha = 1;
       // 들고 있는 아이템
       if (r.item) {
         var ir = h * 0.72, ix = x - ir - 2, iy = y + h / 2;
@@ -1006,6 +1080,39 @@
   }
 
   // ───────────── 위쪽 표시 (날씨 · 거리 · 시간) ─────────────
+  // 레인이 많을 때 : 왼쪽에 '번호 이름' 칸 (레인 높이에 맞춰 한 줄씩)
+  function drawGutter(alpha) {
+    if (!L.gut || alpha <= 0.02 || mode === 'done') return;
+    var gw = L.gut, lh = L.laneH, fsz = L.gutFs, i, r, y, txt, lead = race.order.length ? race.order[0] : null;
+    c.save(); c.globalAlpha = alpha;
+    c.fillStyle = 'rgba(255,252,244,.9)'; c.fillRect(0, L.trackTop, gw, L.trackH);
+    c.fillStyle = OL; c.fillRect(gw - 1.5, L.trackTop, 2, L.trackH);
+    c.textBaseline = 'middle';
+    for (i = 0; i < n; i++) {
+      r = race.racers[i]; y = L.trackTop + i * lh;
+      var bh = Math.max(7, lh - 2.5), on = follow === i;
+      Art.roundRect(c, 2, y + (lh - bh) / 2, gw - 5, bh, Math.min(8, bh / 2)); c.fillStyle = LC[i]; c.fill();
+      if (on || (lead === r && !r.finished && mode === 'run')) { c.lineWidth = 2; c.strokeStyle = on ? '#fff' : '#ffe14d'; c.stroke(); }
+      c.font = fsz + 'px ' + FONT; c.fillStyle = LT[i]; c.textAlign = 'left';
+      // 오른쪽 끝 표시 : 골인 등수 · 지금 1~3등 · 화면 왼쪽 밖(뒤처짐)
+      var mark = '', mw = 0, st = RS[i], cy = y + lh / 2 + 0.5;
+      if (r.finished) mark = r.place + '등';
+      else if (mode === 'run' && r.rank <= 3 && race.t > 3) mark = String(r.rank);
+      else if (mode === 'run' && st.sx < gw - 6) mark = '◀';
+      if (mark) mw = (r.finished ? c.measureText(mark).width : Math.min(bh, fsz + 3)) + 5;
+      txt = r.lane + ' ' + r.name;
+      if (c.measureText(txt).width > gw - 12 - mw) { while (txt.length > 3 && c.measureText(txt + '…').width > gw - 12 - mw) txt = txt.slice(0, -1); txt += '…'; }
+      c.fillText(txt, 6, cy);
+      if (r.finished) { c.textAlign = 'right'; c.fillText(mark, gw - 7, cy); }
+      else if (mark === '◀') { c.globalAlpha = alpha * 0.85; c.beginPath(); var ax = gw - 8, ah = Math.min(5, bh * 0.32); c.moveTo(ax - ah * 1.3, cy); c.lineTo(ax, cy - ah); c.lineTo(ax, cy + ah); c.closePath(); c.fill(); c.globalAlpha = alpha; }
+      else if (mark) {
+        var rr = Math.min(bh, fsz + 3) / 2, rx = gw - 6 - rr;
+        c.beginPath(); c.arc(rx, cy - 0.5, rr, 0, TAU); c.fillStyle = r.rank === 1 ? '#ffd23f' : (r.rank === 2 ? '#e3e6ee' : '#e8a66a'); c.fill(); c.lineWidth = 1.2; c.strokeStyle = OL; c.stroke();
+        c.font = Math.max(7, Math.round(rr * 1.45)) + 'px ' + FONT; c.fillStyle = OL; c.textAlign = 'center'; c.fillText(mark, rx, cy);
+      }
+    }
+    c.restore();
+  }
   function pill(x, y, w, h) { Art.roundRect(c, x, y, w, h, h / 2); c.fillStyle = 'rgba(255,252,244,.94)'; c.fill(); c.lineWidth = 2.2; c.strokeStyle = OL; c.stroke(); }
   function drawHud() {
     var h = L.narrow ? 26 : 32, y = 6, w = race.weather, fs = L.narrow ? 13 : 15;
@@ -1025,8 +1132,8 @@
     else { mx0 = ww + 30; mx1 = W - tw - 34; my = y + h / 2; }
     var bw = mx1 - mx0;
     Art.roundRect(c, mx0 - 9, my - 6, bw + 18, 12, 6); c.fillStyle = 'rgba(255,252,244,.94)'; c.fill(); c.lineWidth = 2.2; c.strokeStyle = OL; c.stroke();
-    c.fillStyle = 'rgba(74,50,38,.45)';
-    for (var q = 1; q < 5; q++) c.fillRect(mx0 + bw * q / 5 - 1, my - 4, 2, 8);
+    var HC = { water: '#62b6ee', sand: '#f1d78f', snow: '#dfeaf6', mud: '#8d6746', rock: '#aaa39a', slope: '#aedb72', forest: '#63a55d' };
+    race.terrain.forEach(function (g) { if (HC[g.type]) { c.fillStyle = HC[g.type]; c.fillRect(mx0 + bw * g.x0 / S.LEN, my - 4.2, bw * (Math.min(g.x1, S.LEN) - g.x0) / S.LEN, 8.4); } });
     // 결승 깃발
     c.fillStyle = OL; c.fillRect(mx1 + 1, my - 14, 2, 20);
     for (var fy = 0; fy < 2; fy++) for (var fx = 0; fx < 3; fx++) { c.fillStyle = (fx + fy) % 2 ? '#fff' : '#2b2018'; c.fillRect(mx1 + 3 + fx * 4, my - 14 + fy * 4, 4, 4); }
@@ -1119,7 +1226,9 @@
     cutin.age += dt;
     if (cutin.age > cutin.dur) { cutin = null; return; }
     var r = race.racers[cutin.r], k = cutin.age, inK = clamp(k / 0.18, 0, 1), outK = clamp((cutin.dur - k) / 0.25, 0, 1);
-    var h = L.narrow ? 52 : 78, w = Math.min(W * 0.74, L.narrow ? 310 : 500), y = H - h - (L.narrow ? 46 : 20);
+    var h = (L.narrow || L.short ? 52 : 78) * (cutin.skill ? 0.8 : 1), w = Math.min(W * 0.74, (L.narrow || L.short ? 310 : 500) * (cutin.skill ? 0.86 : 1));
+    // 주인공이 아래쪽 레인에 있으면 띠를 위에 띄워 가리지 않게 한다
+    var y = laneY(cutin.r) > L.trackTop + L.trackH * 0.58 ? L.hud + 8 : H - h - (L.narrow || L.short || L.tall ? 46 : 20);
     var x = -w + (w + 10) * (1 - Math.pow(1 - inK, 3));
     c.save(); c.globalAlpha = outK;
     c.beginPath(); c.moveTo(x, y); c.lineTo(x + w, y); c.lineTo(x + w - h * 0.45, y + h); c.lineTo(x, y + h); c.closePath();
@@ -1132,14 +1241,15 @@
     ell(x + h * 0.62, y + h / 2, fsz * 0.5, fsz * 0.5); c.fillStyle = '#fff8e2'; c.fill(); c.lineWidth = 3; c.strokeStyle = OL; c.stroke();
     Art.drawFace(c, r.a.id, x + h * 0.62, y + h / 2, fsz * 0.86, clock, 'happy');
     c.textAlign = 'left'; c.textBaseline = 'middle'; c.lineJoin = 'round';
-    var f1 = L.narrow ? 12 : 15, f2 = L.narrow ? 19 : 29, tx = x + h * 1.25, maxW = w - h * 1.25 - h * 0.6;
-    c.font = f1 + 'px ' + FONT; c.lineWidth = 3; c.strokeStyle = OL; c.strokeText('필살기!  ' + r.name, tx, y + h * 0.27);
-    c.fillStyle = '#fff'; c.fillText('필살기!  ' + r.name, tx, y + h * 0.27);
+    var f1 = (L.narrow || L.short ? 12 : 15) * (cutin.skill ? 0.9 : 1), f2 = (L.narrow || L.short ? 19 : 29) * (cutin.skill ? 0.82 : 1), tx = x + h * 1.25, maxW = w - h * 1.25 - h * 0.6;
+    var lab = (cutin.skill ? '스킬!  ' : '필살기!  ') + r.name;
+    c.font = f1 + 'px ' + FONT; c.lineWidth = 3; c.strokeStyle = OL; c.strokeText(lab, tx, y + h * 0.27);
+    c.fillStyle = '#fff'; c.fillText(lab, tx, y + h * 0.27);
     c.font = f2 + 'px ' + FONT;
     var tw = c.measureText(cutin.name).width;
     if (tw > maxW) { f2 = Math.max(12, Math.floor(f2 * maxW / tw)); c.font = f2 + 'px ' + FONT; }
     c.lineWidth = 5; c.strokeText(cutin.name, tx, y + h * 0.66);
-    c.fillStyle = '#ffe14d'; c.fillText(cutin.name, tx, y + h * 0.66);
+    c.fillStyle = cutin.skill ? '#fff' : '#ffe14d'; c.fillText(cutin.name, tx, y + h * 0.66);
     c.restore();
   }
 
@@ -1199,6 +1309,23 @@
     c.setTransform(DPR, 0, 0, DPR, 0, 0);
     c.clearRect(0, 0, W, H);
     if (shakeT > 0) { shakeT -= dt; c.translate((hash(Math.floor(clock * 60)) - 0.5) * 22 * shakeT, (hash(Math.floor(clock * 60) + 7) - 0.5) * 16 * shakeT); }
+    // 집중 연출 : 스킬 · 필살기를 쓰는 동물 쪽으로 화면을 당기고 주변을 어둡게
+    var fz = 1, fxc = W / 2, fyc = H / 2, fenv = 0;
+    if (focus) {
+      focus.age += dt;
+      if (focus.age >= focus.dur || mode !== 'run') focus = null;
+      else if (focus.r >= 0) {
+        var fr = race.racers[focus.r];
+        fenv = clamp(focus.age / 0.22, 0, 1) * clamp((focus.dur - focus.age) / 0.35, 0, 1);
+        fenv = fenv * fenv * (3 - 2 * fenv);
+        // 화면 크기와 지금 동물 크기에 맞춰 당긴다 (주인공이 화면의 1/5~1/4 높이쯤 되게)
+        fz = 1 + (clamp((focus.kind === 'ult' ? 0.25 : 0.19) * Math.min(H, W * 1.1) / (88 * sA), 1.25, 2.2) - 1) * fenv;
+        fxc = clamp(sxOf(fr.x), W * 0.3, W * 0.7); fyc = laneY(focus.r) - 34 * sA;
+      }
+    }
+    focusEnv = fenv;
+    c.save();
+    if (fz > 1.001) { c.translate(fxc, fyc); c.scale(fz, fz); c.translate(-fxc, -fyc); }
     drawSky();
     drawStands();
     drawTrack();
@@ -1211,12 +1338,31 @@
     drawProjs(dt);
     drawTags(dt);
     drawWeather(dt);
+    c.restore();
+    if (fenv > 0.01) {
+      c.save(); c.translate(fxc, fyc); c.strokeStyle = 'rgba(255,255,255,' + (0.32 * fenv) + ')'; c.lineCap = 'round';
+      var fl0 = Math.max(W, H);
+      for (var fq = 0; fq < 18; fq++) { var fa = fq / 18 * TAU + hash(fq + Math.floor(clock * 14)) * 0.2, f0 = fl0 * (0.3 + 0.1 * hash(fq * 7 + Math.floor(clock * 14))); c.lineWidth = 1.5 + 3 * hash(fq * 3); c.beginPath(); c.moveTo(Math.cos(fa) * f0, Math.sin(fa) * f0 * 0.8); c.lineTo(Math.cos(fa) * fl0, Math.sin(fa) * fl0 * 0.8); c.stroke(); }
+      c.restore();
+      var fg = c.createRadialGradient(fxc, fyc, Math.min(W, H) * 0.16, fxc, fyc, Math.max(W, H) * 0.62);
+      fg.addColorStop(0, 'rgba(24,14,34,0)'); fg.addColorStop(1, 'rgba(24,14,34,' + (0.6 * fenv) + ')');
+      c.fillStyle = fg; c.fillRect(0, 0, W, H);
+    }
+    drawGutter(1 - fenv * 1.4);
     drawHud();
     drawBanner(dt);
     drawCutin(dt);
     drawCountdown();
   };
 
+  // 집중 연출 동안 경주 시간을 느리게 (게임 루프가 곱해 쓴다)
+  R.timeScale = function () {
+    if (!focus) return 1;
+    var left = focus.dur - focus.age, slow = focus.kind === 'event' ? 0.55 : (focus.kind === 'skill' ? 0.28 : 0.14);
+    return left < 0.3 ? slow + (1 - slow) * (1 - left / 0.3) : slow;
+  };
+  var paceK = 1;
+  R.setPace = function (v) { paceK = clamp(Math.sqrt(v || 1), 1, 2.2); };
   R.clock = function () { return clock; };
   root.Render = R;
 })(window);

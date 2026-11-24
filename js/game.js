@@ -29,9 +29,25 @@
     try { localStorage.setItem(KEY, JSON.stringify({ n: G.n, names: G.names, pace: G.pace, sound: G.sound })); } catch (e) { /* 무시 */ }
   }
 
+  // 화면 크기에 맞춘 배치 : 좁거나 세로로 긴 화면은 '간단 배치'(경주가 화면을 거의 다 씀)
+  // (눕힌 휴대폰처럼 낮고 넓은 화면은 높이가 아까우니 옆 칸 배치를 쓴다)
+  function isCompact() { var w = window.innerWidth, h = window.innerHeight; return w < h * 1.05 || w < 560 || (w < 900 && h >= 520); }
+  function fitLayout() { document.body.classList.toggle('compact', isCompact()); labelButtons(); }
+  // 경주 화면 버튼 글자 : 좁은 화면에서는 짧게
+  function isFull() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+  function labelButtons() {
+    var cp = isCompact() || window.innerHeight < 520;
+    $('btn-speed').textContent = (cp ? '×' : '빠르기 ×') + G.speedMul;
+    $('btn-skip').textContent = cp ? '결과 보기' : '결과 바로 보기';
+    $('btn-sound2').textContent = (cp ? '♪ ' : '소리 ') + (G.sound ? '켬' : '끔');
+    $('btn-sound2').setAttribute('aria-pressed', G.sound ? 'true' : 'false');
+    $('btn-full').textContent = isFull() ? (cp ? '작게' : '전체 화면 끝') : (cp ? '크게' : '전체 화면');
+  }
   function show(screen) {
     G.screen = screen;
     ['setup', 'lineup', 'race'].forEach(function (s) { $('scr-' + s).classList.toggle('on', s === screen); });
+    document.body.classList.toggle('racing', screen === 'race');
+    fitLayout();
     window.scrollTo(0, 0);
   }
 
@@ -171,9 +187,8 @@
       var cv = el('canvas'); cv.setAttribute('aria-hidden', 'true');
       card.appendChild(cv);
       card.appendChild(el('div', 'akind', r.a.name));
-      var sk = el('div', 'askill');
-      sk.appendChild(el('b', null, r.a.skill.name));
-      sk.appendChild(el('span', null, r.a.skill.desc));
+      var sk = el('div', 'askill two');
+      [r.a.skill, r.a.skill2].forEach(function (s0) { var b0 = el('b', null, s0.name); b0.title = s0.desc; sk.appendChild(b0); });
       card.appendChild(sk);
       var ul = el('div', 'askill ault');
       ul.appendChild(el('b', null, '필살기 · ' + r.a.ult.name));
@@ -198,7 +213,7 @@
       var s = W / 132 * 1.0;
       c.beginPath(); c.ellipse(W / 2, H - 9, 34 * s, 7 * s, 0, 0, 6.3); c.fillStyle = 'rgba(74,50,38,.13)'; c.fill();
       var wave = ((t + k * 0.9) % 5) < 0.9;
-      var fit = Math.min(s * 1.02, (H - 16) / Art.heightOf(cc.id));   // 키 큰 동물도 칸 안에 들어오게
+      var fit = Math.min(s * 1.9, (H - 14) / Art.heightOf(cc.id), (W - 14) / (Art.lengthOf(cc.id) * 2.25));   // 키 큰 동물 · 긴 동물도 칸 안에 들어오게
       Art.drawAnimal(c, cc.id, { x: W / 2 - 4 * fit, y: H - 10, s: fit, t: t + k * 0.5, phase: 0, pose: wave ? 'cheer' : 'idle', num: cc.lane, color: LC[cc.i] });
     }
     var wc = $('wx-icon'), wctx = wc.getContext('2d');
@@ -211,7 +226,7 @@
     Sfx.unlock();
     show('race');
     G.resultShown = false; G.speedMul = 1; acc = 0; doneAt = 0;
-    $('btn-speed').textContent = '빠르기 ×1';
+    labelButtons();
     $('btn-skip').hidden = false; $('btn-speed').hidden = false;
     Render.init($('cv'), G.race);
     buildRank();
@@ -236,8 +251,9 @@
       else if (c === 'go') { Sfx.play('go'); Sfx.startBgm(G.pace * G.speedMul > 1.5 ? 1.12 : 1); }
     } else if (mode === 'run') {
       // 선두가 결승선 바로 앞이면 잠깐 느린 화면
-      var slow = (race.finished === 0 && race.leadX > 491) ? 0.42 : 1;
-      acc += dt * G.pace * G.speedMul * slow;
+      var slow = (race.finished === 0 && race.leadX > S.LEN - 9) ? 0.42 : 1;
+      Render.setPace(G.pace * G.speedMul);
+      acc += dt * G.pace * G.speedMul * slow * Render.timeScale();
       var steps = 0;
       while (acc >= STEP && steps < 20 && !race.over) {
         race.step(STEP); acc -= STEP; steps++; simDt += STEP;
@@ -264,7 +280,9 @@
   }
 
   // 실시간 순위
+  var rankLayout = '';
   function buildRank() {
+    rankLayout = '';
     var ol = $('rank');
     ol.textContent = ''; rankRows = [];
     G.race.racers.forEach(function (r, i) {
@@ -292,15 +310,21 @@
     var race = G.race, ol = $('rank');
     if (!race || !rankRows.length) return;
     var cnt = race.racers.length;
-    var rowH = cnt <= 8 ? 34 : (cnt <= 12 ? 30 : (cnt <= 16 ? 26 : 23));
-    if (window.innerWidth <= 980 && cnt <= 8) rowH = 30;
-    ol.style.setProperty('--row', rowH + 'px');
-    ol.classList.toggle('dense', cnt > 12);
-    ol.style.height = (cnt * rowH) + 'px';
+    var strip = isCompact(), cw = Math.max(92, Math.min(128, Math.floor(window.innerWidth / 3.4)));
+    // 순위표 높이에 맞춰 줄 높이를 정한다 (PC 에서는 창 높이에 따라 크게)
+    var avail = strip ? 0 : Math.max(200, window.innerHeight * 0.62 - 50);
+    var huge = window.innerWidth >= 2200 && window.innerHeight >= 1200;
+    var rowH = strip ? 30 : Math.max(21, Math.min(huge ? 50 : 40, Math.floor(avail / cnt)));
+    if (ol.classList.contains('strip') !== strip) { ol.classList.toggle('strip', strip); rankRows.forEach(function (rw) { rw.lastPos = -1; }); }
+    ol.style.setProperty('--row', rowH + 'px'); ol.style.setProperty('--cw', cw + 'px');
+    ol.classList.toggle('dense', !strip && rowH < 29);
+    ol.classList.toggle('big', !strip && huge && rowH >= 36);
+    ol.style.height = strip ? '' : (cnt * rowH) + 'px';
+    if (rankLayout !== (strip ? 's' + cw : 'v' + rowH)) { rankLayout = strip ? 's' + cw : 'v' + rowH; rankRows.forEach(function (rw) { rw.lastPos = -1; }); }
     var f = Render.getFollow();
     race.order.forEach(function (r, idx) {
       var row = rankRows[r.i];
-      if (row.lastPos !== idx) { row.li.style.transform = 'translateY(' + (idx * rowH) + 'px)'; row.pos.textContent = String(idx + 1); row.lastPos = idx; }
+      if (row.lastPos !== idx) { row.li.style.transform = strip ? 'translateX(' + (idx * cw) + 'px)' : 'translateY(' + (idx * rowH) + 'px)'; row.pos.textContent = String(idx + 1); row.lastPos = idx; }
       var st = r.finished ? r.finT.toFixed(2) + '초' : Math.floor(Math.max(0, r.x)) + 'm';
       if (st !== row.lastStat) { row.stat.textContent = st; row.lastStat = st; }
       var gv = r.finished ? 0 : Math.round(r.ult / 4) * 4;
@@ -366,7 +390,10 @@
     $('result').hidden = false;
     $('btn-skip').hidden = true; $('btn-speed').hidden = true;
     Sfx.play('cheer');
-    $('btn-again').focus();
+    // 결과는 1등부터 보이게 : 맨 위에서 시작한다 (버튼에 초점을 주되 화면은 밀지 않는다)
+    var panel = $('result').querySelector('.modal-panel');
+    try { $('btn-again').focus({ preventScroll: true }); } catch (e) { $('btn-again').focus(); }
+    panel.scrollTop = 0; $('result').scrollTop = 0;
   }
 
   function drawPodium(dt) {
@@ -461,9 +488,12 @@
         item(grid, iconURL('face', an.id, 46), an.name, an.skill.name, an.skill.desc, an.passive);
         var tx2 = grid.lastChild.lastChild, sm = tx2.lastChild;
         tx2.insertBefore(document.createElement('br'), sm);
+        tx2.insertBefore(el('em', null, an.skill2.name), sm);
+        tx2.insertBefore(el('span', null, ' ' + an.skill2.desc), sm);
+        tx2.insertBefore(document.createElement('br'), sm);
         tx2.insertBefore(el('em', 'u', '필살기 · ' + an.ult.name), sm);
         tx2.insertBefore(el('span', null, ' ' + an.ult.desc), sm);
-        grid.lastChild.setAttribute('data-k', (an.name + ' ' + an.skill.name + ' ' + an.ult.name + ' ' + ct[1]).toLowerCase());
+        grid.lastChild.setAttribute('data-k', (an.name + ' ' + an.skill.name + ' ' + an.skill2.name + ' ' + an.ult.name + ' ' + ct[1]).toLowerCase());
       });
       groups.push([h, grid]);
     });
@@ -477,16 +507,16 @@
       });
       $('g-none').hidden = total > 0;
     });
-    var it = $('g-items');
-    Object.keys(S.ITEMS).forEach(function (id) { item(it, iconURL('item', id, 34), S.ITEMS[id].name, null, S.ITEMS[id].desc); });
+    var it = $('g-terrain');
+    Object.keys(S.TERRAINS).forEach(function (id) { var d = el('div', 'g-item'), sw = el('i', 'g-sw t-' + id), tx3 = el('div'); tx3.appendChild(el('b', null, S.TERRAINS[id].name)); tx3.appendChild(el('span', null, ' ' + S.TERRAINS[id].desc)); d.appendChild(sw); d.appendChild(tx3); it.appendChild(d); });
     var w = $('g-weather');
     Object.keys(S.WEATHERS).forEach(function (id) { item(w, iconURL('wx', id, 34), S.WEATHERS[id].name, null, S.WEATHERS[id].desc); });
     var ev = $('g-events');
-    [['bees', '벌떼 출현', '쫓기는 동물은 깜짝 놀라 빨라지고, 쏘이면 잠깐 멈춰요.'], ['moles', '두더지 출현', '레인에 불쑥 나타나요. 걸리면 꽈당!'],
-     ['snack', '하늘에서 간식', '받아 먹은 동물은 힘이 나요.'], ['crowd', '관중석의 응원', '뒤처진 동물들이 힘을 내 추격해요.'],
-     ['ufo', 'UFO 출현', '1등을 잠깐 들어 올렸다 내려놓아요.'], ['hurdles', '허들 구간', '날렵한 동물은 폴짝, 아니면 걸려 넘어져요.'],
-     ['slick', '미끌미끌 구간', '미끄러져 빙그르르. 펭귄만 신나요.'], ['star', '별똥별', '별을 잡은 동물은 잠깐 무적 질주.'],
-     ['lace', '신발 끈', '앞서 달리던 동물이 끈을 밟고 넘어져요.']].forEach(function (e) { item(ev, iconURL('ev', e[0], 34), e[1], null, e[2]); });
+    [['bees', '벌떼 출현', '쫓기는 동물은 깜짝 놀라 빨라지고, 쏘이면 잠깐 멈춰요. 숲길에서 자주 나와요.'], ['moles', '두더지 출현', '레인에 불쑥 나타나요. 걸리면 꽈당!'],
+     ['crowd', '관중석의 응원', '뒤처진 동물들이 힘을 내 추격해요.'], ['ufo', 'UFO 출현', '1등을 잠깐 들어 올렸다 내려놓아요.'],
+     ['hurdles', '허들 구간 · 낙석', '허들은 날렵한 동물만 폴짝. 바윗길에서는 바위가 떨어져요.'], ['star', '별똥별 · 무지개', '별을 잡으면 잠깐 무적 질주. 무지개가 뜨면 뒤처진 동물이 힘을 내요.'],
+     ['wx_wind', '회오리바람', '휩쓸린 두 동물의 자리가 바뀌어요. 모래밭에서 자주 나와요.'], ['wx_rain', '큰 물결', '물길에서 물결이 밀려와요. 물을 좋아하는 동물만 신나요.'],
+     ['wx_snow', '눈사태', '눈밭에서 뒤쪽 동물들이 눈에 떠밀려 앞으로 와요.']].forEach(function (e) { item(ev, iconURL('ev', e[0], 34), e[1], null, e[2]); });
   }
 
   // ───────────── 버튼 연결 ─────────────
@@ -507,13 +537,25 @@
       var first = $('names').querySelector('input'); if (first) first.focus();
     });
     $('sel-pace').addEventListener('change', function () { G.pace = parseFloat(this.value) || 1; saveState(); });
-    $('btn-sound').addEventListener('click', function () {
+    function toggleSound() {
       G.sound = !G.sound; Sfx.setOn(G.sound); applySound(); saveState();
       if (G.sound) { Sfx.unlock(); Sfx.play('click'); if (G.screen === 'race' && Render.mode() === 'run') Sfx.startBgm(1); }
-    });
+    }
+    $('btn-sound').addEventListener('click', toggleSound);
+    $('btn-sound2').addEventListener('click', toggleSound);
+    // 전체 화면 (지원하는 브라우저에서만 버튼이 보인다)
+    var de = document.documentElement, reqFs = de.requestFullscreen || de.webkitRequestFullscreen, exitFs = document.exitFullscreen || document.webkitExitFullscreen;
+    if (reqFs && exitFs) {
+      $('btn-full').hidden = false;
+      $('btn-full').addEventListener('click', function () {
+        try { var pr = isFull() ? exitFs.call(document) : reqFs.call(de); if (pr && pr.catch) pr.catch(function () {}); } catch (e) { /* 막힌 환경에서는 그냥 둔다 */ }
+        Sfx.play('click');
+      });
+      ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (evn) { document.addEventListener(evn, function () { labelButtons(); onResize(); }); });
+    }
     $('btn-speed').addEventListener('click', function () {
       G.speedMul = G.speedMul === 1 ? 2 : (G.speedMul === 2 ? 3 : 1);
-      this.textContent = '빠르기 ×' + G.speedMul;
+      labelButtons();
       Sfx.setBgmRate(G.speedMul > 1 ? 1.15 : 1); Sfx.play('click');
     });
     $('btn-skip').addEventListener('click', skipToEnd);
@@ -524,13 +566,20 @@
     $('btn-guide-close').addEventListener('click', function () { $('guide').hidden = true; });
     $('guide').addEventListener('click', function (ev) { if (ev.target === this) this.hidden = true; });
     document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') $('guide').hidden = true; });
-    window.addEventListener('resize', function () { if (G.screen === 'race') { Render.resize(); updateRank(); } });
+    function onResize() { fitLayout(); if (G.screen === 'race') { Render.resize(); updateRank(); } }
+    window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', function () { setTimeout(onResize, 250); });
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize);
+    // 경주 칸 크기가 바뀌면(순위 줄이 생기거나, 주소창이 접히거나) 그림도 그 크기에 다시 맞춘다
+    if (window.ResizeObserver) new ResizeObserver(function () { if (G.screen === 'race') Render.resize(); }).observe($('stage'));
+    fitLayout();
     document.addEventListener('visibilitychange', function () { if (document.hidden) Sfx.stopBgm(); else if (G.screen === 'race' && Render.mode() === 'run') Sfx.startBgm(1); });
   }
   function applySound() {
     var b = $('btn-sound');
     b.textContent = G.sound ? '소리 켬' : '소리 끔';
     b.setAttribute('aria-pressed', G.sound ? 'true' : 'false');
+    labelButtons();
   }
 
   // ───────────── 돌리기 ─────────────

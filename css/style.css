@@ -137,6 +137,11 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
 .askill b { display: inline-block; font-family: var(--display); font-weight: 400; font-size: 14.5px; color: var(--ink); background: var(--sun); border: 2px solid var(--ink); border-radius: 999px; padding: 2px 10px; margin-bottom: 4px; }
 .askill span { display: block; }
 .ault b { background: #ff5d7a; color: #fff; }
+.askill.two { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+.askill.two b { cursor: help; }
+.g-sw { flex: none; width: 34px; height: 34px; border-radius: 9px; border: 2px solid var(--ink); background: #e9834e; }
+.g-sw.t-water { background: #62b6ee; } .g-sw.t-sand { background: #f1d78f; } .g-sw.t-snow { background: #f3f8fd; } .g-sw.t-mud { background: #8d6746; } .g-sw.t-rock { background: #b6afa6; } .g-sw.t-slope { background: #aedb72; } .g-sw.t-forest { background: #63a55d; }
+.log li.terrain { background: #e8f3dc; }
 .cards.many .ault span { display: none; }
 .cards.many .ault { margin-top: 2px; }
 .rrow .rult { position: absolute; left: 8px; right: 8px; bottom: 1px; height: 3px; border-radius: 2px; background: rgba(75, 46, 36, .1); overflow: hidden; pointer-events: none; }
@@ -259,3 +264,69 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
   .screen.on, .modal-panel { animation: none; }
   .rrow { transition: none; }
 }
+
+/* ── 경주 화면 : 창 전체를 꽉 채운다 (PC 는 크게, 휴대폰은 세로로 길게) ── */
+body.racing { overflow: hidden; overscroll-behavior: none; }
+body.racing #app { max-width: none; margin: 0; padding: 0; height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
+body.racing .top { display: none; }
+body.racing #scr-race.on { flex: 1; min-height: 0; display: flex; }
+body.racing .race-wrap { flex: 1; min-width: 0; min-height: 0; grid-template-columns: minmax(0, 1fr) clamp(250px, 19vw, 400px); gap: 8px; padding: 8px; padding-left: max(8px, env(safe-area-inset-left)); padding-right: max(8px, env(safe-area-inset-right)); padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+body.racing .stage { height: 100%; min-height: 0; border-radius: 16px; }
+body.racing .side { height: 100%; min-height: 0; }
+body.racing .side-box:first-child { flex: none; max-height: 68%; overflow-y: auto; }
+/* 좁은 화면 · 세로 화면 : 경주가 화면을 거의 다 쓰고, 순위는 아래 한 줄, 중계는 최신 한 줄 */
+body.racing.compact .race-wrap { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; gap: 4px; padding: 4px; padding-bottom: max(4px, env(safe-area-inset-bottom)); }
+body.racing.compact .stage { border-width: 2px; border-radius: 12px; box-shadow: none; }
+body.racing.compact .side { height: auto; gap: 3px; }
+body.racing.compact .side h3 { display: none; }
+body.racing.compact .side-box { padding: 3px 4px; border-width: 2px; border-radius: 10px; box-shadow: none; }
+body.racing.compact .side-box:first-child { max-height: none; overflow: hidden; }
+body.racing.compact .side-box.grow { flex: none; min-height: 0; max-height: none; }
+body.racing.compact .log { flex: none; min-height: 0; height: 21px; overflow: hidden; font-size: 12.5px; line-height: 21px; }
+body.racing.compact .log li { display: block; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: none; }
+body.racing.compact .log li .chip { display: inline-flex; align-items: center; justify-content: center; line-height: 1; vertical-align: middle; margin: -3px 4px 0 0; width: 17px; height: 17px; font-size: 10.5px; border-width: 1.5px; }
+.rank.strip { height: 34px !important; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.rank.strip::-webkit-scrollbar { display: none; }
+.rank.strip .rrow { right: auto; width: calc(var(--cw) - 4px); height: 30px; padding: 0 5px 0 3px; gap: 3px; border-width: 1.5px; border-radius: 9px; font-size: 12px; }
+.rank.strip .rpos { width: 15px; font-size: 13px; }
+.rank.strip .chip { width: 17px; height: 17px; font-size: 10.5px; border-width: 1.5px; }
+.rank.strip img { width: 20px; height: 20px; }
+.rank.strip .rname { font-size: 12.5px; }
+.rank.strip .rname small, .rank.strip .rstat { display: none; }
+.rank.strip .rult { left: 5px; right: 5px; bottom: 0; height: 2.5px; }
+body.racing.compact .stage-btns { right: 5px; bottom: 5px; gap: 4px; }
+body.racing.compact .stage-btns .btn.tiny { padding: 5px 8px; font-size: 12px; }
+@media (max-height: 520px) and (orientation: landscape) {
+  body.racing.compact .side-box.grow { display: none; }
+}
+/* 낮은 화면(눕힌 휴대폰 등)에서 옆 칸은 순위만 */
+@media (max-height: 520px) {
+  body.racing:not(.compact) .race-wrap { grid-template-columns: minmax(0, 1fr) clamp(170px, 22vw, 240px); gap: 5px; padding: 5px; padding-left: max(5px, env(safe-area-inset-left)); padding-right: max(5px, env(safe-area-inset-right)); }
+  body.racing:not(.compact) .stage { border-width: 2px; border-radius: 12px; box-shadow: none; }
+  body.racing:not(.compact) .side-box { padding: 5px 5px; border-width: 2px; border-radius: 10px; box-shadow: none; }
+  body.racing:not(.compact) .side-box.grow { display: none; }
+  body.racing:not(.compact) .side-box:first-child { max-height: 100%; }
+  body.racing:not(.compact) .side h3 { font-size: 13px; margin: 0 2px 4px; }
+  body.racing:not(.compact) .side h3 small, body.racing:not(.compact) .rank .rname small { display: none; }
+  body.racing:not(.compact) .stage-btns { right: 5px; bottom: 5px; gap: 4px; }
+  body.racing:not(.compact) .stage-btns .btn.tiny { padding: 5px 8px; font-size: 12px; }
+}
+/* 아주 큰 모니터 : 옆 칸 글자도 키운다 */
+.rank.big .rrow { font-size: 17px; gap: 8px; padding: 0 12px 0 6px; border-radius: 12px; }
+.rank.big .rpos { font-size: 19px; width: 26px; }
+.rank.big .chip { width: 26px; height: 26px; font-size: 15px; }
+.rank.big img { width: 30px; height: 30px; }
+.rank.big .rname { font-size: 18px; }
+.rank.big .rname small { font-size: 13.5px; }
+.rank.big .rstat { font-size: 15.5px; }
+@media (min-width: 2200px) and (min-height: 1200px) {
+  body.racing .race-wrap { grid-template-columns: minmax(0, 1fr) clamp(400px, 18vw, 520px); gap: 12px; padding: 12px; }
+  body.racing .side h3 { font-size: 21px; }
+  body.racing .side h3 small { font-size: 13.5px; }
+  body.racing .log { font-size: 16.5px; }
+  body.racing .stage-btns { right: 14px; bottom: 14px; gap: 9px; }
+  body.racing .stage-btns .btn.tiny { font-size: 16px; padding: 9px 14px; }
+}
+/* 결과 창 : 휴대폰 주소창 높이 변화에 맞추고, 버튼은 아래에 붙여 늘 보이게 */
+.modal-panel { max-height: calc(100dvh - 28px); }
+.modal-panel.result .actions { position: sticky; bottom: -20px; margin: 10px -20px -20px; padding: 10px 20px calc(14px + env(safe-area-inset-bottom)); background: linear-gradient(to bottom, rgba(255, 253, 246, 0), var(--paper) 26%); z-index: 2; }
