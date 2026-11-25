@@ -776,6 +776,68 @@
     orangutan: ['quad', 1.1, q(48, 38, 19, 10, 3, 40, 17, 6, { front: 1.6, flat: 1 })],
     chimp: ['quad', 1.0, q(46, 32, 20, 9, 3, 42, 16, 6, { front: 1.35, flat: 1 })]
   };
+  // ── 2026-11 에 더한 50종 : 비슷한 동물의 체형을 바탕으로 크기 · 비율 · 색을 바꿔 만든다 ──
+  // id: [바탕 동물, 크기, 체형에서 바꿀 값, 색 · 모양에서 바꿀 값]
+  var NEW50 = {
+    jaguar: ['leopard', 1.08, { H: 27, lw: 8 }, { fur: '#e2a03a', fur2: '#fff0d0', spots: '#3f2a18' }],
+    snowleopard: ['leopard', 1.02, {}, { fur: '#d9dde2', fur2: '#ffffff', inner: '#c9b8b0', spots: '#5a5f6a', tailTip: '#5a5f6a' }],
+    gazelle: ['deer', 0.9, { L: 48, leg: 36, neck: 16 }, { fur: '#e0a55e', fur2: '#fff6e6', horn: 'cow', dots: null }],
+    gnu: ['bison', 1.05, { H: 38, leg: 28 }, { fur: '#5a5560', fur2: '#77727f', inner: '#4a4650', beard: '#e9e2d0', maneTop: '#2f2b33' }],
+    buffalo: ['bison', 1.12, { H: 40, leg: 22 }, { fur: '#4a4650', fur2: '#666170', inner: '#3a3640', hump: false, beard: null, maneTop: null }],
+    yak: ['bison', 1.12, { H: 46, leg: 18 }, { fur: '#3d3038', fur2: '#5a4a52', inner: '#2a2026', beard: '#2a2026', maneTop: '#2a2026' }],
+    tapir: ['pig', 1.02, { L: 60, H: 34, leg: 18, sn: 12 }, { fur: '#3f4048', fur2: '#f1f1f1', inner: '#6b6c75', ear: 'round-s', tail: 'stub', belly: '#f1f1f1', snout: { x: 21, y: 10, rx: 9, ry: 7, out: true } }],
+    okapi: ['giraffe', 1.0, { neck: 28, na: 60, leg: 40 }, { fur: '#6b3f2a', fur2: '#f6efe6', patches: null, ossi: '#4a2e1e', tailTip: '#3a2418', sock: '#f6efe6' }],
+    mole: ['hamster', 0.74, { L: 40, H: 24, leg: 5, sn: 8 }, { fur: '#4a4350', fur2: '#6b6470', inner: '#ff9eb5', nose: '#ff9eb5', ear: 'none', hamFace: false, snout: { x: 16, y: 10, rx: 10, ry: 6.5, out: true } }],
+    prairiedog: ['meerkat', 0.78, { L: 38, H: 20 }, { fur: '#d9a868', fur2: '#f6e2bd', belly: '#f6e2bd', mask: null, tail: 'stub', tailCol: '#d9a868' }],
+    flyingsquirrel: ['squirrel', 0.76, {}, { fur: '#9a8f88', fur2: '#fff4ea', inner: '#ffc9d6' }],
+    tasdevil: ['badger', 0.9, {}, { dark: true, fur: '#2f2a30', fur2: '#ffffff', badger: 0, bodyCol: '#2f2a30', limbCol: '#231f24', earCol: '#ff9eb5' }],
+    echidna: ['hedgehog', 0.84, { sn: 14 }, { fur: '#8a6a4a', fur2: '#b89a78', spikes: '#e8d8b0', snout: { x: 20, y: 9, rx: 12, ry: 5, out: true } }],
+    mandrill: ['monkey', 1.0, {}, { fur: '#6b6a4f', fur2: '#e6e2c8', inner: '#4f8fe8', nose: '#e8453c' }],
+    magpie: ['crow', 0.86, {}, { fur: '#22242b', belly: '#ffffff', wingCol: '#2f5fb8', feathers: ['#22242b', '#2f5fb8', '#22242b'] }],
+    swallow: ['sparrow', 0.74, { bl: 32, bh: 20 }, { fur: '#2b3f7a', fur2: '#fff4ea', belly: '#fff4ea', wingCol: '#22325f', feathers: ['#22325f', '#2b3f7a', '#22325f'], beak: '#3b2a20', inner: '#e8603c' }],
+    kingfisher: ['sparrow', 0.78, {}, { fur: '#2f9fd9', fur2: '#ff9a4d', belly: '#ff9a4d', wingCol: '#1f7fb8', feathers: ['#1f7fb8', '#2f9fd9', '#1f7fb8'], beak: '#3b2a20', beakType: 'long', beakLen: 14 }],
+    albatross: ['seagull', 1.05, { bl: 48, wing: 1.3 }, { wingCol: '#3b3f4a', feathers: ['#3b3f4a', '#ffffff', '#3b3f4a'], beak: '#ffd0b8' }],
+    emu: ['ostrich', 1.1, { neck: 40, leg: 44 }, { fur: '#8a9bb0', fur2: '#8a9bb0', inner: '#8a9bb0', bodyCol: '#6b5a4a', wingCol: '#5a4a3c', feathers: ['#6b5a4a', '#5a4a3c', '#6b5a4a'], limbCol: '#6b6f7a', feet: '#5a5f6a', beak: '#4a4d57' }],
+    cassowary: ['ostrich', 1.1, { neck: 36, leg: 40 }, { fur: '#3f8fd9', fur2: '#3f8fd9', inner: '#e8453c', bodyCol: '#26242b', wingCol: '#1c1a20', feathers: ['#26242b', '#1c1a20', '#26242b'], limbCol: '#7a7f8a', feet: '#6a6f7a', beak: '#4a4d57', dome: '#8a6a4a', tuftHair: false }],
+    roadrunner: ['chicken', 0.82, { bl: 40, bh: 22, leg: 22, neck: 8 }, { fur: '#b89a78', fur2: '#f1e6d0', belly: '#f1e6d0', wingCol: '#6b5a4a', feathers: ['#4a3f38', '#6b5a4a', '#4a3f38'], comb: '#3f3a48', beak: '#5a4a3c', feet: '#8a9bb0' }],
+    heron: ['crane', 1.05, {}, { fur: '#b8c2d0', wingCol: '#8a96a8', feathers: ['#5a6678', '#b8c2d0', '#5a6678'], dome: null }],
+    pheasant: ['chicken', 0.9, { bl: 42 }, { fur: '#c9783a', fur2: '#e8a85a', wingCol: '#8a4f22', feathers: ['#8a4f22', '#c9a23a', '#5a3f2a'], comb: '#e8453c', beak: '#e8d2a0', feet: '#8a8f9a' }],
+    mandarin: ['duck', 0.86, {}, { fur: '#ff9a3d', fur2: '#fff0d6', inner: '#7a4fb8', beak: '#e8453c', feet: '#ffb02e' }],
+    shoebill: ['stork', 1.12, { neck: 26, hr: 13 }, { fur: '#8a96a8', fur2: '#b8c2d0', wingCol: '#6b7688', feathers: ['#6b7688', '#8a96a8', '#6b7688'], beak: '#d9c9a0', beakLen: 15, feet: '#5a5f6a', limbCol: '#5a5f6a' }],
+    secretary: ['crane', 1.08, {}, { fur: '#c9ced6', wingCol: '#3b3442', feathers: ['#3b3442', '#c9ced6', '#3b3442'], dome: null, beak: '#8a96a8', beakType: 'hook', beakLen: 9, inner: '#ff8a3d', limbCol: '#f2b6a0', feet: '#f2b6a0' }],
+    rattlesnake: ['snake', 0.95, {}, { fur: '#c9a66b', fur2: '#f2e2bd', belly: '#f2e2bd', tailCol: '#8a6a3a' }],
+    anaconda: ['snake', 1.2, {}, { fur: '#5a7a3a', fur2: '#d9d28a', belly: '#d9d28a', tailCol: '#5a7a3a', spots: '#2f4a22' }],
+    frilled: ['lizard', 0.86, {}, { fur: '#c98a4a', fur2: '#f2dcb0', belly: '#f2dcb0', tailCol: '#c98a4a', crestBack: '#e8603c' }],
+    basilisk: ['lizard', 0.84, {}, { fur: '#4fb85a', fur2: '#d9f5c4', belly: '#d9f5c4', tailCol: '#4fb85a', crestBack: '#2f9f8a' }],
+    dartfrog: ['frog', 0.78, {}, { fur: '#2f7fe8', fur2: '#8fd0ff', belly: '#8fd0ff', inner: '#2f7fe8', spots: '#16233f' }],
+    softshell: ['turtle', 0.95, { sn: 8, neck: 16 }, { fur: '#a8a878', fur2: '#e6e6c0', inner: '#a8a878', shell: '#7a8a5a', shell2: '#5a6a42' }],
+    whaleshark: ['shark', 1.25, { L: 92, H: 30 }, { fur: '#4a6a8a', fur2: '#e6edf4', feet: '#3f5a78', dots: '#e6f2ff' }],
+    hammerhead: ['shark', 1.08, {}, { fur: '#8a96a0', fur2: '#eef2f5', feet: '#75828c', snout: { x: 15, y: 8, rx: 8, ry: 11, out: true } }],
+    sunfish: ['puffer', 1.15, { L: 44, H: 52, round: 0, dorsal: 1.7 }, { fur: '#a8b8c8', fur2: '#e6eef5', spikes: null, feet: '#8a9cb0', hrx: 1.0 }],
+    flyingfish: ['swordfish', 0.8, { L: 56, H: 16, bill: 0, dorsal: 0.8 }, { fur: '#4f9fd9', fur2: '#e6f4ff', belly: '#e6f4ff', feet: '#8fd0ff', snout: { x: 15, y: 9, rx: 10, ry: 6, out: true } }],
+    moray: ['snake', 1.05, {}, { fur: '#7a8a3a', fur2: '#d9d28a', belly: '#d9d28a', tailCol: '#7a8a3a', fork: 0, spots: '#4a5a22' }],
+    seaotter: ['otter', 0.9, {}, { fur: '#7a5a45', fur2: '#f1e6d6', belly: '#f1e6d6' }],
+    hermit: ['crab', 0.88, {}, { fur: '#e8783a', fur2: '#ffd9c2', belly: '#ffd9c2' }],
+    cuttlefish: ['squid', 0.92, {}, { fur: '#c98a6a', fur2: '#f2dcc8' }],
+    eel: ['snake', 1.08, {}, { fur: '#4a4f5a', fur2: '#f2b03a', belly: '#f2b03a', tailCol: '#4a4f5a', fork: 0 }],
+    salmon: ['swordfish', 0.92, { L: 60, H: 20, bill: 0, dorsal: 0.9 }, { fur: '#e87a6a', fur2: '#fde6de', belly: '#fde6de', feet: '#c95a4a', snout: { x: 15, y: 9, rx: 10, ry: 6, out: true } }],
+    allosaurus: ['trex', 1.1, { sn: 18, arm: 6 }, { fur: '#c98a4a', fur2: '#f2dcb0', belly: '#f2dcb0', crest: '#e8603c' }],
+    carno: ['trex', 1.08, { sn: 15, snh: 0.8, arm: 2 }, { fur: '#b8563a', fur2: '#f2c8a8', belly: '#f2c8a8', horn: 'cow' }],
+    therizino: ['parasaur', 1.15, { neck: 24, na: 60, arm: 9, tube: 0 }, { fur: '#7a9a5a', fur2: '#e2efb8', belly: '#e2efb8', crestBack: null }],
+    iguanodon: ['parasaur', 1.1, { tube: 0 }, { fur: '#8a9a4a', fur2: '#eef2c4', belly: '#eef2c4', crestBack: null }],
+    gallimimus: ['compy', 0.98, { L: 46, leg: 36, neck: 22, na: 58 }, { fur: '#d9b27a', fur2: '#f6ecd0', belly: '#f6ecd0' }],
+    mosasaurus: ['plesio', 1.2, { neckL: 10, L: 84, H: 28 }, { fur: '#3f6a7a', fur2: '#d6e6ea', belly: '#d6e6ea', feet: '#2f5563', snout: { x: 19, y: 10, rx: 15, ry: 8, out: true, croc: true } }],
+    quetzal: ['ptero', 1.1, { neck: 20, wing: 1.12 }, { fur: '#c9b89a', fur2: '#f6ecd8', belly: '#f6ecd8', wingCol: '#a8926a', crestBack: '#e8603c', beakLen: 26 }],
+    glyptodon: ['armadillo', 1.2, { L: 62, H: 40, leg: 10, lw: 9 }, { fur: '#b89a78', fur2: '#e6d2b8', shell: '#8a7458', shell2: '#6b5a42', tail: 'club' }]
+  };
+  Object.keys(NEW50).forEach(function (id) {
+    var d = NEW50[id], bt = T[d[0]], pp = {}, sp = {}, k;
+    for (k in bt[2]) pp[k] = bt[2][k];
+    for (k in d[2]) pp[k] = d[2][k];
+    for (k in SPEC[d[0]]) sp[k] = SPEC[d[0]][k];
+    for (k in d[3]) sp[k] = d[3][k];
+    T[id] = [bt[0], d[1], pp]; SPEC[id] = sp;
+  });
   var PLANS = { quad: planQuad, biped: planBiped, bird: planBird, fish: planFish, serpent: planSerpent, crust: planCrust, tent: planTent, star: planStar, seahorse: planSeahorse, frog: planFrog };
   function pivotOf(row) {
     var P = row[2];

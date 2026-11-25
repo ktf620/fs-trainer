@@ -142,7 +142,7 @@
           if (e.kind === 'skill' && e.r >= 0) cutin = { r: e.r, name: e.name, age: 0, dur: 1.9, skill: true };
           if (e.kind === 'skill' && e.r >= 0) { RS[e.r].burst = 1; for (var q5 = 0; q5 < 2; q5++) rings.push({ r: e.r, age: -q5 * 0.12, dur: 0.7, col: '#ffe14d', big: true }); }
           break;
-        case 'terrain': break;
+        case 'terrain': if (e.changed) { flashA = Math.max(flashA, 0.35); shakeT = 0.3; } break;      // 스킬로 지형이 바뀜
         case 'ult':
           st = RS[e.r]; st.burst = 1; st.ultT = 1.3;
           cutin = { r: e.r, name: e.name, age: 0, dur: 2.3 };
@@ -693,6 +693,17 @@
       var kx = a.hx, ky = a.top - 6 * s, kw = 15 * s + 4, kh = 12 * s + 3;
       c.beginPath(); c.moveTo(kx - kw, ky); c.lineTo(kx - kw, ky - kh); c.lineTo(kx - kw * 0.5, ky - kh * 0.45); c.lineTo(kx, ky - kh * 1.15); c.lineTo(kx + kw * 0.5, ky - kh * 0.45); c.lineTo(kx + kw, ky - kh); c.lineTo(kx + kw, ky); c.closePath();
       c.fillStyle = '#7d6bb0'; c.fill(); c.lineWidth = 2.2; c.strokeStyle = OL; c.stroke();
+    }
+    if (has.cursed) {      // 시한폭탄 : 머리 위에서 똑딱거리다 터진다
+      var cx0 = a.hx + 4 * s, cy0 = a.top - 14 * s, crd = 7 * s + 3, cleft = Math.max(0, has.cursed.t);
+      ell(cx0, cy0, crd, crd); c.fillStyle = cleft < 1 && Math.sin(clock * 30) > 0 ? '#ff3d2e' : '#2b2018'; c.fill(); c.lineWidth = 2; c.strokeStyle = OL; c.stroke();
+      c.beginPath(); c.moveTo(cx0 + crd * 0.5, cy0 - crd * 0.8); c.quadraticCurveTo(cx0 + crd * 1.1, cy0 - crd * 1.6, cx0 + crd * 1.5, cy0 - crd * 1.2); c.lineWidth = 2; c.strokeStyle = '#8a5a3a'; c.stroke();
+      Art.drawStar(c, cx0 + crd * 1.5, cy0 - crd * 1.2, 4 + 1.5 * Math.sin(clock * 30), clock * 9, '#ffe14d', 1);
+    }
+    if (r.sealT > 0 && !r.finished) {      // 스킬 봉인 : 머리 위 금지 표시
+      var mx0 = a.hx - 10 * s, my0 = a.top - 12 * s, mrd = 6 * s + 2.5;
+      ell(mx0, my0, mrd, mrd); c.fillStyle = '#fff'; c.fill(); c.lineWidth = 2.4; c.strokeStyle = '#e8453c'; c.stroke();
+      c.beginPath(); c.moveTo(mx0 - mrd * 0.7, my0 - mrd * 0.7); c.lineTo(mx0 + mrd * 0.7, my0 + mrd * 0.7); c.stroke();
     }
     if (race.bomb && race.bomb.holder === r) {   // 폭탄
       var bx0 = a.hx + 4 * s, by0 = a.top - 18 * s, brd = 11 * s + 4, left = Math.max(0, race.bomb.until - race.t);

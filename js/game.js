@@ -187,9 +187,20 @@
       var cv = el('canvas'); cv.setAttribute('aria-hidden', 'true');
       card.appendChild(cv);
       card.appendChild(el('div', 'akind', r.a.name));
-      var sk = el('div', 'askill two');
-      [r.a.skill, r.a.skill2].forEach(function (s0) { var b0 = el('b', null, s0.name); b0.title = s0.desc; sk.appendChild(b0); });
-      card.appendChild(sk);
+      // 스킬 이름을 누르면 바로 아래에 설명이 나온다 (휴대폰에서도 볼 수 있게)
+      var sk = el('div', 'askill two'), dsc = el('div', 'adesc');
+      [r.a.skill, r.a.skill2].forEach(function (s0) {
+        var b0 = el('b', null, s0.name); b0.title = s0.desc; b0.tabIndex = 0; b0.setAttribute('role', 'button');
+        function tog() {
+          var on = b0.classList.contains('on'), all = sk.querySelectorAll('b'), q;
+          for (q = 0; q < all.length; q++) all[q].classList.remove('on');
+          if (on) dsc.textContent = ''; else { b0.classList.add('on'); dsc.textContent = s0.desc; }
+        }
+        b0.addEventListener('click', tog);
+        b0.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); tog(); } });
+        sk.appendChild(b0);
+      });
+      card.appendChild(sk); card.appendChild(dsc);
       var ul = el('div', 'askill ault');
       ul.appendChild(el('b', null, '필살기 · ' + r.a.ult.name));
       ul.appendChild(el('span', null, r.a.ult.desc));
@@ -210,10 +221,10 @@
       if (cc.cv.width !== Math.round(W * d)) { cc.cv.width = Math.round(W * d); cc.cv.height = Math.round(H * d); }
       var c = cc.cv.getContext('2d');
       c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H);
-      var s = W / 132 * 1.0;
-      c.beginPath(); c.ellipse(W / 2, H - 9, 34 * s, 7 * s, 0, 0, 6.3); c.fillStyle = 'rgba(74,50,38,.13)'; c.fill();
+      var s = Math.min(W, H * 1.15) / 132;
       var wave = ((t + k * 0.9) % 5) < 0.9;
       var fit = Math.min(s * 1.9, (H - 14) / Art.heightOf(cc.id), (W - 14) / (Art.lengthOf(cc.id) * 2.25));   // 키 큰 동물 · 긴 동물도 칸 안에 들어오게
+      c.beginPath(); c.ellipse(W / 2, H - 9, 22 * fit + 10, 4.5 * fit + 2, 0, 0, 6.3); c.fillStyle = 'rgba(74,50,38,.13)'; c.fill();
       Art.drawAnimal(c, cc.id, { x: W / 2 - 4 * fit, y: H - 10, s: fit, t: t + k * 0.5, phase: 0, pose: wave ? 'cheer' : 'idle', num: cc.lane, color: LC[cc.i] });
     }
     var wc = $('wx-icon'), wctx = wc.getContext('2d');
