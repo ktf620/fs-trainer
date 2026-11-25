@@ -64,153 +64,153 @@
   // tr : 특성 — water 물웅덩이 좋아함 · ice 빙판 좋아함 · nofog 안개에 안 헤맴 · heavy 장애물을 밟고 지나감 · hurdler 허들 잘 넘음
   //      glutton 간식 효과 오래감 · steady 날씨 영향 덜 받음 · quick 출발 빠름 · nimble 금방 일어남 · mud 진흙 좋아함 · reach 결승선에서 목이 먼저 닿음
   var ANIMALS = [
-    { id: 'rabbit', name: '토끼', speed: 7.656, accel: 8.0, light: 1.0, agi: 1.0, tr: { hurdler: 1 },
+    { id: 'rabbit', name: '토끼', speed: 7.701, accel: 8.0, light: 1.0, agi: 1.0, tr: { hurdler: 1 },
       wx: { rain: -0.02, snow: 0.03, heat: -0.01 },
       passive: '너무 앞서면 방심해서 낮잠을 자기도 해요.' },
-    { id: 'turtle', name: '거북이', speed: 7.373, accel: 5.5, light: 0.2, agi: 0.2, tr: { steady: 1, water: 1 },
+    { id: 'turtle', name: '거북이', speed: 7.407, accel: 5.5, light: 0.2, agi: 0.2, tr: { steady: 1, water: 1 },
       wx: { rain: 0.04, heat: 0.02, snow: -0.02 },
       passive: '꾸준해서 날씨가 나빠도 덜 느려져요.' },
-    { id: 'cheetah', name: '치타', speed: 7.436, accel: 10.0, light: 0.6, agi: 0.8, tr: { quick: 1 },
+    { id: 'cheetah', name: '치타', speed: 7.435, accel: 10.0, light: 0.6, agi: 0.8, tr: { quick: 1 },
       wx: { heat: 0.03, snow: -0.05, rain: -0.03 },
       passive: '출발이 가장 빨라요.' },
-    { id: 'fox', name: '여우', speed: 7.374, accel: 7.0, light: 0.7, agi: 0.8, tr: { nofog: 1 },
+    { id: 'fox', name: '여우', speed: 7.387, accel: 7.0, light: 0.7, agi: 0.8, tr: { nofog: 1 },
       wx: { fog: 0.04, snow: 0.01 },
       passive: '안개 속에서도 길을 잘 찾아요.' },
-    { id: 'bear', name: '곰', speed: 7.703, accel: 6.0, light: 0.1, agi: 0.4, tr: {},
+    { id: 'bear', name: '곰', speed: 7.705, accel: 6.0, light: 0.1, agi: 0.4, tr: {},
       wx: { snow: 0.04, heat: -0.05 },
       passive: '무거워서 바람에 끄떡없어요.' },
-    { id: 'penguin', name: '펭귄', speed: 7.275, accel: 6.0, light: 0.6, agi: 0.5, tr: { water: 1, ice: 1 },
+    { id: 'penguin', name: '펭귄', speed: 7.273, accel: 6.0, light: 0.6, agi: 0.5, tr: { water: 1, ice: 1 },
       wx: { snow: 0.07, rain: 0.03, heat: -0.08 },
       passive: '미끄러운 길이 오히려 좋아요.' },
     { id: 'elephant', name: '코끼리', speed: 7.898, accel: 5.5, light: 0.0, agi: 0.2, tr: { heavy: 1 },
       wx: { rain: 0.02, snow: -0.02 },
       passive: '두더지와 허들쯤은 그냥 밟고 지나가요.' },
-    { id: 'kangaroo', name: '캥거루', speed: 7.618, accel: 7.0, light: 0.6, agi: 1.0, tr: { hurdler: 1 },
+    { id: 'kangaroo', name: '캥거루', speed: 7.639, accel: 7.0, light: 0.6, agi: 1.0, tr: { hurdler: 1 },
       wx: { heat: 0.03, snow: -0.04 },
       passive: '허들은 식은 죽 먹기예요.' },
-    { id: 'skunk', name: '스컹크', speed: 7.942, accel: 6.5, light: 0.8, agi: 0.6, tr: {},
+    { id: 'skunk', name: '스컹크', speed: 7.967, accel: 6.5, light: 0.8, agi: 0.6, tr: {},
       wx: { fog: 0.02 },
       passive: '뒤에 아무도 없으면 방귀 로켓으로 추격해요.' },
-    { id: 'pig', name: '돼지', speed: 7.611, accel: 6.0, light: 0.2, agi: 0.4, tr: { glutton: 1, mud: 1 },
+    { id: 'pig', name: '돼지', speed: 7.621, accel: 6.0, light: 0.2, agi: 0.4, tr: { glutton: 1, mud: 1 },
       wx: { rain: 0.02, heat: -0.02 },
       passive: '간식을 먹으면 힘이 더 오래가요.' },
-    { id: 'dog', name: '강아지', speed: 7.681, accel: 7.5, light: 0.6, agi: 0.7, tr: {},
+    { id: 'dog', name: '강아지', speed: 7.696, accel: 7.5, light: 0.6, agi: 0.7, tr: {},
       wx: { heat: -0.02, snow: 0.02 },
       passive: '의리파라서 친구를 도와줘요.' },
-    { id: 'cat', name: '고양이', speed: 7.631, accel: 8.0, light: 0.9, agi: 0.9, tr: { nimble: 1, nofog: 1 },
+    { id: 'cat', name: '고양이', speed: 7.637, accel: 8.0, light: 0.9, agi: 0.9, tr: { nimble: 1, nofog: 1 },
       wx: { rain: -0.05, fog: 0.04 },
       passive: '넘어져도 금방 일어나요.' },
-    { id: 'panda', name: '판다', speed: 7.901, accel: 5.8, light: 0.2, agi: 0.4, tr: { glutton: 1 },
+    { id: 'panda', name: '판다', speed: 7.942, accel: 5.8, light: 0.2, agi: 0.4, tr: { glutton: 1 },
       wx: { snow: 0.03, heat: -0.05 },
       passive: '간식을 먹으면 힘이 더 오래가요.' },
-    { id: 'duck', name: '오리', speed: 7.295, accel: 6.5, light: 1.0, agi: 0.6, tr: { water: 1 },
+    { id: 'duck', name: '오리', speed: 7.296, accel: 6.5, light: 1.0, agi: 0.6, tr: { water: 1 },
       wx: { rain: 0.08, snow: -0.02, heat: -0.01 },
       passive: '비 오는 날을 제일 좋아해요.' }
     ,
     // ── 여기부터 새로 들어온 36종 ──
-    { id: 'lion', name: '사자', speed: 7.777, accel: 7.0, light: 0.3, agi: 0.6, tr: {},
+    { id: 'lion', name: '사자', speed: 7.809, accel: 7.0, light: 0.3, agi: 0.6, tr: {},
       wx: { heat: 0.02, rain: -0.02 },
       passive: '더운 날씨에 조금 더 힘이 나요.' },
-    { id: 'tiger', name: '호랑이', speed: 7.793, accel: 8.0, light: 0.4, agi: 0.8, tr: {},
+    { id: 'tiger', name: '호랑이', speed: 7.822, accel: 8.0, light: 0.4, agi: 0.8, tr: {},
       wx: { fog: 0.02, heat: -0.01 },
       passive: '안개 낀 날 살금살금 잘 달려요.' },
-    { id: 'zebra', name: '얼룩말', speed: 7.581, accel: 7.5, light: 0.5, agi: 0.7, tr: {},
+    { id: 'zebra', name: '얼룩말', speed: 7.627, accel: 7.5, light: 0.5, agi: 0.7, tr: {},
       wx: { heat: 0.02, snow: -0.03 },
       passive: '착시를 쓰는 동안에는 방해가 안 통해요.' },
-    { id: 'giraffe', name: '기린', speed: 7.729, accel: 5.5, light: 0.5, agi: 0.4, tr: { reach: 1 },
+    { id: 'giraffe', name: '기린', speed: 7.771, accel: 5.5, light: 0.5, agi: 0.4, tr: { reach: 1 },
       wx: { heat: 0.02, snow: -0.03 },
       passive: '결승선에서는 긴 목이 먼저 닿아요.' },
-    { id: 'horse', name: '말', speed: 7.598, accel: 8.0, light: 0.4, agi: 0.8, tr: { hurdler: 1 },
+    { id: 'horse', name: '말', speed: 7.597, accel: 8.0, light: 0.4, agi: 0.8, tr: { hurdler: 1 },
       wx: {},
       passive: '허들도 가볍게 넘어요.' },
-    { id: 'cow', name: '젖소', speed: 7.899, accel: 5.5, light: 0.1, agi: 0.3, tr: {},
+    { id: 'cow', name: '젖소', speed: 7.924, accel: 5.5, light: 0.1, agi: 0.3, tr: {},
       wx: { rain: 0.01, heat: -0.02 },
       passive: '묵직해서 바람에 잘 안 밀려요.' },
-    { id: 'sheep', name: '양', speed: 7.881, accel: 6.0, light: 0.7, agi: 0.5, tr: {},
+    { id: 'sheep', name: '양', speed: 7.9, accel: 6.0, light: 0.7, agi: 0.5, tr: {},
       wx: { snow: 0.03, heat: -0.05, rain: -0.02 },
       passive: '털옷 덕분에 눈 오는 날이 좋아요.' },
-    { id: 'goat', name: '염소', speed: 7.634, accel: 7.0, light: 0.5, agi: 0.8, tr: { hurdler: 1 },
+    { id: 'goat', name: '염소', speed: 7.638, accel: 7.0, light: 0.5, agi: 0.8, tr: { hurdler: 1 },
       wx: { snow: 0.02 },
       passive: '허들쯤은 훌쩍 넘어요.' },
-    { id: 'deer', name: '사슴', speed: 7.551, accel: 8.0, light: 0.6, agi: 0.9, tr: { hurdler: 1 },
+    { id: 'deer', name: '사슴', speed: 7.566, accel: 8.0, light: 0.6, agi: 0.9, tr: { hurdler: 1 },
       wx: { fog: 0.02, snow: 0.02 },
       passive: '허들도 사뿐히 넘어요.' },
-    { id: 'koala', name: '코알라', speed: 7.952, accel: 6.0, light: 0.6, agi: 0.4, tr: { glutton: 1 },
+    { id: 'koala', name: '코알라', speed: 7.962, accel: 6.0, light: 0.6, agi: 0.4, tr: { glutton: 1 },
       wx: { rain: -0.02 },
       passive: '간식을 먹으면 힘이 더 오래가요.' },
-    { id: 'sloth', name: '나무늘보', speed: 7.88, accel: 5.0, light: 0.5, agi: 0.2, tr: { steady: 1 },
+    { id: 'sloth', name: '나무늘보', speed: 7.878, accel: 5.0, light: 0.5, agi: 0.2, tr: { steady: 1 },
       wx: { rain: 0.02 },
       passive: '느긋해서 날씨가 나빠도 덜 느려져요.' },
-    { id: 'monkey', name: '원숭이', speed: 7.67, accel: 8.0, light: 0.7, agi: 0.9, tr: {},
+    { id: 'monkey', name: '원숭이', speed: 7.654, accel: 8.0, light: 0.7, agi: 0.9, tr: {},
       wx: { heat: 0.01, snow: -0.04 },
       passive: '날렵해서 두더지를 잘 피해요.' },
-    { id: 'gorilla', name: '고릴라', speed: 7.918, accel: 6.0, light: 0.05, agi: 0.4, tr: { heavy: 1 },
+    { id: 'gorilla', name: '고릴라', speed: 7.965, accel: 6.0, light: 0.05, agi: 0.4, tr: { heavy: 1 },
       wx: { snow: -0.02, fog: 0.01 },
       passive: '두더지와 허들쯤은 그냥 밟고 지나가요.' },
-    { id: 'hippo', name: '하마', speed: 7.328, accel: 5.5, light: 0.0, agi: 0.2, tr: { heavy: 1, water: 1, mud: 1 },
+    { id: 'hippo', name: '하마', speed: 7.354, accel: 5.5, light: 0.0, agi: 0.2, tr: { heavy: 1, water: 1, mud: 1 },
       wx: { rain: 0.05, heat: -0.03 },
       passive: '비 오는 날 물웅덩이가 반가워요.' },
-    { id: 'rhino', name: '코뿔소', speed: 7.854, accel: 5.0, light: 0.0, agi: 0.3, tr: { heavy: 1 },
+    { id: 'rhino', name: '코뿔소', speed: 7.844, accel: 5.0, light: 0.0, agi: 0.3, tr: { heavy: 1 },
       wx: { heat: 0.02 },
       passive: '두더지와 허들쯤은 그냥 밟고 지나가요.' },
-    { id: 'croc', name: '악어', speed: 7.432, accel: 6.0, light: 0.2, agi: 0.4, tr: { water: 1 },
+    { id: 'croc', name: '악어', speed: 7.434, accel: 6.0, light: 0.2, agi: 0.4, tr: { water: 1 },
       wx: { rain: 0.06, snow: -0.06, heat: 0.02 },
       passive: '비 오는 날 물웅덩이가 반가워요.' },
-    { id: 'frog', name: '개구리', speed: 7.181, accel: 8.0, light: 0.9, agi: 0.9, tr: { water: 1, hurdler: 1 },
+    { id: 'frog', name: '개구리', speed: 7.198, accel: 8.0, light: 0.9, agi: 0.9, tr: { water: 1, hurdler: 1 },
       wx: { rain: 0.08, heat: -0.05, snow: -0.05 },
       passive: '비 오는 날을 제일 좋아해요.' },
-    { id: 'squirrel', name: '다람쥐', speed: 7.679, accel: 9.0, light: 0.9, agi: 1.0, tr: {},
+    { id: 'squirrel', name: '다람쥐', speed: 7.695, accel: 9.0, light: 0.9, agi: 1.0, tr: {},
       wx: { snow: 0.01 },
       passive: '아주 날렵해서 두더지를 잘 피해요.' },
-    { id: 'hamster', name: '햄스터', speed: 7.704, accel: 8.0, light: 0.9, agi: 0.6, tr: { glutton: 1 },
+    { id: 'hamster', name: '햄스터', speed: 7.732, accel: 8.0, light: 0.9, agi: 0.6, tr: { glutton: 1 },
       wx: { heat: -0.02 },
       passive: '간식을 먹으면 힘이 더 오래가요.' },
-    { id: 'mouse', name: '생쥐', speed: 7.665, accel: 9.0, light: 1.0, agi: 0.9, tr: { nofog: 1 },
+    { id: 'mouse', name: '생쥐', speed: 7.671, accel: 9.0, light: 1.0, agi: 0.9, tr: { nofog: 1 },
       wx: { fog: 0.02 },
       passive: '안개 속에서도 길을 잘 찾아요.' },
-    { id: 'hedgehog', name: '고슴도치', speed: 7.921, accel: 6.5, light: 0.7, agi: 0.5, tr: {},
+    { id: 'hedgehog', name: '고슴도치', speed: 7.945, accel: 6.5, light: 0.7, agi: 0.5, tr: {},
       wx: {},
       passive: '가시를 세운 동안에는 방해가 안 통해요.' },
-    { id: 'raccoon', name: '너구리', speed: 7.742, accel: 7.0, light: 0.7, agi: 0.8, tr: { nofog: 1 },
+    { id: 'raccoon', name: '너구리', speed: 7.745, accel: 7.0, light: 0.7, agi: 0.8, tr: { nofog: 1 },
       wx: { fog: 0.03 },
       passive: '안개 속에서도 길을 잘 찾아요.' },
-    { id: 'otter', name: '수달', speed: 7.296, accel: 7.0, light: 0.6, agi: 0.7, tr: { water: 1 },
+    { id: 'otter', name: '수달', speed: 7.29, accel: 7.0, light: 0.6, agi: 0.7, tr: { water: 1 },
       wx: { rain: 0.07 },
       passive: '비 오는 날 물웅덩이가 반가워요.' },
-    { id: 'beaver', name: '비버', speed: 7.374, accel: 6.0, light: 0.4, agi: 0.4, tr: { water: 1 },
+    { id: 'beaver', name: '비버', speed: 7.38, accel: 6.0, light: 0.4, agi: 0.4, tr: { water: 1 },
       wx: { rain: 0.05 },
       passive: '비 오는 날 물웅덩이가 반가워요.' },
-    { id: 'wolf', name: '늑대', speed: 7.596, accel: 7.5, light: 0.5, agi: 0.8, tr: {},
+    { id: 'wolf', name: '늑대', speed: 7.594, accel: 7.5, light: 0.5, agi: 0.8, tr: {},
       wx: { snow: 0.05, heat: -0.03 },
       passive: '눈 오는 날에 강해요.' },
-    { id: 'polar', name: '북극곰', speed: 7.731, accel: 6.0, light: 0.1, agi: 0.4, tr: { ice: 1 },
+    { id: 'polar', name: '북극곰', speed: 7.754, accel: 6.0, light: 0.1, agi: 0.4, tr: { ice: 1 },
       wx: { snow: 0.09, heat: -0.09 },
       passive: '빙판길이 오히려 좋아요.' },
-    { id: 'seal', name: '물개', speed: 7.303, accel: 6.0, light: 0.5, agi: 0.5, tr: { water: 1, ice: 1 },
+    { id: 'seal', name: '물개', speed: 7.302, accel: 6.0, light: 0.5, agi: 0.5, tr: { water: 1, ice: 1 },
       wx: { rain: 0.05, snow: 0.05, heat: -0.06 },
       passive: '젖은 길도 언 길도 좋아해요.' },
-    { id: 'owl', name: '부엉이', speed: 7.543, accel: 6.5, light: 0.9, agi: 0.6, tr: { nofog: 1 },
+    { id: 'owl', name: '부엉이', speed: 7.542, accel: 6.5, light: 0.9, agi: 0.6, tr: { nofog: 1 },
       wx: { fog: 0.05 },
       passive: '안개 속에서도 길을 잘 찾아요.' },
-    { id: 'chicken', name: '닭', speed: 7.883, accel: 7.5, light: 0.9, agi: 0.7, tr: {},
+    { id: 'chicken', name: '닭', speed: 7.939, accel: 7.5, light: 0.9, agi: 0.7, tr: {},
       wx: { rain: -0.03 },
       passive: '뒤에 아무도 없으면 파닥파닥 날갯짓으로 추격해요.' },
-    { id: 'parrot', name: '앵무새', speed: 7.68, accel: 7.0, light: 1.0, agi: 0.7, tr: {},
+    { id: 'parrot', name: '앵무새', speed: 7.683, accel: 7.0, light: 1.0, agi: 0.7, tr: {},
       wx: { heat: 0.03, snow: -0.05 },
       passive: '아직 아무도 스킬을 안 썼으면 그냥 날아가요.' },
-    { id: 'flamingo', name: '플라밍고', speed: 7.471, accel: 6.5, light: 0.8, agi: 0.7, tr: { water: 1 },
+    { id: 'flamingo', name: '플라밍고', speed: 7.476, accel: 6.5, light: 0.8, agi: 0.7, tr: { water: 1 },
       wx: { rain: 0.03, heat: 0.02, snow: -0.05 },
       passive: '비 오는 날 물웅덩이가 반가워요.' },
-    { id: 'ostrich', name: '타조', speed: 7.706, accel: 8.5, light: 0.5, agi: 0.7, tr: {},
+    { id: 'ostrich', name: '타조', speed: 7.718, accel: 8.5, light: 0.5, agi: 0.7, tr: {},
       wx: { heat: 0.04, snow: -0.05 },
       passive: '더운 날씨에 강해요.' },
-    { id: 'camel', name: '낙타', speed: 7.777, accel: 5.5, light: 0.2, agi: 0.3, tr: {},
+    { id: 'camel', name: '낙타', speed: 7.78, accel: 5.5, light: 0.2, agi: 0.3, tr: {},
       wx: { heat: 0.07, snow: -0.04, rain: -0.02 },
       passive: '폭염에도 끄떡없어요.' },
-    { id: 'alpaca', name: '알파카', speed: 7.94, accel: 6.5, light: 0.6, agi: 0.5, tr: {},
+    { id: 'alpaca', name: '알파카', speed: 7.936, accel: 6.5, light: 0.6, agi: 0.5, tr: {},
       wx: { snow: 0.03, heat: -0.03 },
       passive: '털옷 덕분에 눈 오는 날이 좋아요.' },
-    { id: 'bat', name: '박쥐', speed: 7.321, accel: 7.5, light: 1.0, agi: 0.8, tr: { nofog: 1 },
+    { id: 'bat', name: '박쥐', speed: 7.395, accel: 7.5, light: 1.0, agi: 0.8, tr: { nofog: 1 },
       wx: { fog: 0.05, heat: -0.02 },
       passive: '안개 속에서도 길을 잘 찾아요.' },
     { id: 'redpanda', name: '레서판다', speed: 7.862, accel: 7.0, light: 0.7, agi: 0.7, tr: {},
@@ -376,28 +376,85 @@
     ['gallimimus', '갈리미무스', 'dino', 'M', 'quick hurdler', { heat: 0.03 }],
     ['mosasaurus', '모사사우루스', 'dino', 'L', 'water heavy', { rain: 0.05 }],
     ['quetzal', '케찰코아틀루스', 'dino', 'M', '', { wind: 0.04 }],
-    ['glyptodon', '글립토돈', 'dino', 'L', 'heavy steady', { heat: 0.02 }]
+    ['glyptodon', '글립토돈', 'dino', 'L', 'heavy steady', { heat: 0.02 }],
+    // 곤충 50종
+    ['ant', '개미', 'bug', 'S', 'steady', { rain: -0.03, heat: 0.03 }],
+    ['fireant', '불개미', 'bug', 'S', 'quick', { rain: -0.02, heat: 0.05 }],
+    ['leafcutter', '가위개미', 'bug', 'S', 'steady', { rain: 0.02, heat: 0.03 }],
+    ['bulletant', '총알개미', 'bug', 'S', '', { rain: 0.02, heat: 0.04 }],
+    ['termite', '흰개미', 'bug', 'S', 'steady', { rain: -0.03, heat: 0.04 }],
+    ['honeybee', '꿀벌', 'bug', 'S', 'quick', { rain: -0.04, heat: 0.03 }],
+    ['bumblebee', '호박벌', 'bug', 'S', 'steady', { rain: -0.03, snow: 0.02 }],
+    ['wasp', '말벌', 'bug', 'S', 'quick nimble', { rain: -0.04, heat: 0.04 }],
+    ['hornet', '장수말벌', 'bug', 'M', 'quick', { rain: -0.03, heat: 0.04 }],
+    ['housefly', '파리', 'bug', 'S', 'nimble quick', { rain: -0.03, heat: 0.04 }],
+    ['mosquito', '모기', 'bug', 'S', 'nimble', { rain: 0.02, heat: 0.04, wind: -0.04 }],
+    ['fruitfly', '초파리', 'bug', 'S', 'nimble', { heat: 0.03, wind: -0.04 }],
+    ['horsefly', '등에', 'bug', 'S', 'quick', { rain: -0.02, heat: 0.05 }],
+    ['hoverfly', '꽃등에', 'bug', 'S', 'nimble', { rain: -0.03, heat: 0.03 }],
+    ['swallowtail', '호랑나비', 'bug', 'S', 'nimble', { rain: -0.05, wind: -0.02, heat: 0.03 }],
+    ['monarch', '제왕나비', 'bug', 'S', 'steady', { rain: -0.04, wind: 0.03 }],
+    ['morpho', '모르포나비', 'bug', 'S', 'nimble', { rain: 0.02, heat: 0.03 }],
+    ['moth', '나방', 'bug', 'S', '', { rain: -0.03, fog: 0.05 }],
+    ['hawkmoth', '박각시', 'bug', 'S', 'quick', { rain: -0.03, fog: 0.03 }],
+    ['caterpillar', '애벌레', 'bug', 'S', 'steady', { rain: 0.02, snow: -0.04 }],
+    ['dragonfly', '잠자리', 'bug', 'S', 'quick nimble', { rain: -0.03, wind: 0.02 }],
+    ['mayfly', '하루살이', 'bug', 'S', 'water', { rain: 0.02, wind: -0.04 }],
+    ['grasshopper', '메뚜기', 'bug', 'S', 'hurdler quick', { rain: -0.03, heat: 0.04 }],
+    ['locust', '풀무치', 'bug', 'S', 'hurdler', { rain: -0.03, heat: 0.05 }],
+    ['cricket', '귀뚜라미', 'bug', 'S', 'hurdler', { rain: -0.02, snow: -0.03, fog: 0.03 }],
+    ['katydid', '여치', 'bug', 'S', 'hurdler', { rain: -0.02, heat: 0.03 }],
+    ['molecricket', '땅강아지', 'bug', 'S', 'mud', { rain: 0.03 }],
+    ['flea', '벼룩', 'bug', 'S', 'hurdler nimble', { heat: 0.03 }],
+    ['mantis', '사마귀', 'bug', 'S', 'quick', { rain: -0.02, heat: 0.03 }],
+    ['stickbug', '대벌레', 'bug', 'S', 'steady', { wind: -0.03, heat: 0.02 }],
+    ['ladybug', '무당벌레', 'bug', 'S', '', { rain: -0.03, heat: 0.03 }],
+    ['rhinobeetle', '장수풍뎅이', 'bug', 'M', 'steady', { rain: -0.02, heat: 0.04 }],
+    ['stagbeetle', '사슴벌레', 'bug', 'M', 'steady', { rain: -0.02, heat: 0.03 }],
+    ['dungbeetle', '쇠똥구리', 'bug', 'S', 'mud steady', { heat: 0.04 }],
+    ['firefly', '반딧불이', 'bug', 'S', '', { rain: -0.03, fog: 0.05 }],
+    ['longhorn', '하늘소', 'bug', 'S', 'steady', { rain: -0.02, heat: 0.03 }],
+    ['weevil', '바구미', 'bug', 'S', 'steady', { heat: 0.03 }],
+    ['tigerbeetle', '길앞잡이', 'bug', 'S', 'quick', { rain: -0.03, heat: 0.05 }],
+    ['bombardier', '폭탄먼지벌레', 'bug', 'S', '', { rain: -0.02, heat: 0.04 }],
+    ['jewelbeetle', '비단벌레', 'bug', 'S', '', { rain: -0.03, heat: 0.04 }],
+    ['divingbeetle', '물방개', 'bug', 'S', 'water', { rain: 0.05 }],
+    ['strider', '소금쟁이', 'bug', 'S', 'water nimble', { rain: 0.04, wind: -0.03 }],
+    ['waterbug', '물장군', 'bug', 'S', 'water', { rain: 0.05 }],
+    ['cicada', '매미', 'bug', 'S', '', { rain: -0.03, heat: 0.06 }],
+    ['stinkbug', '노린재', 'bug', 'S', 'steady', { rain: -0.02, heat: 0.03 }],
+    ['cockroach', '바퀴벌레', 'bug', 'S', 'quick nimble', { heat: 0.04, snow: -0.04 }],
+    ['earwig', '집게벌레', 'bug', 'S', '', { rain: 0.02 }],
+    ['antlion', '개미귀신', 'bug', 'S', 'steady', { rain: -0.04, heat: 0.05 }],
+    ['froghopper', '거품벌레', 'bug', 'S', 'hurdler', { rain: 0.02 }],
+    ['aphid', '진딧물', 'bug', 'S', '', { rain: -0.04, heat: 0.02 }]
   ];
   var MORE_SPEED = {
-    shark: 7.366, whale: 7.492, dolphin: 7.426, orca: 7.239, octopus: 7.46, squid: 7.47, crab: 7.343, lobster: 7.206,
-    shrimp: 7.241, jellyfish: 7.435, starfish: 7.365, seahorse: 7.377, clownfish: 7.446, puffer: 7.461, manta: 7.491, walrus: 7.353,
-    narwhal: 7.343, sealion: 7.65, manatee: 7.762, beluga: 7.316, swordfish: 7.421, angler: 7.33, seaturtle: 7.311, snake: 7.873,
-    cobra: 7.803, lizard: 7.613, chameleon: 7.669, iguana: 7.772, gecko: 7.643, komodo: 7.769, tortoise: 7.607, axolotl: 7.352,
-    salamander: 7.313, toad: 7.249, eagle: 7.844, falcon: 7.77, crow: 7.627, swan: 7.356, goose: 7.439, peacock: 7.933,
-    toucan: 7.652, pelican: 7.455, woodpecker: 7.73, pigeon: 7.716, seagull: 7.354, sparrow: 7.591, hummingbird: 7.595, kiwi: 7.683,
-    turkey: 7.741, crane: 7.385, stork: 7.358, puffin: 7.105, robin: 7.786, canary: 7.736, cockatoo: 7.578, vulture: 7.488,
-    dodo: 7.706, trex: 7.942, triceratops: 7.869, stego: 8.108, brachio: 7.941, raptor: 7.809, ptero: 7.75, ankylo: 7.995,
-    parasaur: 7.781, spino: 7.373, diplodocus: 7.789, pachy: 7.863, dilopho: 7.904, compy: 7.645, plesio: 7.395, mammoth: 7.747,
-    sabertooth: 7.677, dimetrodon: 7.732, archaeo: 7.692, capybara: 7.58, fennec: 7.537, meerkat: 7.686, badger: 7.771, ferret: 7.534,
-    chipmunk: 7.741, leopard: 7.836, panther: 7.596, hyena: 7.696, lynx: 7.319, bison: 7.83, moose: 7.718, reindeer: 7.551,
-    llama: 7.872, donkey: 7.926, boar: 7.63, anteater: 7.869, armadillo: 7.795, pangolin: 7.947, platypus: 7.369, wombat: 7.823,
-    quokka: 7.687, lemur: 7.438, orangutan: 7.814, chimp: 7.82, jaguar: 7.554, snowleopard: 7.405, gazelle: 7.568, gnu: 7.792,
-    buffalo: 7.328, yak: 7.637, tapir: 7.291, okapi: 7.66, mole: 7.67, prairiedog: 7.799, flyingsquirrel: 7.578, tasdevil: 7.595,
-    echidna: 7.876, mandrill: 7.7, magpie: 7.477, swallow: 7.54, kingfisher: 7.437, albatross: 7.412, emu: 7.541, cassowary: 7.759,
-    roadrunner: 7.461, heron: 7.477, pheasant: 7.614, mandarin: 7.467, shoebill: 7.46, secretary: 7.527, rattlesnake: 7.632, anaconda: 7.45,
-    frilled: 7.45, basilisk: 7.187, dartfrog: 7.439, softshell: 7.287, whaleshark: 7.611, hammerhead: 7.48, sunfish: 7.42, flyingfish: 7.23,
-    moray: 7.497, seaotter: 7.329, hermit: 7.472, cuttlefish: 7.38, eel: 7.295, salmon: 7.141, allosaurus: 7.806, carno: 7.578,
-    therizino: 7.863, iguanodon: 7.821, gallimimus: 7.51, mosasaurus: 7.417, quetzal: 7.811, glyptodon: 7.83
+    shark: 7.37, whale: 7.51, dolphin: 7.446, orca: 7.209, octopus: 7.483, squid: 7.507, crab: 7.338, lobster: 7.185,
+    shrimp: 7.273, jellyfish: 7.411, starfish: 7.374, seahorse: 7.39, clownfish: 7.454, puffer: 7.468, manta: 7.478, walrus: 7.357,
+    narwhal: 7.339, sealion: 7.652, manatee: 7.764, beluga: 7.324, swordfish: 7.43, angler: 7.363, seaturtle: 7.323, snake: 7.882,
+    cobra: 7.813, lizard: 7.591, chameleon: 7.708, iguana: 7.749, gecko: 7.633, komodo: 7.775, tortoise: 7.619, axolotl: 7.338,
+    salamander: 7.329, toad: 7.258, eagle: 7.856, falcon: 7.777, crow: 7.643, swan: 7.367, goose: 7.431, peacock: 7.994,
+    toucan: 7.661, pelican: 7.467, woodpecker: 7.767, pigeon: 7.761, seagull: 7.386, sparrow: 7.609, hummingbird: 7.6, kiwi: 7.74,
+    turkey: 7.761, crane: 7.386, stork: 7.369, puffin: 7.095, robin: 7.819, canary: 7.76, cockatoo: 7.592, vulture: 7.488,
+    dodo: 7.716, trex: 7.951, triceratops: 7.902, stego: 8.117, brachio: 7.953, raptor: 7.807, ptero: 7.772, ankylo: 8.025,
+    parasaur: 7.792, spino: 7.393, diplodocus: 7.797, pachy: 7.901, dilopho: 7.941, compy: 7.672, plesio: 7.41, mammoth: 7.744,
+    sabertooth: 7.685, dimetrodon: 7.724, archaeo: 7.69, capybara: 7.599, fennec: 7.571, meerkat: 7.688, badger: 7.796, ferret: 7.548,
+    chipmunk: 7.781, leopard: 7.858, panther: 7.613, hyena: 7.711, lynx: 7.346, bison: 7.831, moose: 7.756, reindeer: 7.548,
+    llama: 7.909, donkey: 7.955, boar: 7.615, anteater: 7.886, armadillo: 7.809, pangolin: 7.946, platypus: 7.399, wombat: 7.852,
+    quokka: 7.683, lemur: 7.406, orangutan: 7.832, chimp: 7.824, jaguar: 7.548, snowleopard: 7.431, gazelle: 7.578, gnu: 7.814,
+    buffalo: 7.349, yak: 7.638, tapir: 7.306, okapi: 7.674, mole: 7.682, prairiedog: 7.819, flyingsquirrel: 7.594, tasdevil: 7.627,
+    echidna: 7.882, mandrill: 7.71, magpie: 7.476, swallow: 7.541, kingfisher: 7.485, albatross: 7.395, emu: 7.536, cassowary: 7.752,
+    roadrunner: 7.482, heron: 7.483, pheasant: 7.616, mandarin: 7.493, shoebill: 7.466, secretary: 7.549, rattlesnake: 7.643, anaconda: 7.475,
+    frilled: 7.498, basilisk: 7.185, dartfrog: 7.439, softshell: 7.31, whaleshark: 7.613, hammerhead: 7.487, sunfish: 7.419, flyingfish: 7.245,
+    moray: 7.518, seaotter: 7.338, hermit: 7.494, cuttlefish: 7.37, eel: 7.312, salmon: 7.148, allosaurus: 7.799, carno: 7.579,
+    therizino: 7.854, iguanodon: 7.848, gallimimus: 7.529, mosasaurus: 7.445, quetzal: 7.828, glyptodon: 7.836, ant: 7.629, fireant: 7.529,
+    leafcutter: 7.591, bulletant: 7.596, termite: 7.384, honeybee: 7.69, bumblebee: 7.666, wasp: 7.509, hornet: 7.634, housefly: 7.393,
+    mosquito: 7.351, fruitfly: 7.525, horsefly: 7.564, hoverfly: 7.378, swallowtail: 7.524, monarch: 7.627, morpho: 7.412, moth: 7.724,
+    hawkmoth: 7.417, caterpillar: 7.528, dragonfly: 7.586, mayfly: 7.265, grasshopper: 7.587, locust: 7.572, cricket: 7.761, katydid: 7.643,
+    molecricket: 7.496, flea: 7.431, mantis: 7.542, stickbug: 7.608, ladybug: 7.633, rhinobeetle: 7.658, stagbeetle: 7.714, dungbeetle: 7.357,
+    firefly: 7.713, longhorn: 7.58, weevil: 7.555, tigerbeetle: 7.475, bombardier: 7.59, jewelbeetle: 7.609, divingbeetle: 7.327, strider: 7.244,
+    waterbug: 7.448, cicada: 7.632, stinkbug: 7.552, cockroach: 7.476, earwig: 7.687, antlion: 7.627, froghopper: 7.646, aphid: 7.772
   };
   var SIZE_DEF = { S: [8.4, 0.9, 0.8], M: [7.0, 0.5, 0.65], L: [5.6, 0.1, 0.35] };
   MORE.forEach(function (m) {
@@ -407,7 +464,7 @@
   });
 
   // 분류 (도감에서 묶어 보여 줌)
-  var CATS = [['mam', '포유류'], ['bird', '새'], ['rep', '파충류 · 양서류'], ['sea', '바다 동물'], ['dino', '공룡 · 옛 동물']];
+  var CATS = [['mam', '포유류'], ['bird', '새'], ['rep', '파충류 · 양서류'], ['sea', '바다 동물'], ['dino', '공룡 · 옛 동물'], ['bug', '곤충']];
   var CAT_OF = { penguin: 'bird', duck: 'bird', owl: 'bird', chicken: 'bird', parrot: 'bird', flamingo: 'bird', ostrich: 'bird', turtle: 'rep', croc: 'rep', frog: 'rep', seal: 'sea' };
   // 특성 · 날씨로 '한마디'를 자동으로 붙인다 (직접 적은 것이 없을 때)
   function autoPassive(a) {
@@ -440,15 +497,15 @@
     ice: '꽁꽁 얼었어요.', pity: '멈춰 섰어요.', charm: '넋을 잃고 멈춰 섰어요.', bonk2: '머리가 어질어질해요.', pie: '앞이 안 보여요.', wet: '흠뻑 젖었어요.',
     scared: '깜짝 놀라 주춤해요.', lost: '길을 헤매요.', stink: '코를 막고 주춤해요.', bonk: '아파서 주춤해요.', slowmo: '느릿느릿해졌어요.', pulled: '붙잡혀 버둥거려요.' };
 
-  // ───────────── 스킬 · 필살기 (200종 × 3개 = 600개, 작동 방식이 모두 다르다) ─────────────
+  // ───────────── 스킬 · 필살기 (250종 × 3개 = 750개, 작동 방식이 모두 다르다) ─────────────
   // id: [스킬1 이름, 식, 스킬2 이름, 식, 필살기 이름, 식]
   // 식 = '효과@대상~조건:값' 을 '+' 로 이은 것. 'U' 는 아래 ULT 표에 따로 만든 전용 필살기.
   //   효과 — 스스로 : burst cruise ramp fade pulse windup over hop soar slide armor roll firm blink relay glide dig wheel
-  //                   shield mirror thorns cleanse charge quick bank dice echo counter
-  //          방해   : stun trip zap slow bog gust push sleep back freeze seal drain delay curse tax swap demote hook leech strip cling reel pin
+  //                   shield mirror thorns cleanse charge quick bank dice echo counter cocoon vault
+  //          방해   : stun trip zap slow bog gust push sleep back freeze seal drain delay curse tax swap demote hook leech strip cling reel pin sting swarm itch aura
   //          도움   : aid guard feed tow heal        트랙 : peel mole slick hurdle wall drop        세상 : wx terra event
   //   대상 — a1 a2 a3(앞) L T3(선두) b1 b2(뒤) near wide lane adj last tail3 rnd rnd3 ahead behind all fast rich foe boosted
-  //          bird mam rep sea dino kin alien heavy lightw odd even mid   ·   slick/hurdle/wall 은 놓는 자리 back front mid
+  //          bird mam rep sea dino bug kin alien heavy lightw odd even mid   ·   slick/hurdle/wall 은 놓는 자리 back front mid
   //   조건 — rank lead late early gap crowd alone stack fresh hurt calm gauge dice chase flee kin hits inWater… wRain…
   var ABIL = {
     rabbit: ['깡충깡충 대시', 'pulse', '깡충 뒷발차기', 'push@b1', '달나라 점프', 'hop+blink'],
@@ -650,7 +707,58 @@
     gallimimus: ['타조 공룡 달리기', 'cruise~chase', '무리 흩어지기', 'gust@lane', '백악기 단거리 왕', 'over~early+blink'],
     mosasaurus: ['심해 급습', 'tax@a2~inWater', '거대한 꼬리', 'gust@behind', '바다의 폭군', 'event:bigwave+tax@L'],
     quetzal: ['거대 날개 그늘', 'pin@near', '상승 기류', 'soar~wHeat', '하늘의 지배자', 'soar+pin@all'],
-    glyptodon: ['돔 껍질', 'armor~flee', '곤봉 꼬리', 'push@b1~flee', '움직이는 요새', 'armor+wall']
+    glyptodon: ['돔 껍질', 'armor~flee', '곤봉 꼬리', 'push@b1~flee', '움직이는 요새', 'armor+wall'],
+    // 곤충 50종
+    ant: ['줄지어 행진', 'aid@bug', '영차영차 들어 옮기기', 'tax@heavy', '개미 군단', 'swarm@T3+cruise'],
+    fireant: ['따끔 깨물기', 'sting@a1', '불개미 뗏목', 'glide~wRain', '불개미 떼 습격', 'sting@near+swarm@L'],
+    leafcutter: ['잎사귀 우산', 'shield~wHeat', '싹둑싹둑', 'strip@a2', '버섯 농장', 'terra:forest+aid@bug'],
+    bulletant: ['총알 독침', 'sting@a1+burst', '끈질긴 턱', 'cling@a1~hurt', '세상에서 가장 아픈 침', 'stun@L+sting@L'],
+    termite: ['갉아먹기', 'pin@a2', '흙기둥 쌓기', 'wall~late', '흰개미 탑', 'wall@front+cocoon'],
+    honeybee: ['8자 춤', 'feed@bug', '꽃꿀 모으기', 'charge~inForest', '여왕벌을 지켜라', 'swarm@a3+guard@kin'],
+    bumblebee: ['붕붕 박치기', 'push@a1~fresh', '꽃가루 범벅', 'slow@lane~inForest', '뚱보 비행', 'soar+push@ahead'],
+    wasp: ['날카로운 침', 'sting@a2', '윙윙 위협', 'back@a1~lead', '말벌집 건드리기', 'event:bees+soar'],
+    hornet: ['독침 연타', 'sting@a1~stack', '큰턱 물기', 'stun@a1~gap', '장수말벌 습격', 'sting@T3+stun@T3'],
+    housefly: ['윙윙 성가시게', 'itch@a1', '손 비비기', 'cleanse~calm', '파리채 피하기', 'counter+blink~hurt'],
+    mosquito: ['앵앵 물기', 'itch@a1+drain@a1', '피 한 모금', 'leech@a1~chase', '모기 떼의 밤', 'itch@all'],
+    fruitfly: ['과일 향기 따라', 'reel@a1~inForest', '눈앞에서 알짱', 'seal@a1~chase', '초파리 대번식', 'swarm@rnd3'],
+    horsefly: ['따가운 한 방', 'stun@a1+sting@a1', '윙윙 따라붙기', 'reel@fast~chase', '소 떼를 쫓아', 'sting@heavy+burst'],
+    hoverfly: ['공중 정지', 'bank~alone', '벌인 척하기', 'mirror~chase', '제자리 비행 묘기', 'glide+counter'],
+    swallowtail: ['팔랑팔랑', 'soar~calm', '날개 가루', 'slow@behind~calm', '나비 효과', 'wx:wind+gust@ahead'],
+    monarch: ['먼 길 이동', 'cruise~early', '독 날개 경고', 'thorns~calm', '대이동', 'aid@bug+glide'],
+    morpho: ['푸른 섬광', 'stun@lane~wSunny', '반짝 숨기', 'shield~wSunny', '눈부신 날갯짓', 'stun@near+soar'],
+    moth: ['불빛 따라', 'reel@L~wFog', '날개 가루 뿌리기', 'pin@behind~wFog', '달빛 군무', 'wx:fog+sleep@a3'],
+    hawkmoth: ['벌새인 척', 'pulse~calm', '긴 주둥이 꿀 빨기', 'charge~calm', '초고속 호버링', 'relay+glide'],
+    caterpillar: ['꿈틀꿈틀', 'ramp~rank', '실 뽑기', 'pin@b1', '번데기에서 나비로', 'cocoon'],
+    dragonfly: ['공중 급선회', 'counter~lead', '모기 사냥', 'stun@bug', '고추잠자리 편대', 'soar~lead+stun@a2'],
+    mayfly: ['하루뿐인 삶', 'over~fresh', '물 위 춤', 'soar~wRain', '오늘만 산다', 'over~late'],
+    grasshopper: ['폴짝 뛰어넘기', 'vault@a1', '뒷다리 차기', 'push@b1~chase', '대도약', 'vault@a3'],
+    locust: ['메뚜기 떼', 'swarm@a1', '풀밭 갉아먹기', 'terra:track', '하늘을 덮는 떼', 'swarm@ahead'],
+    cricket: ['귀뚤귀뚤 자장가', 'sleep@b1', '가을밤 연주', 'feed@near~calm', '귀뚜라미 합창', 'sleep@behind+aid@bug'],
+    katydid: ['잎사귀 위장', 'counter~calm', '쓰르르 울음', 'delay@lane', '풀숲의 연주자', 'terra:forest+delay@all'],
+    molecricket: ['앞발 굴착기', 'dig~rank', '땅굴 함정', 'mole@b1', '지하 터널', 'dig+vault@a2'],
+    flea: ['높이뛰기 챔피언', 'hop~stack', '올라타기', 'cling@a1~gap', '벼룩의 간', 'vault@L'],
+    mantis: ['낫 휘두르기', 'trip@a1+pin@a1', '기도하는 척', 'bank~chase', '당랑권', 'stun@a2+vault@a2'],
+    stickbug: ['나뭇가지인 척', 'armor~calm', '흔들흔들', 'counter~wWind', '숲과 하나 되기', 'terra:forest+armor'],
+    ladybug: ['진딧물 사냥', 'stun@bug+burst', '벌렁 드러눕기', 'shield~hurt', '행운의 일곱 점', 'dice+shield'],
+    rhinobeetle: ['뿔 들어 올리기', 'demote@a1+burst', '수액 한 잔', 'windup~stack', '뿔 뒤집기 한판', 'demote@a3+armor'],
+    stagbeetle: ['집게 조이기', 'stun@a1+leech@a1', '집게로 던지기', 'gust@a1~chase', '큰턱 대결', 'hook@L+stun@L'],
+    dungbeetle: ['쇠똥 굴리기', 'roll~stack', '은하수 길잡이', 'glide~late', '거대 쇠똥', 'roll+trip@a3'],
+    firefly: ['깜빡깜빡 신호', 'feed@near~wFog', '눈부신 불빛', 'seal@behind', '반딧불이의 밤', 'wx:fog+guard@all'],
+    longhorn: ['긴 더듬이 탐지', 'counter~alone', '나무 갉기', 'hurdle@mid', '더듬이 채찍', 'trip@a3+push@a3'],
+    weevil: ['주둥이 드릴', 'pin@a1~inForest', '죽은 척 떨어지기', 'dig~flee', '곡식 창고 습격', 'drain@ahead+cruise'],
+    tigerbeetle: ['길 안내 질주', 'fade~lead', '너무 빨라 안 보여', 'blink~lead', '곤충계 최고 속도', 'over+fade'],
+    bombardier: ['뜨거운 방귀 폭탄', 'push@b1+blink', '부글부글 충전', 'charge~hurt', '연쇄 폭발', 'push@behind+stun@near'],
+    jewelbeetle: ['무지갯빛 반사', 'mirror~wSunny', '반짝 눈속임', 'swap@a1~wSunny', '비단 갑옷', 'mirror+armor'],
+    divingbeetle: ['공기 방울 잠수', 'armor~wRain', '노 젓기', 'relay~wRain', '물속 추격', 'terra:water+reel@L'],
+    strider: ['물 위 미끄럼', 'wheel~inWater', '물결 신호', 'delay@near~inWater', '수면 스케이팅', 'terra:water+wheel'],
+    waterbug: ['앞다리 낚아채기', 'hook@a1~inWater', '물속 매복', 'trip@a1~wRain', '연못의 폭군', 'terra:water+tax@T3'],
+    cicada: ['맴맴 고함', 'delay@wide', '땅속 7년', 'bank~stack', '한여름 대합창', 'wx:heat+seal@all'],
+    stinkbug: ['고약한 냄새', 'aura', '방패 등딱지', 'shield~chase', '노린내 폭탄', 'aura+back@near'],
+    cockroach: ['사사삭 도망', 'burst~flee', '끈질긴 생명력', 'cleanse~hurt', '불사신', 'cleanse+armor+quick'],
+    earwig: ['꼬리 집게', 'pin@b1+push@b1', '틈새 숨기', 'dig~chase', '집게 덫', 'wall+pin@near'],
+    antlion: ['모래 함정', 'terra:sand', '모래 튀기기', 'slow@a1~inSand', '개미지옥', 'terra:sand+tax@ahead'],
+    froghopper: ['거품 집', 'guard@b1~calm', '초강력 점프', 'hop~rank', '거품 대폭발', 'slick@mid:lake+vault@a2'],
+    aphid: ['단물 나눠 주기', 'feed@adj~calm', '개미 경호원 부르기', 'guard@bug', '폭풍 번식', 'swarm@all']
   };
   function parseAb(str) {
     return str.split('+').map(function (p) {
@@ -668,7 +776,7 @@
     near: '가까이 있는 동물들', wide: '주변 넓은 범위의 동물들', lane: '양옆 레인의 동물', adj: '바로 앞뒤 동물', last: '꼴찌', tail3: '뒤쪽 세 마리',
     rnd: '아무나 한 마리', rnd3: '아무나 세 마리', ahead: '앞선 동물 모두', behind: '뒤따르는 동물 모두', all: '다른 동물 모두',
     fast: '지금 가장 빠른 동물', rich: '필살기 게이지가 가장 많이 찬 동물', foe: '나를 방해한 동물', boosted: '지금 빨라진 동물들',
-    bird: '새들', mam: '포유류들', rep: '파충류 · 양서류들', sea: '바다 동물들', dino: '공룡들', kin: '나와 같은 분류의 동물들', alien: '나와 다른 분류의 동물들',
+    bird: '새들', bug: '곤충들', mam: '포유류들', rep: '파충류 · 양서류들', sea: '바다 동물들', dino: '공룡들', kin: '나와 같은 분류의 동물들', alien: '나와 다른 분류의 동물들',
     heavy: '덩치 큰 동물들', lightw: '몸이 가벼운 동물들', odd: '홀수 레인의 동물들', even: '짝수 레인의 동물들', mid: '중간 순위 동물들'
   };
   var PLACE_TXT = { back: '내 바로 뒤', front: '선두 바로 앞', mid: '무리 한가운데' };
@@ -687,6 +795,11 @@
     thorns: '잠깐 무적이 되고, 그동안 건드린 동물은 따끔해서 멈춰요', cleanse: '걸려 있던 방해를 모두 털어 내고 힘을 내요', charge: '필살기 게이지를 채워요',
     quick: '다음 스킬을 훨씬 빨리 쓸 수 있게 돼요', bank: '살짝 물러났다가 잠시 뒤 훨씬 멀리 튀어 나가요', dice: '주사위를 굴려요. 대박일 수도 꽝일 수도 있어요',
     echo: '방금 다른 동물이 쓴 스킬을 그대로 따라 해요', counter: '다음 방해를 막고, 막아 내면 그 힘으로 치고 나가요',
+    cocoon: '고치 속에 들어가 잠깐 쉬어요. 그동안은 어떤 방해도 안 통하고, 나오면서 폭발적으로 달려요',
+    vault: '{을} 훌쩍 뛰어넘어 바로 앞에 내려앉아요. 너무 멀면 닿는 데까지만 뛰어요',
+    aura: '한동안 고약한 구름을 두르고 달려요. 가까이 있는 동물은 계속 느려져요',
+    sting: '{에게} 독침을 놓아요. 독이 퍼질수록 점점 더 느려져요', swarm: '{에게} 벌레 떼를 붙여 느리게 해요. 떼는 끝날 때 가까운 동물에게 한 번 옮겨 붙어요',
+    itch: '{을} 가렵게 해서 세 번 멈칫하게 해요',
     stun: '{을} 잠깐 멈춰 세워요', trip: '{의} 발을 걸어 넘어뜨려요. 공중에 떠 있으면 안 걸려요', zap: '{을} 찌릿하게 해서 멈추고 스킬도 잠깐 못 쓰게 해요',
     slow: '{을} 한동안 느리게 해요', bog: '{을} 느리게 해요. 덩치가 클수록 오래가요', gust: '{을} 뒤로 날려 보내요. 가벼울수록 멀리 날아가요', push: '{을} 뒤로 밀어내요',
     sleep: '{을} 재워요. 누가 추월하면 깨어나요', back: '{이} 잠깐 뒷걸음질 치게 해요', freeze: '{을} 얼려요. 눈 오는 날이나 눈밭에서는 더 오래 얼어요',
@@ -746,7 +859,7 @@
   function terrainMul(a, type) {
     var t = a.tr, w = a.wx || {}, heavy = a.light <= 0.15;
     switch (type) {
-      case 'water': return t.water || a.cat === 'sea' ? 1.15 : (a.cat === 'bird' ? 0.96 : 0.88);
+      case 'water': return t.water || a.cat === 'sea' ? 1.15 : (a.cat === 'bird' || a.cat === 'bug' ? 0.96 : 0.88);
       case 'sand': return (w.heat || 0) > 0.02 ? 1.09 : (heavy ? 0.9 : 0.95);
       case 'snow': return t.ice || (w.snow || 0) > 0.03 ? 1.12 : ((w.snow || 0) < -0.03 ? 0.88 : 0.93);
       case 'mud': return t.mud ? 1.14 : (heavy ? 0.96 : 0.9);
@@ -796,49 +909,59 @@
   var ULT_BIG = {};
   // 참가가 많은 판(9마리 이상)에서만 더해지는 속력 보정(m/s) : 22마리 판에서 이 값만큼, 그 사이는 비례해서
   var BIG_SPD = {
-    rabbit: -0.003, turtle: 0.039, cheetah: -0.029, fox: 0.053, bear: 0.018, penguin: -0.000, elephant: -0.014, kangaroo: 0.034, skunk: -0.066, pig: -0.010,
-    dog: -0.069, cat: -0.060, panda: 0.016, duck: 0.058, lion: 0.019, tiger: -0.020, zebra: -0.059, giraffe: 0.016, horse: -0.004, cow: -0.026,
-    sheep: -0.006, goat: 0.013, deer: -0.041, koala: 0.015, sloth: -0.012, monkey: -0.005, gorilla: 0.008, hippo: 0.022, rhino: -0.006, croc: 0.022,
-    frog: -0.016, squirrel: -0.023, hamster: 0.017, mouse: -0.019, hedgehog: -0.066, raccoon: -0.080, otter: 0.017, beaver: 0.012, wolf: -0.020, polar: 0.010,
-    seal: 0.034, owl: -0.013, chicken: -0.038, parrot: -0.002, flamingo: 0.025, ostrich: -0.002, camel: 0.026, alpaca: -0.048, bat: 0.291, redpanda: -0.014,
-    shark: -0.035, whale: -0.008, dolphin: 0.016, orca: 0.063, octopus: -0.039, squid: -0.016, crab: 0.018, lobster: -0.062, shrimp: -0.021, jellyfish: 0.004,
-    starfish: -0.042, seahorse: -0.042, clownfish: -0.028, puffer: -0.035, manta: -0.025, walrus: 0.051, narwhal: 0.010, sealion: -0.059, manatee: -0.067, beluga: 0.011,
-    swordfish: 0.011, angler: 0.023, seaturtle: 0.003, snake: 0.006, cobra: 0.024, lizard: -0.011, chameleon: 0.001, iguana: 0.007, gecko: 0.007, komodo: 0.059,
-    tortoise: 0.006, axolotl: -0.004, salamander: 0.033, toad: -0.022, eagle: -0.024, falcon: -0.049, crow: 0.028, swan: 0.042, goose: -0.037, peacock: -0.049,
-    toucan: 0.012, pelican: 0.019, woodpecker: -0.048, pigeon: -0.027, seagull: 0.020, sparrow: -0.022, hummingbird: 0.001, kiwi: -0.024, turkey: -0.034, crane: 0.026,
-    stork: -0.013, puffin: 0.074, robin: -0.085, canary: -0.018, cockatoo: -0.036, vulture: -0.015, dodo: 0.027, trex: -0.011, triceratops: 0.021, stego: -0.039,
-    brachio: -0.025, raptor: -0.005, ptero: 0.062, ankylo: -0.016, parasaur: 0.020, spino: 0.045, diplodocus: 0.019, pachy: 0.006, dilopho: -0.013, compy: 0.053,
-    plesio: 0.014, mammoth: 0.016, sabertooth: 0.018, dimetrodon: 0.050, archaeo: 0.001, capybara: -0.059, fennec: 0.063, meerkat: -0.082, badger: -0.042, ferret: -0.008,
-    chipmunk: -0.002, leopard: -0.008, panther: -0.015, hyena: -0.028, lynx: -0.044, bison: -0.010, moose: 0.015, reindeer: 0.009, llama: -0.016, donkey: -0.044,
-    boar: 0.007, anteater: 0.001, armadillo: -0.027, pangolin: -0.082, platypus: -0.005, wombat: -0.012, quokka: -0.027, lemur: 0.100, orangutan: 0.034, chimp: 0.005,
-    jaguar: -0.037, snowleopard: 0.048, gazelle: 0.008, gnu: -0.021, buffalo: 0.052, yak: 0.002, tapir: 0.039, okapi: -0.050, mole: -0.044, prairiedog: -0.052,
-    flyingsquirrel: -0.026, tasdevil: -0.067, echidna: -0.085, mandrill: -0.001, magpie: -0.035, swallow: -0.049, kingfisher: -0.011, albatross: 0.033, emu: 0.005, cassowary: -0.006,
-    roadrunner: 0.001, heron: 0.055, pheasant: -0.044, mandarin: -0.026, shoebill: 0.008, secretary: 0.007, rattlesnake: -0.001, anaconda: 0.000, frilled: 0.070, basilisk: 0.129,
-    dartfrog: 0.019, softshell: 0.032, whaleshark: -0.046, hammerhead: 0.022, sunfish: 0.040, flyingfish: 0.073, moray: 0.001, seaotter: -0.014, hermit: -0.032, cuttlefish: 0.017,
-    eel: 0.019, salmon: 0.189, allosaurus: 0.076, carno: 0.016, therizino: 0.031, iguanodon: 0.026, gallimimus: 0.017, mosasaurus: 0.056, quetzal: 0.027, glyptodon: -0.014
+    rabbit: -0.060, turtle: 0.037, cheetah: -0.050, fox: 0.091, bear: 0.030, penguin: 0.014, elephant: 0.010, kangaroo: 0.022, skunk: -0.052, pig: -0.002,
+    dog: -0.073, cat: -0.085, panda: -0.003, duck: 0.093, lion: 0.020, tiger: -0.029, zebra: -0.081, giraffe: 0.017, horse: -0.005, cow: -0.018,
+    sheep: -0.020, goat: 0.016, deer: -0.028, koala: 0.009, sloth: -0.008, monkey: 0.003, gorilla: 0.004, hippo: 0.030, rhino: 0.015, croc: 0.041,
+    frog: -0.020, squirrel: -0.028, hamster: 0.003, mouse: -0.011, hedgehog: -0.072, raccoon: -0.101, otter: 0.033, beaver: 0.017, wolf: -0.031, polar: 0.016,
+    seal: 0.060, owl: -0.027, chicken: -0.056, parrot: 0.020, flamingo: 0.017, ostrich: -0.007, camel: 0.038, alpaca: -0.017, bat: 0.263, redpanda: -0.021,
+    shark: -0.036, whale: -0.025, dolphin: 0.019, orca: 0.087, octopus: -0.050, squid: -0.027, crab: 0.037, lobster: -0.072, shrimp: -0.035, jellyfish: 0.016,
+    starfish: -0.054, seahorse: -0.045, clownfish: -0.030, puffer: -0.025, manta: -0.013, walrus: 0.068, narwhal: 0.023, sealion: -0.056, manatee: -0.075, beluga: 0.019,
+    swordfish: 0.009, angler: 0.002, seaturtle: 0.007, snake: -0.013, cobra: 0.030, lizard: -0.006, chameleon: -0.004, iguana: 0.021, gecko: -0.001, komodo: 0.061,
+    tortoise: 0.028, axolotl: 0.007, salamander: 0.052, toad: -0.012, eagle: -0.029, falcon: -0.047, crow: 0.054, swan: 0.066, goose: -0.038, peacock: -0.059,
+    toucan: 0.016, pelican: 0.011, woodpecker: -0.061, pigeon: -0.039, seagull: 0.026, sparrow: -0.008, hummingbird: 0.010, kiwi: -0.036, turkey: -0.035, crane: 0.030,
+    stork: 0.006, puffin: 0.107, robin: -0.118, canary: -0.036, cockatoo: -0.055, vulture: -0.001, dodo: 0.030, trex: -0.006, triceratops: 0.041, stego: -0.057,
+    brachio: -0.001, raptor: -0.018, ptero: 0.080, ankylo: -0.027, parasaur: 0.031, spino: 0.060, diplodocus: 0.040, pachy: 0.002, dilopho: -0.008, compy: 0.037,
+    plesio: 0.022, mammoth: 0.035, sabertooth: 0.040, dimetrodon: 0.084, archaeo: 0.011, capybara: -0.052, fennec: 0.048, meerkat: -0.090, badger: -0.065, ferret: 0.000,
+    chipmunk: 0.003, leopard: -0.007, panther: -0.021, hyena: -0.040, lynx: -0.053, bison: -0.001, moose: 0.013, reindeer: 0.031, llama: -0.022, donkey: -0.049,
+    boar: 0.038, anteater: 0.011, armadillo: -0.029, pangolin: -0.088, platypus: -0.016, wombat: -0.006, quokka: -0.007, lemur: 0.081, orangutan: 0.042, chimp: 0.007,
+    jaguar: -0.034, snowleopard: 0.047, gazelle: 0.028, gnu: -0.014, buffalo: 0.082, yak: 0.038, tapir: 0.049, okapi: -0.029, mole: -0.053, prairiedog: -0.058,
+    flyingsquirrel: -0.035, tasdevil: -0.069, echidna: -0.091, mandrill: 0.004, magpie: -0.061, swallow: -0.032, kingfisher: -0.036, albatross: 0.072, emu: 0.001, cassowary: -0.019,
+    roadrunner: -0.002, heron: 0.048, pheasant: -0.043, mandarin: -0.018, shoebill: 0.007, secretary: 0.009, rattlesnake: 0.001, anaconda: 0.003, frilled: 0.065, basilisk: 0.158,
+    dartfrog: 0.027, softshell: 0.036, whaleshark: -0.050, hammerhead: 0.025, sunfish: 0.060, flyingfish: 0.072, moray: -0.015, seaotter: -0.028, hermit: -0.031, cuttlefish: 0.041,
+    eel: 0.016, salmon: 0.255, allosaurus: 0.077, carno: 0.047, therizino: 0.054, iguanodon: 0.023, gallimimus: 0.024, mosasaurus: 0.066, quetzal: 0.023, glyptodon: -0.005,
+    ant: -0.036, fireant: -0.021, leafcutter: -0.037, bulletant: -0.026, termite: 0.009, honeybee: -0.053, bumblebee: -0.025, wasp: -0.017, hornet: -0.009, housefly: 0.012,
+    mosquito: 0.008, fruitfly: -0.050, horsefly: -0.017, hoverfly: 0.040, swallowtail: -0.008, monarch: -0.040, morpho: -0.014, moth: -0.010, hawkmoth: 0.028, caterpillar: -0.005,
+    dragonfly: -0.014, mayfly: 0.084, grasshopper: -0.004, locust: -0.024, cricket: -0.034, katydid: -0.038, molecricket: 0.000, flea: -0.040, mantis: 0.023, stickbug: -0.009,
+    ladybug: -0.016, rhinobeetle: -0.032, stagbeetle: -0.035, dungbeetle: 0.012, firefly: -0.023, longhorn: -0.035, weevil: -0.023, tigerbeetle: 0.015, bombardier: 0.009, jewelbeetle: -0.026,
+    divingbeetle: 0.035, strider: 0.028, waterbug: -0.004, cicada: -0.015, stinkbug: -0.004, cockroach: -0.021, earwig: -0.017, antlion: -0.015, froghopper: -0.033, aphid: -0.024
   };
   // 동물별 게이지 빠르기 보정 (밸런스를 맞추며 정한 값)
   var ULT_RATE = {
-    rabbit: 0.913, turtle: 0.895, cheetah: 0.972, fox: 1.134, bear: 0.919, penguin: 0.908, elephant: 1.037, kangaroo: 0.99, skunk: 1.167, pig: 0.948,
-    dog: 0.941, cat: 1.02, panda: 1.121, duck: 0.789, lion: 1.075, tiger: 1.135, zebra: 1.022, giraffe: 1.322, horse: 0.972, cow: 1.059,
-    sheep: 1.028, goat: 1.012, deer: 1.042, koala: 1.091, sloth: 1.096, monkey: 0.965, gorilla: 1.028, hippo: 0.894, rhino: 1.121, croc: 0.925,
-    frog: 1.035, squirrel: 0.932, hamster: 0.898, mouse: 0.941, hedgehog: 1.098, raccoon: 1.002, otter: 0.919, beaver: 0.811, wolf: 1.062, polar: 1.04,
-    seal: 0.894, owl: 0.918, chicken: 1.215, parrot: 1.02, flamingo: 1.012, ostrich: 1, camel: 1.069, alpaca: 1.097, bat: 0.864, redpanda: 1.013,
-    shark: 1.034, whale: 0.915, dolphin: 0.9, orca: 0.864, octopus: 1.006, squid: 1.012, crab: 0.897, lobster: 0.953, shrimp: 0.903, jellyfish: 1.129,
-    starfish: 0.911, seahorse: 1.016, clownfish: 1.037, puffer: 0.962, manta: 0.977, walrus: 0.957, narwhal: 0.956, sealion: 1.32, manatee: 1.426, beluga: 1.088,
-    swordfish: 1.074, angler: 0.973, seaturtle: 0.999, snake: 1.13, cobra: 1.011, lizard: 1.061, chameleon: 1.08, iguana: 0.9, gecko: 0.927, komodo: 0.938,
-    tortoise: 0.935, axolotl: 0.976, salamander: 0.831, toad: 0.943, eagle: 1.058, falcon: 1.197, crow: 0.957, swan: 0.869, goose: 1.09, peacock: 1.182,
-    toucan: 1.005, pelican: 0.9, woodpecker: 1.166, pigeon: 1.096, seagull: 1.004, sparrow: 0.959, hummingbird: 0.88, kiwi: 0.911, turkey: 1.008, crane: 0.937,
-    stork: 1.014, puffin: 0.831, robin: 1.14, canary: 1.133, cockatoo: 1.001, vulture: 0.924, dodo: 1.033, trex: 0.961, triceratops: 1.139, stego: 1.418,
-    brachio: 1.109, raptor: 1.251, ptero: 1.578, ankylo: 1.238, parasaur: 1.13, spino: 0.873, diplodocus: 1.139, pachy: 1, dilopho: 1.186, compy: 1.024,
-    plesio: 1.001, mammoth: 1.057, sabertooth: 1.266, dimetrodon: 0.825, archaeo: 1.05, capybara: 1.262, fennec: 0.814, meerkat: 1.115, badger: 0.922, ferret: 1.176,
-    chipmunk: 0.948, leopard: 1.205, panther: 1.231, hyena: 0.968, lynx: 1.052, bison: 1.071, moose: 0.957, reindeer: 0.863, llama: 1.134, donkey: 1.137,
-    boar: 1.026, anteater: 1.672, armadillo: 1.104, pangolin: 1.212, platypus: 0.992, wombat: 1.134, quokka: 1.032, lemur: 1.189, orangutan: 1.284, chimp: 1.075,
-    jaguar: 0.947, snowleopard: 0.792, gazelle: 0.963, gnu: 1.259, buffalo: 0.72, yak: 1.046, tapir: 0.69, okapi: 1.073, mole: 1.088, prairiedog: 1.269,
-    flyingsquirrel: 0.975, tasdevil: 0.994, echidna: 1.393, mandrill: 1.13, magpie: 0.862, swallow: 0.932, kingfisher: 0.822, albatross: 0.799, emu: 0.932, cassowary: 1.21,
-    roadrunner: 0.846, heron: 0.862, pheasant: 1.017, mandarin: 0.853, shoebill: 0.845, secretary: 0.916, rattlesnake: 1.041, anaconda: 0.836, frilled: 0.835, basilisk: 0.608,
-    dartfrog: 0.824, softshell: 0.687, whaleshark: 1.013, hammerhead: 0.865, sunfish: 0.807, flyingfish: 0.641, moray: 0.884, seaotter: 0.721, hermit: 0.859, cuttlefish: 0.768,
-    eel: 0.692, salmon: 0.577, allosaurus: 1.278, carno: 0.976, therizino: 1.373, iguanodon: 1.304, gallimimus: 0.898, mosasaurus: 0.802, quetzal: 1.288, glyptodon: 1.317
+    rabbit: 0.963, turtle: 0.933, cheetah: 0.971, fox: 1.152, bear: 0.921, penguin: 0.906, elephant: 1.037, kangaroo: 1.015, skunk: 1.202, pig: 0.96,
+    dog: 0.958, cat: 1.027, panda: 1.177, duck: 0.79, lion: 1.117, tiger: 1.175, zebra: 1.079, giraffe: 1.391, horse: 0.971, cow: 1.09,
+    sheep: 1.052, goat: 1.017, deer: 1.062, koala: 1.105, sloth: 1.093, monkey: 0.947, gorilla: 1.087, hippo: 0.922, rhino: 1.107, croc: 0.927,
+    frog: 1.055, squirrel: 0.95, hamster: 0.929, mouse: 0.948, hedgehog: 1.13, raccoon: 1.006, otter: 0.912, beaver: 0.817, wolf: 1.059, polar: 1.068,
+    seal: 0.892, owl: 0.918, chicken: 1.301, parrot: 1.024, flamingo: 1.018, ostrich: 1.015, camel: 1.073, alpaca: 1.092, bat: 0.945, redpanda: 1.014,
+    shark: 1.038, whale: 0.935, dolphin: 0.921, orca: 0.833, octopus: 1.033, squid: 1.057, crab: 0.892, lobster: 0.929, shrimp: 0.939, jellyfish: 1.097,
+    starfish: 0.922, seahorse: 1.032, clownfish: 1.047, puffer: 0.969, manta: 0.961, walrus: 0.963, narwhal: 0.951, sealion: 1.322, manatee: 1.429, beluga: 1.098,
+    swordfish: 1.084, angler: 1.012, seaturtle: 1.013, snake: 1.142, cobra: 1.023, lizard: 1.035, chameleon: 1.132, iguana: 0.874, gecko: 0.916, komodo: 0.944,
+    tortoise: 0.949, axolotl: 0.96, salamander: 0.847, toad: 0.954, eagle: 1.073, falcon: 1.205, crow: 0.976, swan: 0.88, goose: 1.08, peacock: 1.271,
+    toucan: 1.016, pelican: 0.913, woodpecker: 1.217, pigeon: 1.157, seagull: 1.043, sparrow: 0.98, hummingbird: 0.885, kiwi: 0.974, turkey: 1.033, crane: 0.938,
+    stork: 1.027, puffin: 0.821, robin: 1.186, canary: 1.167, cockatoo: 1.018, vulture: 0.923, dodo: 1.046, trex: 0.972, triceratops: 1.184, stego: 1.434,
+    brachio: 1.125, raptor: 1.249, ptero: 1.619, ankylo: 1.283, parasaur: 1.143, spino: 0.895, diplodocus: 1.15, pachy: 1.045, dilopho: 1.24, compy: 1.059,
+    plesio: 1.02, mammoth: 1.052, sabertooth: 1.279, dimetrodon: 0.817, archaeo: 1.048, capybara: 1.291, fennec: 0.848, meerkat: 1.119, badger: 0.95, ferret: 1.196,
+    chipmunk: 0.995, leopard: 1.239, panther: 1.256, hyena: 0.986, lynx: 1.087, bison: 1.072, moose: 1.002, reindeer: 0.86, llama: 1.185, donkey: 1.177,
+    boar: 1.008, anteater: 1.707, armadillo: 1.123, pangolin: 1.211, platypus: 1.028, wombat: 1.174, quokka: 1.026, lemur: 1.145, orangutan: 1.312, chimp: 1.081,
+    jaguar: 0.94, snowleopard: 0.817, gazelle: 0.974, gnu: 1.292, buffalo: 0.739, yak: 1.047, tapir: 0.703, okapi: 1.091, mole: 1.103, prairiedog: 1.3,
+    flyingsquirrel: 0.994, tasdevil: 1.033, echidna: 1.402, mandrill: 1.144, magpie: 0.861, swallow: 0.933, kingfisher: 0.871, albatross: 0.783, emu: 0.927, cassowary: 1.2,
+    roadrunner: 0.867, heron: 0.867, pheasant: 1.02, mandarin: 0.88, shoebill: 0.851, secretary: 0.941, rattlesnake: 1.055, anaconda: 0.862, frilled: 0.886, basilisk: 0.607,
+    dartfrog: 0.824, softshell: 0.706, whaleshark: 1.016, hammerhead: 0.872, sunfish: 0.807, flyingfish: 0.653, moray: 0.906, seaotter: 0.729, hermit: 0.882, cuttlefish: 0.759,
+    eel: 0.706, salmon: 0.582, allosaurus: 1.266, carno: 0.978, therizino: 1.36, iguanodon: 1.346, gallimimus: 0.919, mosasaurus: 0.829, quetzal: 1.314, glyptodon: 1.326,
+    ant: 1.036, fireant: 0.919, leafcutter: 0.99, bulletant: 0.994, termite: 0.771, honeybee: 1.113, bumblebee: 1.082, wasp: 0.896, hornet: 1.041, housefly: 0.781,
+    mosquito: 0.742, fruitfly: 0.914, horsefly: 0.958, hoverfly: 0.766, swallowtail: 0.913, monarch: 1.032, morpho: 0.798, moth: 1.16, hawkmoth: 0.803, caterpillar: 0.917,
+    dragonfly: 0.983, mayfly: 0.669, grasshopper: 0.986, locust: 0.966, cricket: 1.213, katydid: 1.052, molecricket: 0.883, flea: 0.817, mantis: 0.932, stickbug: 1.009,
+    ladybug: 1.04, rhinobeetle: 1.072, stagbeetle: 1.146, dungbeetle: 0.746, firefly: 1.145, longhorn: 0.977, weevil: 0.947, tigerbeetle: 0.861, bombardier: 0.988, jewelbeetle: 1.011,
+    divingbeetle: 0.72, strider: 0.652, waterbug: 0.833, cicada: 1.039, stinkbug: 0.944, cockroach: 0.862, earwig: 1.109, antlion: 1.033, froghopper: 1.056, aphid: 1.229
   };
   ANIMALS.forEach(function (a) {
     var b = ABIL[a.id], u = ULT[a.id];
@@ -1582,7 +1705,7 @@
         case 'odd': return ot.filter(function (o) { return o.lane % 2 === 1; });
         case 'even': return ot.filter(function (o) { return o.lane % 2 === 0; });
         case 'mid': k = byx.length; return byx.slice(Math.floor(k / 3), Math.max(Math.floor(k / 3) + 1, Math.ceil(k * 2 / 3)));
-        case 'bird': case 'mam': case 'rep': case 'sea': case 'dino': return ot.filter(function (o) { return o.a.cat === tg; });
+        case 'bird': case 'mam': case 'rep': case 'sea': case 'dino': case 'bug': return ot.filter(function (o) { return o.a.cat === tg; });
       }
       return within(ah, 35).slice(0, 1);
     }
@@ -1614,12 +1737,12 @@
       return (race.weather.id === k || (k === 'rain' && race.weather.id === 'storm')) ? 1.75 : 0.85;
     }
     var SELFISH = { burst: 1, cruise: 1, ramp: 1, fade: 1, pulse: 1, windup: 1, over: 1, hop: 1, soar: 1, slide: 1, armor: 1, roll: 1, firm: 1, blink: 1, relay: 1, glide: 1, dig: 1, wheel: 1,
-      shield: 1, mirror: 1, thorns: 1, cleanse: 1, charge: 1, quick: 1, bank: 1, dice: 1, echo: 1, counter: 1, hook: 1, leech: 1, cling: 1, reel: 1, aid: 1, guard: 1, feed: 1, tow: 1, heal: 1, wx: 1, terra: 1 };
+      shield: 1, mirror: 1, thorns: 1, cleanse: 1, charge: 1, quick: 1, bank: 1, dice: 1, echo: 1, counter: 1, cocoon: 1, vault: 1, hook: 1, leech: 1, cling: 1, reel: 1, aid: 1, guard: 1, feed: 1, tow: 1, heal: 1, wx: 1, terra: 1 };
     var NEG_POP = { stun: '어질어질~', trip: '꽈당!', zap: '찌릿!', slow: '으으, 느려…', bog: '질척질척…', gust: '날아간다~', push: '으악!', sleep: '쿨쿨…', back: '몸이 뒤로 간다…', freeze: '꽁꽁!',
-      seal: '스킬이 안 써져!', drain: '기운이 빠져…', delay: '어? 뭐 하려 했더라', curse: '똑딱똑딱…', tax: '끌려간다!', demote: '밀렸다!', hook: '끌려간다!', leech: '힘이 빠져…', strip: '내 가속이!', pin: '몸이 무거워…' };
+      seal: '스킬이 안 써져!', drain: '기운이 빠져…', delay: '어? 뭐 하려 했더라', curse: '똑딱똑딱…', tax: '끌려간다!', demote: '밀렸다!', hook: '끌려간다!', leech: '힘이 빠져…', strip: '내 가속이!', pin: '몸이 무거워…', sting: '따끔! 독이다…', swarm: '벌레 떼다!', itch: '가려워!' };
     var NEG_SAY = { stun: '멈춰 섰어요.', trip: '넘어졌어요.', zap: '찌릿! 멈춰 섰어요.', slow: '느려졌어요.', bog: '발이 묶였어요.', gust: '뒤로 날아갔어요.', push: '뒤로 밀려났어요.', sleep: '스르르 잠들었어요.',
       back: '뒷걸음질을 칩니다.', freeze: '꽁꽁 얼었어요.', seal: '스킬을 못 쓰게 됐어요.', drain: '게이지를 빼앗겼어요.', delay: '스킬이 늦어졌어요.', curse: '시한폭탄이 붙었어요.', tax: '뒤로 확 끌려갔어요.',
-      demote: '한 칸 밀려났어요.', hook: '끌려왔어요.', leech: '속도를 빼앗겼어요.', strip: '가속과 방패가 벗겨졌어요.', pin: '가속을 못 하게 됐어요.' };
+      demote: '한 칸 밀려났어요.', hook: '끌려왔어요.', leech: '속도를 빼앗겼어요.', strip: '가속과 방패가 벗겨졌어요.', pin: '가속을 못 하게 됐어요.', sting: '독에 걸려 점점 느려집니다.', swarm: '벌레 떼에 휩싸였어요.', itch: '가려워서 자꾸 멈칫해요.' };
     var SLICK_KO = { mud: '진흙탕', ice: '빙판', lake: '물웅덩이', fire: '불길', ink: '먹물' };
 
     // 능력 하나 실행. tier : 'skill' | 'ult' · uses : 이 능력을 전에 쓴 횟수 → { msg, quick, echo }
@@ -1709,7 +1832,49 @@
             }
             sb('dash', 1.6, 1.6 * mag); return '아직 따라 할 스킬이 없어 그냥 달립니다.';
           case 'counter': addFx(r, { kind: 'shield', fx: 'shield', t: 7 * Math.sqrt(mag), m: 1, rebound: 2.3 * mag }); sb('guard', 1.12, 1.6 * mag); return '받아칠 준비를 합니다.';
+          case 'cocoon':
+            addFx(r, { kind: 'stun', fx: 'cocoon', t: 1.1, m: 0, imm: true, onEnd: function () {
+              if (r.finished) return;
+              r.fx = r.fx.filter(function (x) { return x.kind !== 'slow'; }); r.sealT = 0;
+              sb('power', 2.0, 3.0 * mag); r.hop = race.t; pop(r, '짜잔!', 'good'); sfx('boost');
+            } });
+            return '고치 속으로 쏙! 곧 날개를 펴고 나옵니다.';
+          case 'vault':
+            T = tgList(r, e.tg || 'a1').filter(function (o) { return o.x > r.x; });
+            d = 12 * K + 2; o2 = null;                 // 닿는 거리 : 스킬 14m · 필살기 27m
+            T.forEach(function (o) { if (o.x - r.x <= d && (!o2 || o.x > o2.x)) o2 = o; });
+            if (!o2 && T.length) race.racers.forEach(function (o) { if (o !== r && !o.finished && o.x > r.x && o.x - r.x <= d && (!o2 || o.x > o2.x)) o2 = o; });
+            r.hop = race.t;
+            if (!o2) { warp(r, r.x + 6 * mag); return '뛰어넘을 상대가 없어 그냥 앞으로 폴짝!'; }
+            warp(r, o2.x + 1.5); lastHits = 1; pop(o2, '머리 위로?!', 'bad');
+            return josa(o2.name, '을', '를') + ' 훌쩍 뛰어넘었어요!';
           // ── 방해 ──
+          case 'aura': addFx(r, { kind: 'buff', fx: 'stinkaura', t: 3.6 * mag, m: 1, aura: 9, hitSet: {} }); return '고약한 구름을 두르고 달립니다. 가까이 오면 느려져요!';
+          case 'sting':
+            if (needT()) T.forEach(function (o) { if (neg(o, { kind: 'slow', fx: 'poison', m: 0.92, t: 3.4 * mag * ts })) { o2 = fxOf(o, 'poison'); if (o2) o2.ramp = [0.92, 0.5]; } });
+            return hitMsg();
+          case 'swarm':
+            if (needT()) T.forEach(function (o) {
+              d = 2.6 * mag * ts;
+              if (!neg(o, { kind: 'slow', fx: 'bees', m: 0.78, t: d })) return;
+              o2 = fxOf(o, 'bees');
+              if (o2) o2.onEnd = (function (q, dur) { return function () {      // 떼가 가까운 동물에게 한 번 옮겨 붙는다
+                var nx = null; race.racers.forEach(function (z) { if (z !== q && z !== r && !z.finished && Math.abs(z.x - q.x) <= 15 && !fxOf(z, 'bees') && (!nx || Math.abs(z.x - q.x) < Math.abs(nx.x - q.x))) nx = z; });
+                if (nx && applyNeg(r, nx, { kind: 'slow', fx: 'bees', m: 0.78, t: dur * 0.6 }) === 'hit') pop(nx, '떼가 옮겨 왔다!', 'bad');
+              }; })(o, d);
+            });
+            return hitMsg();
+          case 'itch':
+            if (needT()) T.forEach(function (o) {
+              d = clamp(0.42 * mag * ts, 0.2, 1.2);
+              (function scratch(left, first) {
+                if (o.finished || applyNeg(r, o, { kind: 'stun', fx: 'itch', t: d, minor: !first }) !== 'hit') return;
+                if (first) { hit.push(o); pop(o, NEG_POP.itch, 'bad'); }
+                var fe = fxOf(o, 'itch');
+                if (fe && left > 1) fe.onEnd = function () { if (!o.finished) addFx(o, { kind: 'buff', fx: 'itchwait', t: 0.45, m: 1, onEnd: function () { scratch(left - 1, false); } }); };
+              })(3, true);
+            });
+            return hitMsg();
           case 'stun': if (needT()) T.forEach(function (o) { neg(o, { kind: 'stun', fx: 'spin', t: clamp(1.2 * mag * ts, 0.35, 3.2) }); }); return hitMsg();
           case 'trip': if (needT()) T.forEach(function (o) { neg(o, { kind: 'stun', fx: 'trip', t: clamp(1.35 * mag * ts, 0.35, 3.2), ground: true }); }); return hitMsg();
           case 'zap': if (needT()) T.forEach(function (o) { if (neg(o, { kind: 'stun', fx: 'zap', t: clamp(0.8 * mag * ts, 0.3, 2.4) })) o.sealT = Math.max(o.sealT, 3.5 * mag * ts); }); return hitMsg();
@@ -2602,6 +2767,18 @@
     }
 
     // 돼지 돌진에 스친 동물
+    function auraTick(r) {
+      var e = null, j;
+      for (j = 0; j < r.fx.length; j++) if (r.fx[j].aura) e = r.fx[j];
+      if (!e || race.t < (e.next || 0)) return;
+      e.next = race.t + 0.3;
+      race.racers.forEach(function (o) {
+        if (o === r || o.finished || Math.abs(o.x - r.x) > e.aura || hasFlag(o, 'imm') || hasFlag(o, 'noslow')) return;
+        for (j = 0; j < o.fx.length; j++) if (o.fx[j].kind === 'shield') return;          // 방패가 있으면 냄새가 안 닿는다 (방패는 깨지지 않는다)
+        addFx(o, { kind: 'slow', fx: 'stink', t: 0.5, m: 0.68 });
+        if (!e.hitSet[o.i]) { e.hitSet[o.i] = true; pop(o, '으, 냄새!', 'bad'); o.stats.took++; r.stats.gave++; o.hurtT = race.t; o.foe = r; }
+      });
+    }
     function pigBumps(r) {
       if (!r.bumped) return;
       race.racers.forEach(function (o) {
@@ -2642,6 +2819,7 @@
         checkObjects(r);
         rabbitNap(r);
         pigBumps(r);
+        auraTick(r);
         chargeBumps(r);
         tickUlt(r, dt);
         if (r.rank === 1) r.stats.leadTime += dt;

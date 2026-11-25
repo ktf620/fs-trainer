@@ -551,11 +551,11 @@
       else pose = r.place === 1 ? 'cheer' : (r.place === n && n > 2 ? 'sad' : (r.place <= 3 ? 'cheer' : 'idle'));
     }
     else if (has.lift) { pose = 'lift'; k = prog(has.lift); lift = (k < 0.25 ? k / 0.25 : (k > 0.82 ? (1 - k) / 0.18 : 1)) * s * 78; }
-    else if (has.sleep) pose = 'sleep';
+    else if (has.sleep || has.cocoon) pose = 'sleep';
     else if (has.eat) pose = 'eat';
     else if (has.spin) pose = 'spin';
     else if (has.trip) pose = 'trip';
-    else if (has.zap) pose = 'zap';
+    else if (has.zap || has.itch) pose = 'zap';
     else if (has.sting) { pose = 'zap'; lift = Math.abs(Math.sin(clock * 16)) * s * 14; }
     else if (has.ice) pose = 'idle';
     else if (has.pity) pose = 'sad';
@@ -693,6 +693,20 @@
       var kx = a.hx, ky = a.top - 6 * s, kw = 15 * s + 4, kh = 12 * s + 3;
       c.beginPath(); c.moveTo(kx - kw, ky); c.lineTo(kx - kw, ky - kh); c.lineTo(kx - kw * 0.5, ky - kh * 0.45); c.lineTo(kx, ky - kh * 1.15); c.lineTo(kx + kw * 0.5, ky - kh * 0.45); c.lineTo(kx + kw, ky - kh); c.lineTo(kx + kw, ky); c.closePath();
       c.fillStyle = '#7d6bb0'; c.fill(); c.lineWidth = 2.2; c.strokeStyle = OL; c.stroke();
+    }
+    if (has.cocoon) {      // 고치 : 하얀 실로 감싼 모습
+      var kx = (sx + a.hx) / 2, ky = (fy + a.top) / 2 + 4 * s, kr = Math.max(26 * s, (fy - a.top) * 0.62);
+      ell(kx, ky, kr * 1.25, kr); c.fillStyle = 'rgba(255,253,244,.88)'; c.fill(); c.lineWidth = 2.4; c.strokeStyle = '#c9b89a'; c.stroke();
+      c.lineWidth = 1.4; c.strokeStyle = 'rgba(160,140,110,.55)';
+      for (var kq = -2; kq <= 2; kq++) { c.beginPath(); c.ellipse(kx, ky, kr * 1.2, kr * Math.abs(kq) * 0.3 + 2, 0.25 * kq, 0, TAU); c.stroke(); }
+    }
+    if (has.stinkaura) {   // 냄새 구름 : 주변을 감싸며 따라다닌다
+      var ar = 9 * view.ppm, acx = sx, acy = fy - 26 * s;
+      c.save(); c.globalAlpha = 0.16 + 0.05 * Math.sin(clock * 6); ell(acx, acy, ar, Math.max(30 * s, ar * 0.32)); c.fillStyle = '#9fbf3a'; c.fill(); c.restore();
+      for (var aq = 0; aq < 5; aq++) { var aa = clock * 1.6 + aq * 1.26; c.save(); c.globalAlpha = 0.5; ell(acx + Math.cos(aa) * ar * 0.75, acy + Math.sin(aa * 1.3) * 16 * s, 9 * s + 3, 6 * s + 2); c.fillStyle = '#b8d45a'; c.fill(); c.restore(); }
+    }
+    if (has.poison) {      // 독 : 머리 위 보랏빛 방울
+      for (var pq = 0; pq < 3; pq++) { var pt = (clock * 1.3 + pq * 0.33) % 1; c.save(); c.globalAlpha = 1 - pt; ell(a.hx - 8 * s + pq * 8 * s, a.top - 4 * s - pt * 18 * s, 3.2 * s + 1.5, 3.2 * s + 1.5); c.fillStyle = '#9b5de5'; c.fill(); c.lineWidth = 1.2; c.strokeStyle = OL; c.stroke(); c.restore(); }
     }
     if (has.cursed) {      // 시한폭탄 : 머리 위에서 똑딱거리다 터진다
       var cx0 = a.hx + 4 * s, cy0 = a.top - 14 * s, crd = 7 * s + 3, cleft = Math.max(0, has.cursed.t);

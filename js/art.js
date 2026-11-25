@@ -533,6 +533,132 @@
     return { hx: 14, hy: cy2 - 4, hr: 14, top: cy2 - 42, len: thin ? 40 : 52 };
   }
 
+  // ───────────── 곤충 ─────────────
+  // 옆모습 : 배 · 가슴 · 머리 + 다리 여섯 + 더듬이. P 로 생김새를 바꾼다.
+  //   L · H 배의 반지름(길이 · 높이)  th 가슴  hr 머리  leg 다리 길이  lw 다리 굵기
+  //   wing : fly(투명 날개) · butter(나비) · dragon(잠자리) · shell(딱지날개)   hover : 달릴 때도 날아다님   hov : 뜨는 높이
+  //   ant(더듬이) : elbow · long · club · feather · short
+  //   덧붙임 : horn(rhino · stag) snout needle sting pincer raptor hind dig jaw glow ball tails leaf tubes wide(납작) neck(목 길이) kind('larva' 애벌레)
+  function planBug(G) {
+    var sp = G.sp, P = G.P, ph = G.ph, a = G.amp, t = G.t, q, k;
+    var col = G.body, dk = shade(col, -0.22), hcol = sp.headCol || col;
+    var L = P.L || 15, H = P.H || 10, th = P.th || 8, hr = P.hr || 8.5, lg = P.leg || 13, lw = P.lw || 2.6;
+    if (P.kind === 'larva') {                    // 애벌레 : 마디가 물결치며 기어간다
+      var n = P.seg || 6, r0 = H, x0 = -(n - 1) * r0 * 0.62, ys = [];
+      for (q = 0; q < n; q++) ys.push(-r0 - Math.max(0, Math.sin(ph * 2 - q * 1.1)) * r0 * 0.55 * a + G.tuck * 2);
+      for (q = 0; q < n; q++) { for (k = 0; k < 2; k++) line([x0 + q * r0 * 1.25 - 2 + k * 4, ys[q] + r0 * 0.7, x0 + q * r0 * 1.25 - 2 + k * 4, 0], 2.2, dk); }
+      for (q = 0; q < n; q++) { ell(x0 + q * r0 * 1.25, ys[q], r0, r0); paint(q % 2 ? col : shade(col, 0.1)); if (sp.spots) { ell(x0 + q * r0 * 1.25, ys[q] - r0 * 0.25, r0 * 0.28, r0 * 0.28); c.fillStyle = sp.spots; c.fill(); } }
+      var lhx = x0 + n * r0 * 1.25 - r0 * 0.25, lhy = ys[n - 1] - r0 * 0.25 + G.headDip * 5;
+      for (k = 0; k < 2; k++) { line([lhx + 2 + k * 3, lhy - hr * 0.8, lhx + 5 + k * 5, lhy - hr * 1.7 + Math.sin(t * 5 + k) * 1.5], 1.8, OL); ell(lhx + 5 + k * 5, lhy - hr * 1.7 + Math.sin(t * 5 + k) * 1.5, 1.8, 1.8); c.fillStyle = OL; c.fill(); }
+      ell(lhx, lhy, hr, hr); paint(hcol);
+      eye(lhx + hr * 0.3, lhy - hr * 0.12, hr * 0.3, G.eyes, t, true); mouthAt(lhx + hr * 0.45, lhy + hr * 0.5, hr * 0.3, G.mouth);
+      bib(G, x0 + r0 * 2.5, ys[2], Math.min(6.5, r0 * 0.72));
+      return { hx: lhx, hy: lhy, hr: hr * 1.2, top: lhy - hr * 2.2, len: (n * r0 * 1.25 + hr) * 0.55 };
+    }
+    var air = G.fly || (P.hover && G.tuck < 0.5 && G.rot === 0 || P.hover && G.tuck < 0.5 && Math.abs(G.rot) < 0.5);     // 날고 있는가
+    var fast = P.wing === 'butter' ? 13 : 44, flap = Math.sin(t * fast + ph);
+    var up = lg * 0.8 + (air ? (P.hov || 15) + Math.sin(t * 5 + ph) * 2.2 : (a ? Math.abs(Math.sin(ph * 2)) * 1.1 : 0)) - G.tuck * lg * 0.45;
+    var cy = -(up + Math.max(th, H) * 0.55);                               // 가슴 높이
+    var ax = -(th * 0.75 + L * 0.8), ay = cy + (P.droop || 0) + (air ? 2 : 0);    // 배
+    var nk = P.neck || 0, hx0 = th * 0.7 + hr * 0.75 + nk * 0.75, hy = cy - nk * 0.8 - (P.headUp || 0) + G.headDip * 6;
+    var roots = [-th * 0.6, 0, th * 0.6];
+    function legOf(i, far) {
+      var x0 = roots[i] + (far ? 1.5 : 0), y0 = cy + th * 0.5, dir = i === 0 ? -1 : (i === 2 ? 1 : 0.15), cl = far ? shade(dk, -0.15) : dk;
+      var gph = ph * 2 + (i % 2 ? PI : 0) + (far ? PI : 0), sw = Math.sin(gph) * lg * 0.34 * a, liftY = -Math.max(0, Math.cos(gph)) * 2.6 * a;
+      if (P.hind && i === 0) {             // 뛰는 뒷다리 : 굵은 넓적다리가 등 위로 솟는다
+        var kx = x0 - lg * 0.75, ky = cy - lg * (G.stretch ? 0.2 : 0.75);
+        limb([x0, cy, kx, ky], lw * 2.1, far ? shade(col, -0.3) : shade(col, -0.08));
+        limb([kx, ky, x0 - lg * (G.stretch ? 1.5 : 0.55) + sw, air ? cy + lg * 0.5 : liftY], lw, cl);
+        return;
+      }
+      if (P.raptor && i === 2) {           // 낫 모양 앞다리 : 가슴 앞에 접어 든다
+        var sx = hx0 - hr * 0.9 - nk * 0.35, sy = hy + hr * 0.9, sn = Math.sin(t * 4 + (far ? 1 : 0)) * 1.5;
+        limb([sx, sy, sx + lg * 0.75, sy - lg * 0.15 + sn, sx + lg * 0.3, sy - lg * 0.75 + sn], lw * 1.5, far ? shade(col, -0.3) : col);
+        return;
+      }
+      if (P.dig && i === 2) { limb([x0, y0, x0 + lg * 0.7, y0 + 1 + sw * 0.3], lw * 2.4, cl); ell(x0 + lg * 0.9, y0 + 2 + sw * 0.3, lw * 2.1, lw * 1.6); paint(far ? shade(col, -0.3) : col, LW * 0.8); return; }
+      if (air) { limb([x0, y0, x0 + dir * lg * 0.32, y0 + lg * 0.3, x0 + dir * lg * 0.1 - 2, y0 + lg * 0.6], lw, cl); return; }
+      var spread = P.spread || 1;
+      limb([x0, y0, x0 + dir * lg * 0.6 * spread, y0 - lg * 0.2, x0 + dir * lg * 0.95 * spread + sw, liftY], lw, cl);
+    }
+    function clearWing(x, y, len, wid, ang) { c.save(); c.translate(x, y); c.rotate(ang); ell(-len * 0.5, 0, len * 0.5, wid); c.fillStyle = sp.wingCol || 'rgba(255,255,255,.72)'; c.fill(); c.lineWidth = 1.3; c.strokeStyle = 'rgba(74,50,38,.55)'; c.stroke(); c.restore(); }
+    function bigWing(far) {                // 나비 · 나방 날개 : 펄럭일 때 폭이 줄었다 늘었다 한다
+      var w = P.ws || 26, wf = air ? 0.35 + 0.65 * Math.abs(flap) : 0.55 + Math.sin(t * 2.4 + ph) * 0.12, wc = sp.wingCol || '#f7d23f', we = sp.wingEdge || OL;
+      c.save(); c.translate(-th * 0.2, cy - th * 0.5); if (far) { c.translate(3, -1); c.globalAlpha *= 0.85; }
+      c.scale(far ? wf * 0.85 : wf, 1);
+      c.beginPath(); c.moveTo(0, 0); c.bezierCurveTo(-w * 0.2, -w * 1.25, -w * 1.25, -w * 1.2, -w * 1.05, -w * 0.25); c.quadraticCurveTo(-w * 0.6, -w * 0.05, 0, 0); c.closePath(); paint(far ? shade(wc, -0.15) : wc, LW * 0.9);
+      c.beginPath(); c.moveTo(0, 0); c.quadraticCurveTo(-w * 1.0, -w * 0.15, -w * 0.9, w * 0.45); c.quadraticCurveTo(-w * (P.tail ? 0.95 : 0.5), w * (P.tail ? 0.95 : 0.6), -w * 0.25, w * 0.3); c.closePath(); paint(far ? shade(wc, -0.22) : shade(wc, -0.07), LW * 0.9);
+      if (!far) { ell(-w * 0.7, -w * 0.62, w * 0.2, w * 0.15); c.fillStyle = sp.wingSpot || we; c.fill(); ell(-w * 0.55, w * 0.2, w * 0.13, w * 0.11); c.fill();
+        c.beginPath(); c.moveTo(-w * 0.2, -w * 0.9); c.bezierCurveTo(-w * 0.9, -w * 1.2, -w * 1.25, -w * 0.9, -w * 1.05, -w * 0.25); c.lineWidth = w * 0.11; c.strokeStyle = we; c.lineCap = 'round'; c.stroke(); }
+      c.restore();
+    }
+    // ── 뒤쪽 날개 · 뒤쪽 다리 ──
+    if (P.wing === 'butter') bigWing(true);
+    if (air && P.wing === 'dragon') for (q = 0; q < 2; q++) clearWing(-th * 0.3 + q * 5, cy - th * 0.6, P.ws || 30, 4.2, 0.85 + q * 0.5 + flap * 0.25);
+    if (air && (P.wing === 'fly' || P.wing === 'shell')) clearWing(-th * 0.2, cy - th * 0.6, P.ws || 20, (P.ws || 20) * 0.3, 0.75 + flap * 0.5);
+    for (q = 0; q < 3; q++) legOf(q, true);
+    // ── 배 ──
+    if (P.tails) for (k = -1; k <= 1; k++) line([ax - L * 0.9, ay, ax - L * 0.9 - P.tails, ay - 3 + k * 5 + Math.sin(t * 4 + k) * 1.5], 1.5, OL);
+    if (P.pincer) for (k = -1; k <= 1; k += 2) { c.beginPath(); c.moveTo(ax - L * 0.85, ay + k * 1.5); c.quadraticCurveTo(ax - L - 9, ay + k * 8, ax - L - 12, ay + k * (1.5 + Math.sin(t * 6) * 1.2)); c.lineWidth = 3 + LW; c.lineCap = 'round'; c.strokeStyle = OL; c.stroke(); c.lineWidth = 3; c.strokeStyle = sp.fur2 || dk; c.stroke(); }
+    if (P.sting) { poly([ax - L * 0.92, ay - 2.4, ax - L - 8, ay + 0.5, ax - L * 0.92, ay + 2.4]); paint(OL, 1); }
+    if (P.tubes) for (k = 0; k < 2; k++) line([ax - L * 0.5 + k * 3, ay - H * 0.7, ax - L * 0.9 + k * 3, ay - H * 1.35], 2.2, dk);
+    if (P.glow) { var gl = 0.55 + 0.45 * Math.sin(t * 5 + ph); c.save(); c.globalAlpha *= 0.35 + 0.3 * gl; ell(ax - L * 0.55, ay + 1, L * 0.95 + gl * 5, H * 1.25 + gl * 5); c.fillStyle = '#fff27a'; c.fill(); c.restore(); }
+    ell(ax, ay, L, H); paint(P.wing === 'shell' ? shade(col, -0.1) : col);
+    if (sp.fur2 && P.wing !== 'shell' && !P.plain) { c.save(); ell(ax, ay, L - 1, H - 1); c.clip(); ell(ax, ay + H * 0.95, L, H * 0.7); c.fillStyle = sp.fur2; c.fill(); c.restore(); }
+    if (sp.stripes) { c.save(); ell(ax, ay, L - 1.2, H - 1.2); c.clip(); c.fillStyle = sp.stripes; for (q = 0; q < 3; q++) c.fillRect(ax - L * 0.72 + q * L * 0.52, ay - H, L * 0.24, H * 2); c.restore(); ell(ax, ay, L, H); c.lineWidth = LW; c.strokeStyle = OL; c.stroke(); }
+    if (P.glow) { c.save(); ell(ax, ay, L - 1.2, H - 1.2); c.clip(); ell(ax - L * 0.6, ay + 1, L * 0.55, H); c.fillStyle = '#fff27a'; c.fill(); c.restore(); }
+    // ── 가슴 · 목 ──
+    if (nk) taper([th * 0.2, cy, hx0 - hr * 0.4, hy + hr * 0.3], th * 1.5, hr * 0.9, col);
+    ell(0, cy, th * (P.wide ? 1.25 : 1), th * 0.95); paint(sp.thorax || col);
+    // ── 딱지날개 ──
+    if (P.wing === 'shell') {
+      var sc = sp.shell || col, er = air ? -0.75 - flap * 0.08 : 0;
+      c.save(); c.translate(-th * 0.35, cy - th * 0.2); c.rotate(er);
+      c.beginPath(); c.ellipse(-L * 0.95, th * 0.2 + (P.droop || 0), L * 1.12, H * (P.wide ? 0.95 : 1.12), 0, PI * 0.98, TAU + 0.02); c.closePath(); paint(sc);
+      if (sp.spots) { c.fillStyle = sp.spots; for (q = 0; q < 3; q++) { ell(-L * (0.45 + q * 0.5), th * 0.2 - H * (0.5 + (q % 2) * 0.3), H * 0.2, H * 0.2); c.fill(); } }
+      if (sp.shell2) { c.save(); c.beginPath(); c.ellipse(-L * 0.95, th * 0.2, L * 1.12, H * 1.12, 0, PI, TAU); c.clip(); c.fillStyle = sp.shell2; c.fillRect(-L * 2.2, th * 0.2 - H * 0.42, L * 2.4, H * 0.2); c.restore(); }
+      c.beginPath(); c.ellipse(-L * 0.95, th * 0.2, L * 0.8, H * 0.82, 0, PI * 1.15, PI * 1.6); c.lineWidth = 2; c.strokeStyle = 'rgba(255,255,255,.45)'; c.lineCap = 'round'; c.stroke();
+      c.restore();
+    }
+    for (q = 0; q < 3; q++) legOf(q, false);
+    // ── 머리 ──
+    var ant = P.ant || 'short', atx = hx0 + hr * 0.25, aty = hy - hr * 0.75, wig = Math.sin(t * 5 + ph) * 2;
+    c.lineCap = 'round'; c.lineJoin = 'round';
+    for (k = 0; k < 2; k++) {
+      c.beginPath(); c.moveTo(atx - k * 3, aty);
+      if (ant === 'elbow') { c.lineTo(atx - k * 3 + 2, aty - hr * 0.9); c.lineTo(atx + hr * 1.1 - k * 4, aty - hr * 1.2 + wig); }
+      else if (ant === 'long') c.bezierCurveTo(atx + hr * 0.8, aty - hr * 2.2, atx - hr * 2, aty - hr * 2.6 - k * 4 + wig, atx - (P.antLen || 30) - k * 4, aty - hr * 0.6 - k * 5 + wig);
+      else if (ant === 'club' || ant === 'feather') c.quadraticCurveTo(atx + hr * 0.5 - k * 2, aty - hr * 1.2, atx + hr * 1.0 - k * 6, aty - hr * 1.9 + wig);
+      else c.lineTo(atx + hr * 0.5 - k * 3, aty - hr * 0.7 + wig * 0.4);
+      c.lineWidth = ant === 'feather' ? 3.4 : 1.8; c.strokeStyle = ant === 'feather' ? (sp.fur2 || dk) : OL; c.stroke();
+      if (ant === 'club') { ell(atx + hr * 1.0 - k * 6, aty - hr * 1.9 + wig, 2, 2); c.fillStyle = OL; c.fill(); }
+    }
+    if (P.horn === 'stag') for (k = 0; k < 2; k++) { c.beginPath(); c.moveTo(hx0 + hr * 0.6, hy - 1 + k * 4); c.quadraticCurveTo(hx0 + hr * 2.2, hy - hr * 1.5 + k * hr * 2.2, hx0 + hr * 2.9, hy - hr * 0.35 + k * hr * 0.9 + Math.sin(t * 5) * (k ? -1 : 1)); c.lineWidth = 3.6 + LW; c.strokeStyle = OL; c.stroke(); c.lineWidth = 3.6; c.strokeStyle = sp.horn || dk; c.stroke(); }
+    if (P.jaw) for (k = 0; k < 2; k++) { c.beginPath(); c.moveTo(hx0 + hr * 0.7, hy + hr * 0.2 + k * 2); c.quadraticCurveTo(hx0 + hr * 1.6, hy - hr * 0.5 + k * hr * 1.3, hx0 + hr * (1.5 + P.jaw * 0.5), hy + hr * 0.3 + k * 1.5); c.lineWidth = 2.6 + LW; c.strokeStyle = OL; c.stroke(); c.lineWidth = 2.6; c.strokeStyle = sp.horn || dk; c.stroke(); }
+    ell(hx0, hy, hr * (P.wide ? 1.15 : 1), hr * 0.95); paint(hcol);
+    if (P.horn === 'rhino') { c.beginPath(); c.moveTo(hx0 + hr * 0.5, hy - hr * 0.3); c.quadraticCurveTo(hx0 + hr * 2.4, hy - hr * 0.2, hx0 + hr * 2.3, hy - hr * 2.2); c.lineWidth = 4.2 + LW; c.strokeStyle = OL; c.stroke(); c.lineWidth = 4.2; c.strokeStyle = sp.horn || dk; c.stroke(); line([hx0 + hr * 2.3, hy - hr * 2.2, hx0 + hr * 1.8, hy - hr * 2.7], 3.2, OL); line([hx0 + hr * 2.3, hy - hr * 2.2, hx0 + hr * 2.9, hy - hr * 2.5], 3.2, OL); }
+    if (P.snout) { c.beginPath(); c.moveTo(hx0 + hr * 0.6, hy + hr * 0.1); c.quadraticCurveTo(hx0 + hr * 1.8, hy + hr * 0.2, hx0 + hr * 1.9, hy + hr * 1.6); c.lineWidth = 3.4 + LW; c.strokeStyle = OL; c.stroke(); c.lineWidth = 3.4; c.strokeStyle = hcol; c.stroke(); }
+    if (P.needle) line([hx0 + hr * 0.7, hy + hr * 0.3, hx0 + hr * 0.9 + P.needle, hy + hr * 0.9 + P.needle * 0.45], 1.7, OL);
+    var er2 = hr * (P.eye || 0.34);
+    if (sp.eyeCol) { ell(hx0 + hr * 0.3, hy - hr * 0.15, er2 * 1.5, er2 * 1.6); paint(sp.eyeCol, LW * 0.7); if (G.eyes === 'x' || G.eyes === 'closed' || G.eyes === 'happy') eye(hx0 + hr * 0.3, hy - hr * 0.15, er2 * 0.8, G.eyes, t, false); else { ell(hx0 + hr * 0.42, hy - hr * 0.3, er2 * 0.45, er2 * 0.45); c.fillStyle = 'rgba(255,255,255,.85)'; c.fill(); } }
+    else eye(hx0 + hr * 0.3, hy - hr * 0.15, er2, G.eyes, t, true);
+    if (!P.snout && !P.needle) mouthAt(hx0 + hr * 0.55, hy + hr * 0.5, hr * 0.3, G.mouth);
+    if (P.leaf) { c.save(); c.translate(hx0 + hr * 0.2, hy - hr * 1.1); c.rotate(-0.5 + Math.sin(ph * 2) * 0.08 * a); line([0, 2, 0, -6], 2, OL); c.beginPath(); c.moveTo(0, -4); c.quadraticCurveTo(-16, -14, -4, -30); c.quadraticCurveTo(14, -18, 0, -4); c.closePath(); paint(sp.leaf || '#6fbf4a'); line([-1, -8, -3, -26], 1.3, shade(sp.leaf || '#6fbf4a', -0.3)); c.restore(); }
+    if (P.ball) { var br = P.ball, bx = hx0 + hr + br * 0.75; c.save(); c.translate(bx, -br); c.rotate(ph * 1.2); ell(0, 0, br, br); paint(sp.ballCol || '#7a5a3a'); for (q = 0; q < 4; q++) { ell(Math.cos(q * 1.7) * br * 0.5, Math.sin(q * 1.7) * br * 0.5, br * 0.16, br * 0.12); c.fillStyle = shade(sp.ballCol || '#7a5a3a', -0.25); c.fill(); } c.restore(); }
+    // ── 앞쪽 날개 ──
+    if (P.wing === 'butter') bigWing(false);
+    else if (P.wing === 'dragon') { if (air) for (q = 0; q < 2; q++) clearWing(-th * 0.3 + q * 5, cy - th * 0.6, P.ws || 30, 4.6, 1.1 + q * 0.5 - flap * 0.25); else for (q = 0; q < 2; q++) clearWing(-th * 0.3, cy - th * 0.7, P.ws || 30, 4.2, 0.12 + q * 0.2); }
+    else if (P.wing === 'fly') { if (air) clearWing(-th * 0.2, cy - th * 0.6, P.ws || 20, (P.ws || 20) * 0.32, 1.1 - flap * 0.5); else clearWing(-th * 0.1, cy - th * 0.75, (P.ws || 20) * 1.05, (P.ws || 20) * 0.26, 0.16); }
+    else if (P.wing === 'shell' && air) clearWing(-th * 0.2, cy - th * 0.6, P.ws || 20, (P.ws || 20) * 0.32, 1.25 - flap * 0.5);
+    bib(G, P.wing === 'shell' ? -th * 0.35 - L * 0.9 : ax, P.wing === 'shell' ? cy - H * 0.25 : ay, Math.min(6.5, Math.max(4, H * 0.66)));
+    var topY = hy - hr * 2.2 - (P.horn === 'rhino' ? hr * 0.8 : 0) - (P.leaf ? 22 : 0);
+    if (P.wing === 'butter') topY = Math.min(topY, cy - th * 0.5 - (P.ws || 26) * 1.25);
+    if (P.hind) topY = Math.min(topY, cy - lg * 0.8);
+    var frontX = hx0 + hr + (P.horn ? hr * 1.9 : 0) + (P.ball ? P.ball * 1.75 : 0) + (P.needle || 0), backX = ax - L - (P.tails || 0) - (P.pincer ? 12 : 0);
+    if (P.wing === 'butter') backX = Math.min(backX, -th * 0.2 - (P.ws || 26) * 1.1);
+    return { hx: hx0, hy: hy, hr: hr * 1.25, top: topY, len: (frontX - backX) * 0.55 };
+  }
+
   // ───────────── 문어 · 오징어 · 해파리 ─────────────
   function planTent(G) {
     var sp = G.sp, P = G.P, ph = G.ph, q, k, col = G.body, a = G.amp ? 1 : 0.35, t = G.t;
@@ -838,7 +964,61 @@
     for (k in d[3]) sp[k] = d[3][k];
     T[id] = [bt[0], d[1], pp]; SPEC[id] = sp;
   });
-  var PLANS = { quad: planQuad, biped: planBiped, bird: planBird, fish: planFish, serpent: planSerpent, crust: planCrust, tent: planTent, star: planStar, seahorse: planSeahorse, frog: planFrog };
+  // ── 곤충 50종 : id: [크기, 체형 값, 색]  (체형 값의 뜻은 planBug 머리말에) ──
+  var BUGS = {
+    ant: [1.45, { L: 13, H: 8.5, th: 6.5, hr: 8.5, leg: 13, ant: 'elbow', jaw: 0.6 }, { fur: '#5a3a2e' }],
+    fireant: [1.4, { L: 13, H: 8, th: 6.5, hr: 8.5, leg: 13, ant: 'elbow', jaw: 0.8 }, { fur: '#c9452e', headCol: '#d9603c' }],
+    leafcutter: [1.42, { L: 12, H: 8, th: 6.5, hr: 9, leg: 13, ant: 'elbow', jaw: 0.8, leaf: 1 }, { fur: '#a5562c', leaf: '#6fbf4a' }],
+    bulletant: [1.6, { L: 15, H: 9, th: 7.5, hr: 9.5, leg: 15, ant: 'elbow', jaw: 1, sting: 1 }, { fur: '#2e2a30', headCol: '#3a3238' }],
+    termite: [1.38, { L: 14, H: 9, th: 6, hr: 9, leg: 11, ant: 'short', jaw: 0.9 }, { fur: '#ead9b8', headCol: '#d9853a' }],
+    honeybee: [1.45, { L: 13, H: 9.5, th: 8.5, hr: 8, leg: 10, wing: 'fly', hover: 1, ant: 'elbow', sting: 1, ws: 20 }, { fur: '#f7c531', stripes: '#3b2a20', thorax: '#e0a020', headCol: '#3b2a20' }],
+    bumblebee: [1.5, { L: 15, H: 12.5, th: 10.5, hr: 8.5, leg: 9, wing: 'fly', hover: 1, hov: 12, ant: 'elbow', ws: 18 }, { fur: '#f7c531', stripes: '#2b2018', thorax: '#2b2018', headCol: '#2b2018' }],
+    wasp: [1.45, { L: 16, H: 7, th: 7, hr: 8, leg: 12, wing: 'fly', hover: 1, ant: 'elbow', sting: 1, ws: 22, droop: 3 }, { fur: '#ffd23f', stripes: '#2b2018', thorax: '#2b2018', headCol: '#ffd23f' }],
+    hornet: [1.7, { L: 17, H: 8.5, th: 8.5, hr: 9.5, leg: 13, wing: 'fly', hover: 1, ant: 'elbow', sting: 1, jaw: 0.8, ws: 24, droop: 3 }, { fur: '#f08c2e', stripes: '#5a2e1a', thorax: '#5a2e1a', headCol: '#f0a02e' }],
+    housefly: [1.4, { L: 12, H: 9, th: 8.5, hr: 8.5, leg: 10, wing: 'fly', hover: 1, hov: 13, ant: 'short', eye: 0.42, ws: 20 }, { fur: '#5f6672', fur2: '#8a909a', eyeCol: '#c9452e' }],
+    mosquito: [1.4, { L: 17, H: 4.2, th: 6, hr: 6, leg: 19, lw: 1.6, wing: 'fly', hover: 1, hov: 16, ant: 'feather', needle: 14, ws: 22, droop: 4 }, { fur: '#6b6f7a', stripes: '#f1f1f1' }],
+    fruitfly: [1.15, { L: 11, H: 8, th: 7.5, hr: 8, leg: 9, wing: 'fly', hover: 1, hov: 13, ant: 'short', eye: 0.44, ws: 18 }, { fur: '#d9a55a', stripes: '#8a5a2a', eyeCol: '#e8453c' }],
+    horsefly: [1.6, { L: 14, H: 9.5, th: 9.5, hr: 9.5, leg: 10, wing: 'fly', hover: 1, hov: 13, ant: 'short', eye: 0.46, ws: 23 }, { fur: '#4a4038', fur2: '#7a6a58', eyeCol: '#3fb86a' }],
+    hoverfly: [1.35, { L: 14, H: 6.5, th: 7, hr: 8, leg: 9, wing: 'fly', hover: 1, hov: 17, ant: 'short', eye: 0.42, ws: 20 }, { fur: '#ffd23f', stripes: '#2b2018', thorax: '#6a5a3a', eyeCol: '#8a4a2a' }],
+    swallowtail: [1.5, { L: 14, H: 3.6, th: 5, hr: 6, leg: 8, lw: 1.6, wing: 'butter', hover: 1, hov: 18, ant: 'club', ws: 29, tail: 1 }, { fur: '#2b2018', wingCol: '#f7d23f', wingEdge: '#2b2018', wingSpot: '#3f7fe8' }],
+    monarch: [1.5, { L: 14, H: 3.6, th: 5, hr: 6, leg: 8, lw: 1.6, wing: 'butter', hover: 1, hov: 18, ant: 'club', ws: 29 }, { fur: '#2b2018', wingCol: '#f08c2e', wingEdge: '#2b2018', wingSpot: '#ffffff' }],
+    morpho: [1.45, { L: 14, H: 3.6, th: 5, hr: 6, leg: 8, lw: 1.6, wing: 'butter', hover: 1, hov: 18, ant: 'club', ws: 30 }, { fur: '#3a2a26', wingCol: '#2f8fe8', wingEdge: '#16233f', wingSpot: '#8fd0ff' }],
+    moth: [1.4, { L: 13, H: 6, th: 7.5, hr: 7, leg: 8, lw: 1.8, wing: 'butter', hover: 1, hov: 15, ant: 'feather', ws: 25 }, { fur: '#b89a78', wingCol: '#c9b08a', wingEdge: '#8a6f4a', wingSpot: '#6b5238' }],
+    hawkmoth: [1.45, { L: 16, H: 7, th: 8.5, hr: 7.5, leg: 8, wing: 'fly', hover: 1, hov: 16, ant: 'club', needle: 16, ws: 26 }, { fur: '#8a7a6a', stripes: '#e86a8a', wingCol: 'rgba(138,110,90,.85)' }],
+    caterpillar: [1.4, { kind: 'larva', H: 8.5, hr: 9.5, seg: 6 }, { fur: '#7fc24a', spots: '#f7d23f', headCol: '#5fa83a' }],
+    dragonfly: [1.5, { L: 24, H: 3.2, th: 7, hr: 8.5, leg: 8, lw: 1.6, wing: 'dragon', hover: 1, hov: 18, ant: 'short', eye: 0.46, ws: 32 }, { fur: '#d9452e', thorax: '#b83a26', eyeCol: '#8a2a1a' }],
+    mayfly: [1.3, { L: 15, H: 3.4, th: 5.5, hr: 6, leg: 10, lw: 1.5, wing: 'fly', hover: 1, hov: 17, ant: 'short', tails: 18, ws: 22 }, { fur: '#e8e2c0', fur2: '#fffbe6' }],
+    grasshopper: [1.45, { L: 17, H: 6.5, th: 7.5, hr: 8, leg: 14, hind: 1, ant: 'short' }, { fur: '#7fc24a', fur2: '#d9f0a8' }],
+    locust: [1.5, { L: 18, H: 7, th: 8, hr: 8.5, leg: 14, hind: 1, ant: 'short' }, { fur: '#c9a55a', fur2: '#f1e2b8', stripes: '#8a6a3a' }],
+    cricket: [1.4, { L: 14, H: 8, th: 8, hr: 9, leg: 12, hind: 1, ant: 'long', antLen: 26, tails: 8 }, { fur: '#4a3426', fur2: '#6b4f3a' }],
+    katydid: [1.45, { L: 17, H: 9.5, th: 7.5, hr: 7.5, leg: 15, lw: 2, hind: 1, ant: 'long', antLen: 38 }, { fur: '#5fb84a', plain: 1 }],
+    molecricket: [1.45, { L: 17, H: 8.5, th: 9.5, hr: 8.5, leg: 9, dig: 1, ant: 'short', tails: 7, wide: 1 }, { fur: '#8a5f3a', fur2: '#c9a070' }],
+    flea: [1.15, { L: 10, H: 10.5, th: 7, hr: 6.5, leg: 14, hind: 1, ant: 'short' }, { fur: '#8a3a2a', fur2: '#b85a3f' }],
+    mantis: [1.5, { L: 20, H: 5.5, th: 6, hr: 7.5, leg: 17, lw: 2, raptor: 1, neck: 14, ant: 'club', eye: 0.4 }, { fur: '#7fc24a', fur2: '#d9f0a8' }],
+    stickbug: [1.5, { L: 24, H: 2.6, th: 4, hr: 5, leg: 19, lw: 1.7, ant: 'long', antLen: 20, neck: 8 }, { fur: '#8a6a45', plain: 1 }],
+    ladybug: [1.5, { L: 12.5, H: 12, th: 7, hr: 7, leg: 8, wing: 'shell', ant: 'short' }, { fur: '#2b2018', shell: '#e8452e', spots: '#2b2018', headCol: '#2b2018' }],
+    rhinobeetle: [1.7, { L: 14, H: 11.5, th: 9, hr: 8, leg: 11, lw: 3.2, wing: 'shell', horn: 'rhino', ant: 'short' }, { fur: '#4a2a1a', shell: '#6b3a22', horn: '#3a2014' }],
+    stagbeetle: [1.65, { L: 15, H: 9.5, th: 9, hr: 9, leg: 11, lw: 3, wing: 'shell', horn: 'stag', ant: 'short', wide: 1 }, { fur: '#2e2422', shell: '#3a2a26', horn: '#5a3a2e' }],
+    dungbeetle: [1.4, { L: 12, H: 10.5, th: 8, hr: 7.5, leg: 10, lw: 3, wing: 'shell', ant: 'short', ball: 12 }, { fur: '#26242b', shell: '#2e2a30', ballCol: '#7a5a3a' }],
+    firefly: [1.35, { L: 15, H: 6.5, th: 6.5, hr: 7, leg: 9, wing: 'shell', ant: 'elbow', glow: 1 }, { fur: '#3a3438', shell: '#3a3438', thorax: '#e8603c', headCol: '#e8603c' }],
+    longhorn: [1.5, { L: 18, H: 7, th: 7, hr: 7.5, leg: 12, wing: 'shell', ant: 'long', antLen: 44 }, { fur: '#2b2620', shell: '#2b2620', spots: '#f1f1f1' }],
+    weevil: [1.4, { L: 13, H: 10, th: 7.5, hr: 7.5, leg: 10, wing: 'shell', ant: 'elbow', snout: 1 }, { fur: '#8a7a6a', shell: '#9a8a78', shell2: '#6b5a4a' }],
+    tigerbeetle: [1.4, { L: 14, H: 7, th: 6.5, hr: 8, leg: 16, lw: 2, wing: 'shell', ant: 'long', antLen: 16, jaw: 1, eye: 0.42 }, { fur: '#1f7a4a', shell: '#2fa86a', spots: '#fff3c4' }],
+    bombardier: [1.4, { L: 14, H: 8.5, th: 6.5, hr: 7.5, leg: 12, wing: 'shell', ant: 'long', antLen: 16 }, { fur: '#e8853a', shell: '#2f3a5a', headCol: '#e8853a' }],
+    jewelbeetle: [1.45, { L: 17, H: 7.5, th: 7, hr: 7.5, leg: 10, wing: 'shell', ant: 'short' }, { fur: '#1fa87a', shell: '#2fc28a', shell2: '#e8603c' }],
+    divingbeetle: [1.45, { L: 15, H: 9, th: 8, hr: 7.5, leg: 11, lw: 3.2, wing: 'shell', ant: 'short', wide: 1 }, { fur: '#2e3a2e', shell: '#3a4a3a', shell2: '#d9c24a' }],
+    strider: [1.35, { L: 16, H: 3, th: 4.5, hr: 5.5, leg: 22, lw: 1.5, spread: 1.35, ant: 'short' }, { fur: '#5a5248', plain: 1 }],
+    waterbug: [1.55, { L: 17, H: 7.5, th: 8.5, hr: 7.5, leg: 12, lw: 2.8, raptor: 1, ant: 'short', wide: 1 }, { fur: '#7a5f3a', fur2: '#a8875a' }],
+    cicada: [1.5, { L: 15, H: 8.5, th: 9.5, hr: 9, leg: 9, wing: 'fly', ant: 'short', wide: 1, eye: 0.36, ws: 30 }, { fur: '#3a4a3a', fur2: '#c9b88a', eyeCol: '#e8603c' }],
+    stinkbug: [1.4, { L: 13, H: 8.5, th: 9, hr: 6.5, leg: 10, wing: 'shell', ant: 'long', antLen: 14, wide: 1 }, { fur: '#5a8a3a', shell: '#6fa84a', shell2: '#4a7a2e' }],
+    cockroach: [1.45, { L: 18, H: 6.5, th: 8, hr: 7, leg: 13, wing: 'shell', ant: 'long', antLen: 36, wide: 1 }, { fur: '#6b3a1e', shell: '#8a4f2a' }],
+    earwig: [1.4, { L: 19, H: 5, th: 6, hr: 7, leg: 10, ant: 'long', antLen: 16, pincer: 1 }, { fur: '#7a3a26', fur2: '#c9853a', stripes: '#5a2a1a' }],
+    antlion: [1.45, { L: 15, H: 11, th: 8, hr: 8, leg: 9, lw: 3, ant: 'short', jaw: 2.2 }, { fur: '#9a8a72', fur2: '#c9bca0' }],
+    froghopper: [1.2, { L: 12, H: 8, th: 7.5, hr: 8, leg: 12, hind: 1, wing: 'shell', ant: 'short' }, { fur: '#6b5238', shell: '#8a6f4a', shell2: '#c9b08a' }],
+    aphid: [1.15, { L: 12, H: 10, th: 6, hr: 7, leg: 10, lw: 1.8, ant: 'long', antLen: 14, tubes: 1 }, { fur: '#9fd45a', fur2: '#d9f0a8' }]
+  };
+  Object.keys(BUGS).forEach(function (id) { T[id] = ['bug', BUGS[id][0], BUGS[id][1]]; SPEC[id] = BUGS[id][2]; });
+  var PLANS = { quad: planQuad, biped: planBiped, bird: planBird, fish: planFish, serpent: planSerpent, crust: planCrust, tent: planTent, star: planStar, seahorse: planSeahorse, frog: planFrog, bug: planBug };
   function pivotOf(row) {
     var P = row[2];
     switch (row[0]) {
@@ -848,6 +1028,7 @@
       case 'fish': return (P.H || 28) * 0.5 + (P.seal ? 2 : 15);
       case 'serpent': return 9;
       case 'crust': return 16;
+      case 'bug': return (P.leg || 13) * 0.8 + Math.max(P.th || 8, P.H || 10) * 0.55 + (P.hover ? (P.hov || 15) : 0);
       default: return 32;
     }
   }
